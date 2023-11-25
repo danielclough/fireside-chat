@@ -1,0 +1,7 @@
+cpu: false
+use_flash_attn: false
+model_id: "lmz/candle-mistral"
+revision: "main"
+tokenizer_file:
+weight_files:
+quantized: false

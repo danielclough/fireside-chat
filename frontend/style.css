@@ -1,0 +1,27 @@
+* {
+    font-size: x-large;
+}
+
+html, body {
+    background-color: #000;
+}
+
+input {
+    color: #000;
+    padding: .25rem 1rem;
+    width: calc(100vw - 3rem);
+}
+
+#chatbox {
+    overflow-y: scroll;
+    height: calc(100vh - 5.5rem);
+    color: #fff;
+    padding: .25rem 1rem;
+}
+
+#btn-row {
+    display: inline-flex;
+}
+#btn-row button {
+    margin: .25rem;
+}
