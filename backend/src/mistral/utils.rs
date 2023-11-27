@@ -1,31 +1,38 @@
-use candle_transformers::models::mistral::{ Config, Model as Mistral };
-use candle_transformers::models::quantized_mistral::Model as QMistral;
-use candle_core::{ DType, Device };
+use candle_core::{DType, Device};
 use candle_nn::VarBuilder;
+use candle_transformers::models::mistral::{Config, Model as Mistral};
+use candle_transformers::models::quantized_mistral::Model as QMistral;
 
-use hf_hub::{ api::sync::Api, Repo, RepoType };
+use anyhow::{Error as E, Result};
+use hf_hub::{api::sync::Api, Repo, RepoType};
 use tokenizers::tokenizer::Tokenizer;
-use anyhow::{ Error as E, Result };
 
-use super::types::{ Model, ModelTokenizerDevice, ArgsToLoadModel };
+use super::types::config::{ArgsToLoadModel, Model, ModelTokenizerDevice};
 
 pub fn load_model(args: ArgsToLoadModel) -> Result<ModelTokenizerDevice> {
     let start = std::time::Instant::now();
     let api = Api::new()?;
-    let repo = api.repo(Repo::with_revision(args.model_id, RepoType::Model, args.revision));
+    let repo = api.repo(Repo::with_revision(
+        args.model_id,
+        RepoType::Model,
+        args.revision,
+    ));
     let tokenizer_filename = match args.tokenizer_file {
         Some(file) => std::path::PathBuf::from(file),
         None => repo.get("tokenizer.json")?,
     };
     let filenames = match args.weight_files {
-        Some(files) => files.split(',').map(std::path::PathBuf::from).collect::<Vec<_>>(),
+        Some(files) => files
+            .split(',')
+            .map(std::path::PathBuf::from)
+            .collect::<Vec<_>>(),
         None => {
             if args.quantized {
                 vec![repo.get("model-q4k.gguf")?]
             } else {
                 vec![
                     repo.get("pytorch_model-00001-of-00002.safetensors")?,
-                    repo.get("pytorch_model-00002-of-00002.safetensors")?
+                    repo.get("pytorch_model-00002-of-00002.safetensors")?,
                 ]
             }
         }
@@ -44,7 +51,11 @@ pub fn load_model(args: ArgsToLoadModel) -> Result<ModelTokenizerDevice> {
         (Model::Quantized(model), Device::Cpu)
     } else {
         let device = candle_examples::device(args.cpu)?;
-        let dtype = if device.is_cuda() { DType::BF16 } else { DType::F32 };
+        let dtype = if device.is_cuda() {
+            DType::BF16
+        } else {
+            DType::F32
+        };
         let vb = unsafe { VarBuilder::from_mmaped_safetensors(&filenames, dtype, &device)? };
         let model = Mistral::new(&config, vb)?;
         (Model::Mistral(model), device)
@@ -52,7 +63,11 @@ pub fn load_model(args: ArgsToLoadModel) -> Result<ModelTokenizerDevice> {
 
     tracing::debug!("loaded the model in {:?}", start.elapsed());
 
-    let model_args_out = ModelTokenizerDevice { model, tokenizer, device };
+    let model_args_out = ModelTokenizerDevice {
+        model,
+        tokenizer,
+        device,
+    };
 
     Ok(model_args_out)
 }

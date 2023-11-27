@@ -1,63 +1,11 @@
-use anyhow::{ Error as E, Result };
-
-use candle_transformers::models::mistral::Model as Mistral;
-use candle_transformers::models::quantized_mistral::Model as QMistral;
-
-use tokenizers::tokenizer::Tokenizer;
-
-use candle_core::{ DType, Device, Tensor };
+use anyhow::{Error as E, Result};
+use candle_core::{DType, Device, Tensor};
 use candle_examples::token_output_stream::TokenOutputStream;
 use candle_transformers::generation::LogitsProcessor;
 
-use serde::Deserialize;
+use tokenizers::tokenizer::Tokenizer;
 
-#[derive(Clone)]
-pub enum Model {
-    Mistral(Mistral),
-    Quantized(QMistral),
-}
-
-#[derive(Deserialize, PartialEq, Debug)]
-pub struct InferenceArgs {
-    /// Enable tracing (generates a trace-timestamp.json file).
-    pub tracing: bool,
-    /// The temperature used to generate samples.
-    pub temperature: Option<f64>,
-    /// Nucleus sampling probability cutoff.
-    pub top_p: Option<f64>,
-    /// The seed to use when generating random samples.
-    pub seed: u64,
-    /// The length of the sample to generate (in tokens).
-    pub sample_len: usize,
-    /// Penalty to be applied for repeating tokens, 1. means no penalty.
-    pub repeat_penalty: f32,
-    /// The context size to consider for the repeat penalty.
-    pub repeat_last_n: usize,
-}
-
-#[derive(Deserialize, PartialEq, Debug)]
-pub struct ArgsToLoadModel {
-    /// HuggingFace model Id
-    pub model_id: String,
-    /// HuggingFace model revision
-    pub revision: String,
-    /// Optional tokenizer file
-    pub tokenizer_file: Option<String>,
-    /// Optional weight files
-    pub weight_files: Option<String>,
-    /// Use quantized model
-    pub quantized: bool,
-    /// Use FlashAttention to enhance memory efficiency
-    pub use_flash_attn: bool,
-    /// Run on CPU rather than on GPU.
-    pub cpu: bool,
-}
-
-pub struct ModelTokenizerDevice {
-    pub model: Model,
-    pub tokenizer: Tokenizer,
-    pub device: Device,
-}
+use super::config::Model;
 
 pub struct TextGeneration {
     model: Model,
@@ -78,7 +26,7 @@ impl TextGeneration {
         top_p: Option<f64>,
         repeat_penalty: f32,
         repeat_last_n: usize,
-        device: &Device
+        device: &Device,
     ) -> Self {
         let logits_processor = LogitsProcessor::new(seed, temp, top_p);
         Self {
@@ -98,7 +46,8 @@ impl TextGeneration {
         // Vec for response
         let mut response: Vec<String> = vec![];
 
-        let mut tokens = self.tokenizer
+        let mut tokens = self
+            .tokenizer
             .tokenizer()
             .encode(prompt, true)
             .map_err(E::msg)?
@@ -137,7 +86,7 @@ impl TextGeneration {
                 candle_transformers::utils::apply_repeat_penalty(
                     &logits,
                     self.repeat_penalty,
-                    &tokens[start_at..]
+                    &tokens[start_at..],
                 )?
             };
 

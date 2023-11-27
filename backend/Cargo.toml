@@ -8,10 +8,11 @@ edition = "2021"
 [dependencies]
 anyhow = { version = "1.0.75", features = ["backtrace"] }
 axum = { version = "0.6.20", features = ["ws"] }
-candle-core = { version = "0.3.1", features = ["cuda"] }
+candle-core = { version = "0.3.1" }
 candle-examples = "0.3.1"
 candle-nn = "0.3.1"
-candle-transformers = { version = "0.3.1", features = ["cuda"] }
+candle-transformers = { version = "0.3.1" }
+dotenv = "0.15.0"
 futures = "0.3.29"
 hf-hub = "0.3.2"
 regex = "1.10.2"

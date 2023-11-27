@@ -71,7 +71,8 @@ async fn websocket(stream: WebSocket, state: Arc<AppState>) {
     let tx = state.tx.clone();
     let name = username.clone();
 
-    let state_cloned = state.clone();
+    let state_cloned_for_model_args = state.clone();
+    let state_cloned_for_inference_args = state.clone();
 
     // Spawn a task that takes messages from the websocket, prepends the user
     // name, and sends them to all broadcast subscribers.
@@ -101,12 +102,19 @@ async fn websocket(stream: WebSocket, state: Arc<AppState>) {
             //
             // Run Mistral
             //
-            let regex =
-                Regex::new(r"(\[INST\]|\[\/INST\]|\[inst\]|\[\/inst\])").expect("Invalid regex");
-            let model_args = state_cloned.model_args.lock().unwrap();
-            let bot_response = mistral(prompt, &model_args)
+            // Lock and unwrap Mutex args.
+            let model_args = state_cloned_for_model_args.model_args.lock().unwrap();
+            let inference_args = state_cloned_for_inference_args
+                .inference_args
+                .lock()
+                .unwrap();
+
+            let bot_response = mistral(prompt, &model_args, &inference_args)
                 .unwrap_or("Bot is away at the moment, try again later.".to_string());
 
+            // Parse Bot Response with Regex
+            let regex =
+                Regex::new(r"(\[INST\]|\[\/INST\]|\[inst\]|\[\/inst\])").expect("Invalid regex");
             let split_bot_response = regex
                 .split(&bot_response)
                 .take(1)

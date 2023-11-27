@@ -1,4 +1,4 @@
-cpu: false
+cpu: true
 use_flash_attn: false
 model_id: "lmz/candle-mistral"
 revision: "main"

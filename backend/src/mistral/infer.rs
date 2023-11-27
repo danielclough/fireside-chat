@@ -1,17 +1,13 @@
 use anyhow::Result;
 
-use super::types::{ InferenceArgs, TextGeneration, ModelTokenizerDevice };
+use super::types::config::{InferenceArgs, ModelTokenizerDevice};
+use super::types::text_generation::TextGeneration;
 
-pub fn mistral(prompt: String, model_args: &ModelTokenizerDevice) -> Result<String> {
-    // Load Config for each run.
-    // Consider moving if config should be loaded when the project starts.
-    let config_string = std::fs
-        ::read_to_string("./config_inference.yaml")
-        .expect("Load config_inference.yaml");
-    let inference_args: InferenceArgs = serde_yaml
-        ::from_str(config_string.as_str())
-        .expect("config_inference.yaml to struct");
-
+pub fn mistral(
+    prompt: String,
+    model_args: &ModelTokenizerDevice,
+    inference_args: &InferenceArgs,
+) -> Result<String> {
     // AVX, or Advanced Vector Extensions,
     //   an instruction set architecture extension for x86 microprocessors from Intel and AMD.
     // ARM NEON
@@ -44,7 +40,7 @@ pub fn mistral(prompt: String, model_args: &ModelTokenizerDevice) -> Result<Stri
         inference_args.top_p,
         inference_args.repeat_penalty,
         inference_args.repeat_last_n,
-        &model_args.device
+        &model_args.device,
     );
 
     // Run pipeline and return response

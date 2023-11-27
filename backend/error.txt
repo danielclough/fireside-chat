@@ -1,0 +1,174 @@
+   Compiling cudarc v0.9.15
+   Compiling candle-kernels v0.3.1
+   Compiling arrow-array v45.0.0
+   Compiling rustversion v1.0.14
+error: failed to run custom build command for `cudarc v0.9.15`
+
+Caused by:
+  process didn't exit successfully: `/home/daniel/git/axum_mistral_candle_leptos/backend/target/debug/build/cudarc-00c25a2a31930a2a/build-script-build` (exit status: 101)
+  --- stdout
+  cargo:rerun-if-changed=build.rs
+  cargo:rerun-if-env-changed=CUDA_ROOT
+  cargo:rerun-if-env-changed=CUDA_PATH
+  cargo:rerun-if-env-changed=CUDA_TOOLKIT_ROOT_DIR
+
+  --- stderr
+  thread 'main' panicked at 'Unable to find `include/cuda.h` under any of: ["/usr", "/usr/local/cuda", "/opt/cuda", "/usr/lib/cuda", "C:/Program Files/NVIDIA GPU Computing Toolkit", "C:/CUDA"]. Set the `CUDA_ROOT` environment variable to `$CUDA_ROOT/include/cuda.h` to override path.', /home/daniel/.cargo/registry/src/index.crates.io-6f17d22bba15001f/cudarc-0.9.15/build.rs:21:13
+  stack backtrace:
+     0:     0x558eab9fa3c1 - std::backtrace_rs::backtrace::libunwind::trace::h81b3ec7e24504ef6
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/../../backtrace/src/backtrace/libunwind.rs:93:5
+     1:     0x558eab9fa3c1 - std::backtrace_rs::backtrace::trace_unsynchronized::h06b108a8ac6d8321
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/../../backtrace/src/backtrace/mod.rs:66:5
+     2:     0x558eab9fa3c1 - std::sys_common::backtrace::_print_fmt::hddd2a53a0a5c1518
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/sys_common/backtrace.rs:65:5
+     3:     0x558eab9fa3c1 - <std::sys_common::backtrace::_print::DisplayBacktrace as core::fmt::Display>::fmt::h8286d7e4527fc2ef
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/sys_common/backtrace.rs:44:22
+     4:     0x558eaba1a61c - core::fmt::rt::Argument::fmt::h8fd89467fbfd7337
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/core/src/fmt/rt.rs:138:9
+     5:     0x558eaba1a61c - core::fmt::write::h51943d696b01a399
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/core/src/fmt/mod.rs:1094:21
+     6:     0x558eab9f7c8e - std::io::Write::write_fmt::h917c762025be867c
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/io/mod.rs:1714:15
+     7:     0x558eab9fa1d5 - std::sys_common::backtrace::_print::h80196d93ed8f3afc
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/sys_common/backtrace.rs:47:5
+     8:     0x558eab9fa1d5 - std::sys_common::backtrace::print::hfc2f9057cab2ca91
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/sys_common/backtrace.rs:34:9
+     9:     0x558eab9fb87a - std::panicking::panic_hook_with_disk_dump::{{closure}}::h044c489edf02dba6
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/panicking.rs:278:22
+    10:     0x558eab9fb513 - std::panicking::panic_hook_with_disk_dump::hc012686c97dee411
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/panicking.rs:312:9
+    11:     0x558eab9fbe7b - std::panicking::default_hook::h38859ccab48a30da
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/panicking.rs:239:5
+    12:     0x558eab9fbe7b - std::panicking::rust_panic_with_hook::hbec509e90f57ee70
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/panicking.rs:729:13
+    13:     0x558eab9fbd77 - std::panicking::begin_panic_handler::{{closure}}::h24e3657f27ebdc7b
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/panicking.rs:621:13
+    14:     0x558eab9fa826 - std::sys_common::backtrace::__rust_end_short_backtrace::h0fb71023354b550a
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/sys_common/backtrace.rs:151:18
+    15:     0x558eab9fbac2 - rust_begin_unwind
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/panicking.rs:617:5
+    16:     0x558eab9d5113 - core::panicking::panic_fmt::haa55128da9cd75d4
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/core/src/panicking.rs:67:14
+    17:     0x558eab9d9ed8 - build_script_build::link_cuda::{{closure}}::h7ad43365a553654e
+                                 at /home/daniel/.cargo/registry/src/index.crates.io-6f17d22bba15001f/cudarc-0.9.15/build.rs:21:13
+    18:     0x558eab9d7aac - core::option::Option<T>::unwrap_or_else::h98a1846ff7c80588
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/core/src/option.rs:979:21
+    19:     0x558eab9d9992 - build_script_build::link_cuda::h317033164046adbc
+                                 at /home/daniel/.cargo/registry/src/index.crates.io-6f17d22bba15001f/cudarc-0.9.15/build.rs:18:24
+    20:     0x558eab9d983a - build_script_build::main::h0051ce34485ec47f
+                                 at /home/daniel/.cargo/registry/src/index.crates.io-6f17d22bba15001f/cudarc-0.9.15/build.rs:7:5
+    21:     0x558eab9db17b - core::ops::function::FnOnce::call_once::h96015c15826c84cb
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/core/src/ops/function.rs:250:5
+    22:     0x558eab9d63be - std::sys_common::backtrace::__rust_begin_short_backtrace::h567d8e80eea5a0d6
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/sys_common/backtrace.rs:135:18
+    23:     0x558eab9dafa0 - std::rt::lang_start::{{closure}}::h8b6a58876f698cd3
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/rt.rs:166:18
+    24:     0x558eab9f4fcb - core::ops::function::impls::<impl core::ops::function::FnOnce<A> for &F>::call_once::h2240a7a2e9d7937c
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/core/src/ops/function.rs:284:13
+    25:     0x558eab9f4fcb - std::panicking::try::do_call::h6d94044a2dac5948
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/panicking.rs:524:40
+    26:     0x558eab9f4fcb - std::panicking::try::hc16721a649b6347e
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/panicking.rs:488:19
+    27:     0x558eab9f4fcb - std::panic::catch_unwind::ha5ec842243b12570
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/panic.rs:142:14
+    28:     0x558eab9f4fcb - std::rt::lang_start_internal::{{closure}}::h718bb866ab67d475
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/rt.rs:148:48
+    29:     0x558eab9f4fcb - std::panicking::try::do_call::hca57e22a5a3d68fb
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/panicking.rs:524:40
+    30:     0x558eab9f4fcb - std::panicking::try::hfd3cbded253620e6
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/panicking.rs:488:19
+    31:     0x558eab9f4fcb - std::panic::catch_unwind::h1fa2ff1a7cb410d5
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/panic.rs:142:14
+    32:     0x558eab9f4fcb - std::rt::lang_start_internal::h1dfc41da9ec083ca
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/rt.rs:148:20
+    33:     0x558eab9daf7a - std::rt::lang_start::ha2a54e9564406a1d
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/rt.rs:165:17
+    34:     0x558eab9da37e - main
+    35:     0x7f3da8358d90 - <unknown>
+    36:     0x7f3da8358e40 - __libc_start_main
+    37:     0x558eab9d57b5 - _start
+    38:                0x0 - <unknown>
+warning: build failed, waiting for other jobs to finish...
+error: failed to run custom build command for `candle-kernels v0.3.1`
+
+Caused by:
+  process didn't exit successfully: `/home/daniel/git/axum_mistral_candle_leptos/backend/target/debug/build/candle-kernels-2d2ee0fa4209ad24/build-script-build` (exit status: 101)
+  --- stdout
+  cargo:rerun-if-changed=build.rs
+
+  --- stderr
+  thread 'main' panicked at 'called `Option::unwrap()` on a `None` value', /home/daniel/.cargo/registry/src/index.crates.io-6f17d22bba15001f/candle-kernels-0.3.1/build.rs:68:14
+  stack backtrace:
+     0:     0x560def661711 - std::backtrace_rs::backtrace::libunwind::trace::h81b3ec7e24504ef6
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/../../backtrace/src/backtrace/libunwind.rs:93:5
+     1:     0x560def661711 - std::backtrace_rs::backtrace::trace_unsynchronized::h06b108a8ac6d8321
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/../../backtrace/src/backtrace/mod.rs:66:5
+     2:     0x560def661711 - std::sys_common::backtrace::_print_fmt::hddd2a53a0a5c1518
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/sys_common/backtrace.rs:65:5
+     3:     0x560def661711 - <std::sys_common::backtrace::_print::DisplayBacktrace as core::fmt::Display>::fmt::h8286d7e4527fc2ef
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/sys_common/backtrace.rs:44:22
+     4:     0x560def6882fc - core::fmt::rt::Argument::fmt::h8fd89467fbfd7337
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/core/src/fmt/rt.rs:138:9
+     5:     0x560def6882fc - core::fmt::write::h51943d696b01a399
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/core/src/fmt/mod.rs:1094:21
+     6:     0x560def65d73e - std::io::Write::write_fmt::h917c762025be867c
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/io/mod.rs:1714:15
+     7:     0x560def661525 - std::sys_common::backtrace::_print::h80196d93ed8f3afc
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/sys_common/backtrace.rs:47:5
+     8:     0x560def661525 - std::sys_common::backtrace::print::hfc2f9057cab2ca91
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/sys_common/backtrace.rs:34:9
+     9:     0x560def662efa - std::panicking::panic_hook_with_disk_dump::{{closure}}::h044c489edf02dba6
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/panicking.rs:278:22
+    10:     0x560def662b93 - std::panicking::panic_hook_with_disk_dump::hc012686c97dee411
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/panicking.rs:312:9
+    11:     0x560def6634fb - std::panicking::default_hook::h38859ccab48a30da
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/panicking.rs:239:5
+    12:     0x560def6634fb - std::panicking::rust_panic_with_hook::hbec509e90f57ee70
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/panicking.rs:729:13
+    13:     0x560def6633b1 - std::panicking::begin_panic_handler::{{closure}}::h24e3657f27ebdc7b
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/panicking.rs:619:13
+    14:     0x560def661b76 - std::sys_common::backtrace::__rust_end_short_backtrace::h0fb71023354b550a
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/sys_common/backtrace.rs:151:18
+    15:     0x560def663142 - rust_begin_unwind
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/panicking.rs:617:5
+    16:     0x560def4db3b3 - core::panicking::panic_fmt::haa55128da9cd75d4
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/core/src/panicking.rs:67:14
+    17:     0x560def4db443 - core::panicking::panic::hb4c75d9c5b922684
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/core/src/panicking.rs:117:5
+    18:     0x560def4fd4ca - core::option::Option<T>::unwrap::hc58ec269ebf833d9
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/core/src/option.rs:935:21
+    19:     0x560def4ed7f6 - build_script_build::cuda::set_include_dir::h62c4e967cac3249f
+                                 at /home/daniel/.cargo/registry/src/index.crates.io-6f17d22bba15001f/candle-kernels-0.3.1/build.rs:65:20
+    20:     0x560def4ecd6b - build_script_build::main::h48d639acce8e0697
+                                 at /home/daniel/.cargo/registry/src/index.crates.io-6f17d22bba15001f/candle-kernels-0.3.1/build.rs:6:5
+    21:     0x560def4fae9b - core::ops::function::FnOnce::call_once::ha9adc4d1b449cdc7
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/core/src/ops/function.rs:250:5
+    22:     0x560def4f1c0e - std::sys_common::backtrace::__rust_begin_short_backtrace::h7394b9b19fd9ff1f
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/sys_common/backtrace.rs:135:18
+    23:     0x560def4e7320 - std::rt::lang_start::{{closure}}::h8a0db4fca30bef59
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/rt.rs:166:18
+    24:     0x560def657b5b - core::ops::function::impls::<impl core::ops::function::FnOnce<A> for &F>::call_once::h2240a7a2e9d7937c
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/core/src/ops/function.rs:284:13
+    25:     0x560def657b5b - std::panicking::try::do_call::h6d94044a2dac5948
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/panicking.rs:524:40
+    26:     0x560def657b5b - std::panicking::try::hc16721a649b6347e
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/panicking.rs:488:19
+    27:     0x560def657b5b - std::panic::catch_unwind::ha5ec842243b12570
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/panic.rs:142:14
+    28:     0x560def657b5b - std::rt::lang_start_internal::{{closure}}::h718bb866ab67d475
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/rt.rs:148:48
+    29:     0x560def657b5b - std::panicking::try::do_call::hca57e22a5a3d68fb
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/panicking.rs:524:40
+    30:     0x560def657b5b - std::panicking::try::hfd3cbded253620e6
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/panicking.rs:488:19
+    31:     0x560def657b5b - std::panic::catch_unwind::h1fa2ff1a7cb410d5
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/panic.rs:142:14
+    32:     0x560def657b5b - std::rt::lang_start_internal::h1dfc41da9ec083ca
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/rt.rs:148:20
+    33:     0x560def4e72fa - std::rt::lang_start::h9c0a55d40e169d34
+                                 at /rustc/864bdf7843e1ceabc824ed86d97006acad6af643/library/std/src/rt.rs:165:17
+    34:     0x560def4f0ffe - main
+    35:     0x7f5cdf2a7d90 - <unknown>
+    36:     0x7f5cdf2a7e40 - __libc_start_main
+    37:     0x560def4dbb85 - _start
+    38:                0x0 - <unknown>
