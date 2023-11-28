@@ -23,19 +23,20 @@ impl InferenceArgs {
     pub fn new() -> InferenceArgs {
         tracing::debug!("Loading './config_inference.yaml' or Default Config.");
 
-        serde_yaml::from_str(
-            std::fs::read_to_string("./config_inference.yaml")
-                .unwrap()
-                .as_str(),
-        )
-        .unwrap_or(InferenceArgs {
-            tracing: true,
-            temperature: Some(0.2),
-            top_p: Some(1f64),
-            seed: 299792458,
-            sample_len: 500,
-            repeat_penalty: 1.3,
-            repeat_last_n: 150,
-        })
+        let inference_args_string = std::fs::read_to_string("./config_inference.yaml");
+        if inference_args_string.is_ok() {
+            let unwrapped = &inference_args_string.unwrap();
+            serde_yaml::from_str(unwrapped.as_str()).unwrap()
+        } else {
+            InferenceArgs {
+                tracing: true,
+                temperature: Some(0.2),
+                top_p: Some(1f64),
+                seed: 299792458,
+                sample_len: 500,
+                repeat_penalty: 1.3,
+                repeat_last_n: 150,
+            }
+        }
     }
 }

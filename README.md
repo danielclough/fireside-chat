@@ -27,10 +27,12 @@ Default model options can be configured with `/backend/config_model.yaml`.
 
 #### Cuda
 
-In order to configure running the model with `Cuda` adjust
-`/backend/config_model.yaml` to say `cpu: false`.
+Running with `Cuda`` is the default configuration.
 
-And, enable the cuda feature flags:
+Propper configuration includes:
+ - `/backend/config_model.yaml` must include `cpu: false`.
+
+And, enable the cuda feature flags must be enabled:
 ```sh
 cargo add candle-core -F "cuda"
 cargo add candle-transformers -F "cuda"

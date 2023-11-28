@@ -45,20 +45,21 @@ impl LoadModel {
     pub fn load_args() -> LoadModel {
         tracing::debug!("Loading './config_model.yaml' or Default Config.");
 
-        serde_yaml::from_str(
-            std::fs::read_to_string("./config_model.yaml")
-                .unwrap()
-                .as_str(),
-        )
-        .unwrap_or(LoadModel {
-            cpu: false,
-            use_flash_attn: false,
-            model_id: "lmz/candle-mistral".to_string(),
-            revision: "main".to_string(),
-            tokenizer_file: None,
-            weight_files: None,
-            quantized: false,
-        })
+        let config_model_string = std::fs::read_to_string("./config_model.yaml");
+        if config_model_string.is_ok() {
+            let unwrapped = &config_model_string.unwrap();
+            serde_yaml::from_str(unwrapped.as_str()).unwrap()
+        } else {
+            LoadModel {
+                cpu: false,
+                use_flash_attn: false,
+                model_id: "lmz/candle-mistral".to_string(),
+                revision: "main".to_string(),
+                tokenizer_file: None,
+                weight_files: None,
+                quantized: false,
+            }
+        }
     }
     pub fn load(args: LoadModel) -> Result<ModelTokenizerDevice> {
         let start = std::time::Instant::now();
