@@ -1,11 +1,12 @@
 use anyhow::Result;
 
-use super::types::config::{InferenceArgs, ModelTokenizerDevice};
+use super::types::inference_args::InferenceArgs;
+use super::types::load_model::ModelTokenizerDevice;
 use super::types::text_generation::TextGeneration;
 
 pub fn mistral(
     prompt: String,
-    model_args: &ModelTokenizerDevice,
+    model_tokenizer_device: &ModelTokenizerDevice,
     inference_args: &InferenceArgs,
 ) -> Result<String> {
     // AVX, or Advanced Vector Extensions,
@@ -33,14 +34,14 @@ pub fn mistral(
     );
 
     let mut pipeline = TextGeneration::new(
-        model_args.model.clone(),
-        model_args.tokenizer.clone(),
+        &model_tokenizer_device.model,
+        &model_tokenizer_device.tokenizer,
+        &model_tokenizer_device.device,
         inference_args.seed,
         inference_args.temperature,
         inference_args.top_p,
         inference_args.repeat_penalty,
         inference_args.repeat_last_n,
-        &model_args.device,
     );
 
     // Run pipeline and return response

@@ -1,3 +1,7 @@
+pub mod rest;
+pub mod types;
+pub mod websocket;
+
 use axum::{routing::get, Router};
 use std::{
     collections::HashSet,
@@ -6,11 +10,19 @@ use std::{
 };
 use tokio::sync::broadcast;
 
-use crate::mistral::types::config::{InferenceArgs, ModelTokenizerDevice};
-use crate::websockets::{types::AppState, utils::websocket_handler};
+use crate::mistral::types::load_model::ModelTokenizerDevice;
+use crate::{
+    mistral::types::inference_args::InferenceArgs, server::rest::inference::get_inference,
+};
 
-/// Start Server w/ model_args
-pub async fn server(model_args: Mutex<ModelTokenizerDevice>, inference_args: Mutex<InferenceArgs>) {
+use types::AppState;
+use websocket::utils::handler::websocket_handler;
+
+/// Start Server
+pub async fn start(
+    model_tokenizer_device: Mutex<ModelTokenizerDevice>,
+    inference_args: Mutex<InferenceArgs>,
+) {
     // Load dotenv
     dotenv::dotenv().ok();
 
@@ -21,13 +33,14 @@ pub async fn server(model_args: Mutex<ModelTokenizerDevice>, inference_args: Mut
     let app_state = Arc::new(AppState {
         user_set,
         tx,
-        model_args,
+        model_tokenizer_device,
         inference_args,
     });
 
     // Instantiate new Router and serve.
     let app = Router::new()
         .route("/websocket", get(websocket_handler))
+        .route("/inference", get(get_inference))
         .with_state(app_state);
 
     // Instantiate addr websocket_server_address with .env or default values.

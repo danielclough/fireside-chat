@@ -1,11 +1,9 @@
 use std::sync::Mutex;
 
 mod mistral;
-use mistral::types::config::{ArgsToLoadModel, InferenceArgs};
-use mistral::utils::load_model;
+use mistral::types::{inference_args::InferenceArgs, load_model::LoadModel};
 
-mod websockets;
-use websockets::server::server;
+mod server;
 
 #[tokio::main]
 async fn main() {
@@ -14,10 +12,10 @@ async fn main() {
 
     // Load Mistral
     // Instantiate args for passing into AppState
-    let model_args =
-        Mutex::new(load_model(ArgsToLoadModel::new()).expect("*** load_model should work."));
+    let model_tokenizer_device =
+        Mutex::new(LoadModel::load(LoadModel::load_args()).expect("*** load_model should work."));
     let inference_args = Mutex::new(InferenceArgs::new());
 
     // Start server
-    server(model_args, inference_args).await;
+    server::start(model_tokenizer_device, inference_args).await;
 }
