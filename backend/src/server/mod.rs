@@ -2,7 +2,10 @@ pub mod rest;
 pub mod types;
 pub mod websocket;
 
-use axum::{routing::get, Router};
+use axum::{
+    routing::{get, patch},
+    Router,
+};
 use std::{
     collections::HashSet,
     net::SocketAddr,
@@ -10,9 +13,11 @@ use std::{
 };
 use tokio::sync::broadcast;
 
-use crate::mistral::types::load_model::ModelTokenizerDevice;
 use crate::{
-    mistral::types::inference_args::InferenceArgs, server::rest::inference::get_inference,
+    mistral::types::inference_args::InferenceArgs, server::rest::routes::update_inference,
+};
+use crate::{
+    mistral::types::load_model::ModelTokenizerDevice, server::rest::routes::get_inference,
 };
 
 use types::AppState;
@@ -40,6 +45,7 @@ pub async fn start(
     // Instantiate new Router and serve.
     let app = Router::new()
         .route("/websocket", get(websocket_handler))
+        .route("/inference/:args", patch(update_inference))
         .route("/inference", get(get_inference))
         .with_state(app_state);
 
