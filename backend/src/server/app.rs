@@ -1,7 +1,4 @@
-use axum::{
-    routing::{get, patch},
-    Router,
-};
+use axum::{routing::get, Router};
 use std::{
     collections::HashSet,
     net::SocketAddr,
@@ -10,7 +7,8 @@ use std::{
 use tokio::sync::broadcast;
 
 use crate::{
-    mistral::types::inference_args::InferenceArgs, server::rest::routes::update_inference,
+    mistral::types::inference_args::InferenceArgs,
+    server::rest::routes::{get_model_args, update_inference, update_model_args},
 };
 use crate::{
     mistral::types::load_model::ModelTokenizerDevice, server::rest::routes::get_inference,
@@ -42,6 +40,7 @@ pub async fn start(
     let app = Router::new()
         .route("/websocket", get(websocket_handler))
         .route("/inference", get(get_inference).patch(update_inference))
+        .route("/model", get(get_model_args).patch(update_model_args))
         .with_state(app_state);
 
     // Instantiate addr websocket_server_address with .env or default values.

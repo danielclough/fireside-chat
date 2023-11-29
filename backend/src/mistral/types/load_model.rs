@@ -9,20 +9,20 @@ use tokenizers::tokenizer::Tokenizer;
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum Model {
     Mistral(Mistral),
     Quantized(QMistral),
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct ModelTokenizerDevice {
     pub model: Model,
     pub tokenizer: Tokenizer,
     pub device: Device,
 }
 
-#[derive(Deserialize, PartialEq, Debug, Serialize, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct LoadModel {
     /// HuggingFace model Id
     pub model_id: String,
@@ -40,9 +40,16 @@ pub struct LoadModel {
     pub cpu: bool,
 }
 impl LoadModel {
+    /// Save new './config_model.yaml'
+    pub fn save_args(args: LoadModel) -> LoadModel {
+        let yaml = serde_yaml::to_string(&args).expect("to string");
+        std::fs::write("./config_model.yaml", yaml).expect("save file");
+        LoadModel { ..args }
+    }
+
     /// Default config to prevent failure.
     /// Will load "./config_model.yaml" if available.
-    pub fn load_args() -> LoadModel {
+    pub fn load_current_args() -> LoadModel {
         tracing::debug!("Loading './config_model.yaml' or Default Config.");
 
         let config_model_string = std::fs::read_to_string("./config_model.yaml");
@@ -90,7 +97,7 @@ impl LoadModel {
             }
         };
 
-        tracing::debug!("retrieved the files in {:?}", start.elapsed());
+        println!("retrieved the files in {:?}", start.elapsed());
 
         let tokenizer = Tokenizer::from_file(tokenizer_filename).map_err(E::msg)?;
 
@@ -103,17 +110,21 @@ impl LoadModel {
             (Model::Quantized(model), Device::Cpu)
         } else {
             let device = candle_examples::device(args.cpu)?;
+            println!("Device: {:?}", device);
+
             let dtype = if device.is_cuda() {
                 DType::BF16
             } else {
                 DType::F32
             };
+            println!("Dtype: {:?}", dtype);
             let vb = unsafe { VarBuilder::from_mmaped_safetensors(&filenames, dtype, &device)? };
             let model = Mistral::new(&config, vb)?;
+            println!("Model Loaded");
             (Model::Mistral(model), device)
         };
 
-        tracing::debug!("loaded the model in {:?}", start.elapsed());
+        println!("loaded the model in {:?}", start.elapsed());
 
         let model_args_out = ModelTokenizerDevice {
             model,

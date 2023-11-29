@@ -2,8 +2,6 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Copy)]
 pub struct InferenceArgs {
-    /// Enable tracing (generates a trace-timestamp.json file).
-    pub tracing: bool,
     /// The temperature used to generate samples.
     pub temperature: Option<f64>,
     /// Nucleus sampling probability cutoff.
@@ -29,7 +27,6 @@ impl InferenceArgs {
             serde_yaml::from_str(unwrapped.as_str()).unwrap()
         } else {
             InferenceArgs {
-                tracing: true,
                 temperature: Some(0.2),
                 top_p: Some(1f64),
                 seed: 299792458,

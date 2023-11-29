@@ -1,3 +1,6 @@
+#[cfg(feature = "mkl")]
+extern crate intel_mkl_src;
+
 use anyhow::{Error as E, Result};
 use candle_core::{DType, Device, Tensor};
 use candle_examples::token_output_stream::TokenOutputStream;

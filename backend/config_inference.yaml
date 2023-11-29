@@ -1,5 +1,3 @@
-# Enable tracing (generates a trace-timestamp.json file).
-tracing: true
 # The temperature used to generate samples.
 temperature: 0.2
 # Nucleus sampling probability cutoff.

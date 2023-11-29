@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 anyhow = { version = "1.0.75", features = ["backtrace"] }
-axum = { version = "0.6.20", features = ["ws"] }
+axum = { version = "0.6.20", features = ["ws", "macros"] }
 candle-core = { version = "0.3.1", features = ["cuda"] }
 candle-examples = "0.3.1"
 candle-nn = "0.3.1"
@@ -24,3 +24,4 @@ tower = { version = "0.4.13", features = ["util"] }
 tracing = "0.1.40"
 tracing-chrome = "0.7.1"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
+intel-mkl-src = { version = "0.8.1", features = ["mkl-static-lp64-iomp"] }

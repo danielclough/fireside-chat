@@ -10,8 +10,10 @@ use server::app::start;
 async fn main() {
     // Load Mistral
     // Instantiate args for passing into AppState
-    let model_tokenizer_device =
-        Mutex::new(LoadModel::load(LoadModel::load_args()).expect("*** load_model should work."));
+    let model_tokenizer_device: Mutex<mistral::types::load_model::ModelTokenizerDevice> =
+        Mutex::new(
+            LoadModel::load(LoadModel::load_current_args()).expect("*** load_model should work."),
+        );
     let inference_args = Mutex::new(InferenceArgs::new());
 
     println!("Model Loaded!\n Starting Server!\n");
