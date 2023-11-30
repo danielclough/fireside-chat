@@ -1,13 +1,16 @@
 [package]
-name = "leptos-frontend"
+name = "candle-chat"
 version = "0.1.0"
 edition = "2021"
+description = "Frontend for a pure Rust chat app using Axum Webhooks (multi-user), HuggingFace/Candle for LLM inference, and Leptos for a WASM frontend."
+license-file = "LICENSE"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 console_error_panic_hook = "0.1.7"
 console_log = "1.0.0"
+dotenv = "0.15.0"
 leptos = { version = "0.5.2", features = ["csr", "nightly"] }
 leptos-use = "0.8.2"
 log = "0.4.20"
