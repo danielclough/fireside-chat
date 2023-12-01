@@ -15,7 +15,7 @@ fn WebSocket() -> impl IntoView {
     // Instantiate addr websocket_server_address with .env or default values.
     let ipv4 = std::env::var("IPV4").unwrap_or("127.0.0.1".to_string());
     let port = std::env::var("PORT").unwrap_or("3000".to_string());
-    let websocket_server_address = format!("{}:{}", ipv4, port);
+    let websocket_server_address = format!("ws://{}:{}/websocket", ipv4, port);
 
     let UseWebsocketReturn {
         ready_state,
@@ -87,6 +87,7 @@ fn WebSocket() -> impl IntoView {
                 </div>
             </div>
             <div id="chatbox">
+            <hr />
                 <For
                     each=move || history.get().into_iter().enumerate()
                     key=|(index, _)| *index
