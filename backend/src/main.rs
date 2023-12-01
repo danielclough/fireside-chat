@@ -1,23 +1,23 @@
 use std::sync::Mutex;
 
 mod mistral;
-use mistral::types::config::{ArgsToLoadModel, InferenceArgs};
-use mistral::utils::load_model;
+use mistral::types::{inference_args::InferenceArgs, load_model::LoadModel};
 
-mod websockets;
-use websockets::server::server;
+mod server;
+use server::app::start;
 
 #[tokio::main]
 async fn main() {
-    // Configure tracing subscriber
-    tracing_subscriber::fmt::init();
-
     // Load Mistral
     // Instantiate args for passing into AppState
-    let model_args =
-        Mutex::new(load_model(ArgsToLoadModel::new()).expect("*** load_model should work."));
+    let model_tokenizer_device: Mutex<mistral::types::load_model::ModelTokenizerDevice> =
+        Mutex::new(
+            LoadModel::load(LoadModel::load_current_args()).expect("*** load_model should work."),
+        );
     let inference_args = Mutex::new(InferenceArgs::new());
 
+    println!("Model Loaded!\n Starting Server!\n");
+
     // Start server
-    server(model_args, inference_args).await;
+    start(model_tokenizer_device, inference_args).await;
 }

@@ -1,7 +1,8 @@
 use std::{collections::HashSet, sync::Mutex};
 use tokio::sync::broadcast;
 
-use crate::mistral::types::config::{InferenceArgs, ModelTokenizerDevice};
+use crate::mistral::types::inference_args::InferenceArgs;
+use crate::mistral::types::load_model::ModelTokenizerDevice;
 
 // Our shared state
 pub struct AppState {
@@ -11,6 +12,6 @@ pub struct AppState {
     /// Channel used to send messages to all connected clients.
     pub tx: broadcast::Sender<String>,
     /// Share the model, tokenizer, and device into the app.
-    pub model_args: Mutex<ModelTokenizerDevice>,
+    pub model_tokenizer_device: Mutex<ModelTokenizerDevice>,
     pub inference_args: Mutex<InferenceArgs>,
 }

@@ -180,6 +180,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c59e92b5a388f549b863a7bea62612c09f24c8393560709a54558a9abdfb3b9c"
 
 [[package]]
+name = "candle-chat"
+version = "0.1.0"
+dependencies = [
+ "console_error_panic_hook",
+ "console_log",
+ "dotenv",
+ "leptos",
+ "leptos-use",
+ "log",
+ "web-sys",
+]
+
+[[package]]
 name = "cc"
 version = "1.0.83"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -363,6 +376,12 @@ dependencies = [
  "quote",
  "syn 2.0.39",
 ]
+
+[[package]]
+name = "dotenv"
+version = "0.15.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "77c90badedccf4105eca100756a0b1289e191f6fcbdadd3cee1d2f614f97da8f"
 
 [[package]]
 name = "drain_filter_polyfill"
@@ -772,18 +791,6 @@ dependencies = [
  "typed-builder",
  "typed-builder-macro",
  "wasm-bindgen",
- "web-sys",
-]
-
-[[package]]
-name = "leptos-frontend"
-version = "0.1.0"
-dependencies = [
- "console_error_panic_hook",
- "console_log",
- "leptos",
- "leptos-use",
- "log",
  "web-sys",
 ]
 

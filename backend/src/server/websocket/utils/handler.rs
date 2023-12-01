@@ -1,5 +1,6 @@
-use crate::mistral::infer::mistral;
-use crate::websockets::types::AppState;
+use crate::server::types::AppState;
+use crate::server::websocket::utils::mistral::create_bot_msg;
+use std::sync::Arc;
 
 use axum::extract::ws::{Message, WebSocket};
 use axum::{
@@ -8,9 +9,13 @@ use axum::{
 };
 use futures::{SinkExt, StreamExt};
 
-use std::sync::Arc;
-
-use regex::Regex;
+// fn to handle websocket connections.
+pub async fn websocket_handler(
+    ws: WebSocketUpgrade,
+    State(state): State<Arc<AppState>>,
+) -> impl IntoResponse {
+    ws.on_upgrade(|socket| websocket(socket, state))
+}
 
 // This function deals with a single websocket connection, i.e., a single
 // connected client / user, for which we will spawn two independent tasks (for
@@ -71,8 +76,8 @@ async fn websocket(stream: WebSocket, state: Arc<AppState>) {
     let tx = state.tx.clone();
     let name = username.clone();
 
-    let state_cloned_for_model_args = state.clone();
-    let state_cloned_for_inference_args = state.clone();
+    let model_tokenizer_device = state.model_tokenizer_device.lock().unwrap().clone();
+    let inference_args = *state.inference_args.lock().unwrap();
 
     // Spawn a task that takes messages from the websocket, prepends the user
     // name, and sends them to all broadcast subscribers.
@@ -82,52 +87,12 @@ async fn websocket(stream: WebSocket, state: Arc<AppState>) {
             let msg_to_send = format!("{}:  {} ", name, text_from_chat.clone());
             let _ = tx.send(msg_to_send.clone());
 
-            // Create prompt
-            let prompt = format!(
-                "<s>[INST] Always respond with concise messages with correct grammar. Avoid html tags, garbled content, and words that run into one another. If you don't know the answer to a question say 'I don't know'.[/INST] {} </s>
-[INST] {} [/INST]",
-                conversation_history
-                    .iter()
-                    .rev()
-                    .take(2)
-                    .rev()
-                    .map(|x| x.to_string())
-                    .collect::<Vec<String>>()
-                    .join(" "),
-                text_from_chat.clone()
+            let bot_msg_to_send = create_bot_msg(
+                text_from_chat,
+                &mut conversation_history,
+                model_tokenizer_device.clone(),
+                inference_args,
             );
-
-            tracing::debug!("{}", prompt);
-
-            //
-            // Run Mistral
-            //
-            // Lock and unwrap Mutex args.
-            let model_args = state_cloned_for_model_args.model_args.lock().unwrap();
-            let inference_args = state_cloned_for_inference_args
-                .inference_args
-                .lock()
-                .unwrap();
-
-            let bot_response = mistral(prompt, &model_args, &inference_args)
-                .unwrap_or("Bot is away at the moment, try again later.".to_string());
-
-            // Parse Bot Response with Regex
-            let regex =
-                Regex::new(r"(\[INST\]|\[\/INST\]|\[inst\]|\[\/inst\])").expect("Invalid regex");
-            let split_bot_response = regex
-                .split(&bot_response)
-                .take(1)
-                .map(|x| x.to_string())
-                .collect::<Vec<String>>()
-                .join("");
-
-            // Send bot message and add to conversation_history
-            let bot_msg_to_send = format!("Bot: {}", split_bot_response.clone());
-
-            conversation_history.push(text_from_chat);
-            conversation_history.push(split_bot_response.clone());
-
             let _ = tx.send(bot_msg_to_send);
         }
     });
@@ -155,11 +120,4 @@ fn check_username(state: &AppState, string: &mut String, name: &str) {
 
         string.push_str(name);
     }
-}
-
-pub async fn websocket_handler(
-    ws: WebSocketUpgrade,
-    State(state): State<Arc<AppState>>,
-) -> impl IntoResponse {
-    ws.on_upgrade(|socket| websocket(socket, state))
 }

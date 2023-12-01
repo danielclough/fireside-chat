@@ -4,11 +4,18 @@ use web_sys::KeyboardEvent;
 
 #[component]
 fn WebSocket() -> impl IntoView {
+    // Load dotenv
+    dotenv::dotenv().ok();
     let (history, set_history) = create_signal(vec![]);
 
     fn update_history(&history: &WriteSignal<Vec<String>>, message: String) {
         let _ = &history.update(|history: &mut Vec<_>| history.push(message));
     }
+
+    // Instantiate addr websocket_server_address with .env or default values.
+    let ipv4 = std::env::var("IPV4").unwrap_or("127.0.0.1".to_string());
+    let port = std::env::var("PORT").unwrap_or("3000".to_string());
+    let websocket_server_address = format!("ws://{}:{}/websocket", ipv4, port);
 
     let UseWebsocketReturn {
         ready_state,
@@ -17,7 +24,7 @@ fn WebSocket() -> impl IntoView {
         open,
         close,
         ..
-    } = use_websocket("ws://localhost:3000/websocket");
+    } = use_websocket(&websocket_server_address);
 
     let input_element: NodeRef<Input> = create_node_ref();
     let input_str = "";
@@ -80,6 +87,7 @@ fn WebSocket() -> impl IntoView {
                 </div>
             </div>
             <div id="chatbox">
+            <hr />
                 <For
                     each=move || history.get().into_iter().enumerate()
                     key=|(index, _)| *index

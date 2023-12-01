@@ -1,17 +1,19 @@
 [package]
-name = "axum_mistral"
+name = "candle-chat-backend"
 version = "0.1.0"
 edition = "2021"
+description = "Backend for a pure Rust chat app using Axum Webhooks (multi-user), HuggingFace/Candle for LLM inference, and Leptos for a WASM frontend."
+license-file = "LICENSE"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 anyhow = { version = "1.0.75", features = ["backtrace"] }
-axum = { version = "0.6.20", features = ["ws"] }
-candle-core = { version = "0.3.1" }
+axum = { version = "0.6.20", features = ["ws", "macros"] }
+candle-core = { version = "0.3.1", features = ["cuda"] }
 candle-examples = "0.3.1"
 candle-nn = "0.3.1"
-candle-transformers = { version = "0.3.1" }
+candle-transformers = { version = "0.3.1", features = ["cuda"] }
 dotenv = "0.15.0"
 futures = "0.3.29"
 hf-hub = "0.3.2"
@@ -24,3 +26,4 @@ tower = { version = "0.4.13", features = ["util"] }
 tracing = "0.1.40"
 tracing-chrome = "0.7.1"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
+intel-mkl-src = { version = "0.8.1", features = ["mkl-static-lp64-iomp"] }

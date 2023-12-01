@@ -1,3 +1,6 @@
+#[cfg(feature = "mkl")]
+extern crate intel_mkl_src;
+
 use anyhow::{Error as E, Result};
 use candle_core::{DType, Device, Tensor};
 use candle_examples::token_output_stream::TokenOutputStream;
@@ -5,7 +8,7 @@ use candle_transformers::generation::LogitsProcessor;
 
 use tokenizers::tokenizer::Tokenizer;
 
-use super::config::Model;
+use super::load_model::Model;
 
 pub struct TextGeneration {
     model: Model,
@@ -19,23 +22,23 @@ pub struct TextGeneration {
 impl TextGeneration {
     #[allow(clippy::too_many_arguments)]
     pub fn new(
-        model: Model,
-        tokenizer: Tokenizer,
+        model: &Model,
+        tokenizer: &Tokenizer,
+        device: &Device,
         seed: u64,
         temp: Option<f64>,
         top_p: Option<f64>,
         repeat_penalty: f32,
         repeat_last_n: usize,
-        device: &Device,
     ) -> Self {
         let logits_processor = LogitsProcessor::new(seed, temp, top_p);
         Self {
-            model,
-            tokenizer: TokenOutputStream::new(tokenizer),
+            model: model.clone(),
+            tokenizer: TokenOutputStream::new(tokenizer.clone()),
+            device: device.clone(),
             logits_processor,
             repeat_penalty,
             repeat_last_n,
-            device: device.clone(),
         }
     }
 
