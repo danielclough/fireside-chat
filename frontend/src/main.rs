@@ -87,7 +87,6 @@ fn WebSocket() -> impl IntoView {
                 </div>
             </div>
             <div id="chatbox">
-            <hr />
                 <For
                     each=move || history.get().into_iter().enumerate()
                     key=|(index, _)| *index

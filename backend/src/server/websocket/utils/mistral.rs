@@ -9,29 +9,48 @@ pub fn create_bot_msg(
     model_tokenizer_device: ModelTokenizerDevice,
     inference_args: InferenceArgs,
 ) -> String {
-    // Create prompt
-    let prompt = format!(
-        "<s>[INST] Always respond with concise messages with correct grammar. Avoid html tags, garbled content, and words that run into one another. If you don't know the answer to a question say 'I don't know'.[/INST] {} </s>
-[INST] {} [/INST]",
-        conversation_history
-            .iter()
-            .rev()
-            .take(2)
-            .rev()
-            .map(|x| x.to_string())
-            .collect::<Vec<String>>()
-            .join(" "),
-        text_from_chat.clone()
-    );
+    let history_split = conversation_history
+        .iter()
+        .rev()
+        .take(2)
+        .rev()
+        .map(|x| x.to_string())
+        .collect::<Vec<String>>();
 
-    tracing::debug!("{}", prompt);
+    // Create prompt
+    let prompt_starter = "<s>[INST] Always respond with concise messages with correct grammar. Avoid html tags, garbled content, and words that run into one another. If you don't know the answer to a question say 'I don't know'.[/INST] Understood! I will always respond with concise messages and correct grammar. If I don't know the answer to a question, I will say 'I don't know'.</s>".to_string();
+
+    let prompt: String;
+
+    println!("{:?}", history_split);
+
+    if history_split.is_empty() {
+        prompt = format!(
+            "{}
+[INST] {} [/INST] ",
+            prompt_starter,
+            text_from_chat.clone()
+        )
+    } else {
+        prompt = format!(
+            "{} [INST] {} [/INST] {} 
+[INST] {} [/INST] ",
+            prompt_starter,
+            history_split[0],
+            history_split[1],
+            text_from_chat.clone()
+        );
+    };
+
+    println!("{}", prompt);
 
     // Produce response from Mistral
     let bot_response = mistral(prompt, &model_tokenizer_device, &inference_args)
         .unwrap_or("Bot is away at the moment, try again later.".to_string());
 
     // Parse Bot Response with Regex
-    let regex = Regex::new(r"(\[INST\]|\[\/INST\]|\[inst\]|\[\/inst\])").expect("Invalid regex");
+    let regex = Regex::new(r"(\[INST\]|\[\/INST\]|\[inst\]|\[\/inst\]|<\\s>|<\\S>|\\n)")
+        .expect("Invalid regex");
     let split_bot_response = regex
         .split(&bot_response)
         .take(1)

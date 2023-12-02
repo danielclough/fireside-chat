@@ -24,7 +24,7 @@ async fn websocket(stream: WebSocket, state: Arc<AppState>) {
     //
     // Mistral
     // Load unique conversation log per user.
-    let mut conversation_history: Vec<String> = vec!["Hello! How can I help you!".to_string()];
+    let mut conversation_history: Vec<String> = vec![];
 
     // By splitting, we can send and receive at the same time.
     let (mut sender, mut receiver) = stream.split();

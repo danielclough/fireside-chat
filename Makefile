@@ -24,12 +24,14 @@ init:
 
 dev:
 	cd backend && cargo watch -q -c -w src/ -x run &
-	cd frontend && trunk serve
+	cd frontend && trunk serve &
 
 prod:
 	cd backend && cargo run --release &
-	cd frontend && trunk serve --release 
+	cd frontend && trunk serve --release &
 
-stop:
-	@kill -9 $$(ps aux | grep target/debug/axum_mistral | xargs | cut -d ' ' -f 2) 2&> /dev/null
-	@kill -9 $$(ps aux | grep leptos_frontend | xargs | cut -d ' ' -f 2) 2&> /dev/null
+kill:
+	@kill -9 $$(ps aux | grep -v "grep" | grep "candle-chat" | xargs | cut -d ' ' -f 2) 2&1> /dev/null
+	@kill -9 $$(ps aux | grep -v "grep" | grep "candle-chat-backend" | xargs | cut -d ' ' -f 2) 2&1> /dev/null
+	@kill -9 $$(ps aux | grep -v "grep" | grep "cargo-watch" | xargs | cut -d ' ' -f 2) 2&1> /dev/null
+	@kill -9 $$(ps aux | grep -v "grep" | grep "cargo run" | xargs | cut -d ' ' -f 2) 2&1> /dev/null
