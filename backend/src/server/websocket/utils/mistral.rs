@@ -20,26 +20,24 @@ pub fn create_bot_msg(
     // Create prompt
     let prompt_starter = "<s>[INST] Always respond with concise messages with correct grammar. Avoid html tags, garbled content, and words that run into one another. If you don't know the answer to a question say 'I don't know'.[/INST] Understood! I will always respond with concise messages and correct grammar. If I don't know the answer to a question, I will say 'I don't know'.</s>".to_string();
 
-    let prompt: String;
-
     println!("{:?}", history_split);
 
-    if history_split.is_empty() {
-        prompt = format!(
+    let prompt = if history_split.is_empty() {
+        format!(
             "{}
 [INST] {} [/INST] ",
             prompt_starter,
             text_from_chat.clone()
         )
     } else {
-        prompt = format!(
+        format!(
             "{} [INST] {} [/INST] {} 
 [INST] {} [/INST] ",
             prompt_starter,
             history_split[0],
             history_split[1],
             text_from_chat.clone()
-        );
+        )
     };
 
     println!("{}", prompt);

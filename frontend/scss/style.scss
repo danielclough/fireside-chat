@@ -1,0 +1,15 @@
+@import "../generated/leptonic/leptonic-themes";
+
+[data-theme="light"] {
+    --brand-color: #e66956;
+
+    --drawer-background-color: none;
+    --drawer-box-shadow: none;
+}
+
+[data-theme="dark"] {
+    --brand-color: #e66956;
+
+    --drawer-background-color: none;
+    --drawer-box-shadow: none;
+}

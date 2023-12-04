@@ -11,7 +11,19 @@ license-file = "LICENSE"
 console_error_panic_hook = "0.1.7"
 console_log = "1.0.0"
 dotenv = "0.15.0"
-leptos = { version = "0.5.2", features = ["csr", "nightly"] }
+leptos = { version = "0.5.4", features = ["csr"] }
 leptos-use = "0.8.2"
 log = "0.4.20"
 web-sys = "0.3.65"
+leptonic = "0.3.0"
+leptos_icons = { version = "0.1.0", features = [
+    "BsGithub",
+    "BsList",
+    "BsThreeDots",
+    "BsPower",
+    "FaXmarkSolid",
+] }
+
+[build-dependencies]
+leptonic-theme = "0.3.0"
+leptos-tiptap-build = "0.2.4"
