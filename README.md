@@ -10,13 +10,32 @@ A multi-user chat bot implemented in pure Rust using [Mistral-7B](https://mistra
 >
 > I will be adding more model options soon-ish.
 
-## Setup
-
-This section will include simple instructions on setup, once I release binaries.
-
 ## Goals
 
 My primary goal is to showcase the awesome power and simplicity of HuggingFace/Candle.
+
+## Setup / Run
+
+### Debian/Ubuntu
+
+```sh
+# apt-get install
+# install rust if not available
+# install wasm target if not available
+# install trunk if not available
+# install cargo-watch if not available
+make init
+
+# run release binaries
+make prod
+
+# kill running processes
+make kill
+```
+
+`make prod` runs both Frontend (Leptos) and Backend (Axum) in with the `--release` flag.
+
+View `make help` to see all commands.
 
 ## Limitations
 
@@ -81,10 +100,3 @@ Since the frontend and backend are designed to run separately you must keep the 
 
 ## Development
 
-### Makefile
-
-If you are using Debian/Ubuntu you should be able to get up and running with a single `make init`.
-
-`make prod` runs both Frontend (Leptos) and Backend (Axum) in with the `--release` flag.
-
-View `make help` to see all commands.

@@ -7,18 +7,23 @@ help:
 	@echo "make stop\n\tKill running processes."
 
 init:
+# apt-get install
 	@sudo apt-get update && sudo apt-get install -y gcc build-essential libssl-dev pkg-config nvidia-cuda-toolkit;
-	@if ! command -v cargo &> /dev/null; then \
+# install rust if not available
+	@if ! command -v cargo; then \
 		curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh; \
 		. "$$HOME/.cargo/env"; \
-		rustup toolchain install nightly; \
-		rustup override set nightly; \
+	fi
+# install wasm target if not available
+	@if ! command -v rustup target list | grep "wasm32-unknown-unknown (installed)"; then \
 		rustup target add wasm32-unknown-unknown; \
 	fi
-	@if ! command -v trunk &> /dev/null; then \
+# install trunk if not available
+	@if ! command -v trunk; then \
 		cargo install trunk; \
 	fi
-	@if ! command -v cargo-watch &> /dev/null; then \
+# install cargo-watch if not available
+	@if ! command -v cargo-watch; then \
 		cargo install cargo-watch; \
 	fi
 
