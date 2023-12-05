@@ -3,7 +3,7 @@
 A multi-user chat bot implemented in pure Rust using [Mistral-7B](https://mistral.ai/news/announcing-mistral-7b/) with  [HuggingFace/Candle](https://github.com/huggingface/candle/) over [Axum](https://github.com/tokio-rs/axum) Websockets and a [Leptos](https://www.leptos.dev/) (Wasm) frontend!
 
 Watch the introduction video:
-![Watch the video](https://i9.ytimg.com/vi_webp/Jw1E3LnNG0o/mqdefault.webp?v=656ae3d8&sqp=CKiWuqsG&rs=AOn4CLCAvtmHYvP2ZsOMl7VzTrcih2MexA)
+[![Watch the video](https://img.youtube.com/vi/Jw1E3LnNG0o/0.jpg)](https://youtu.be/Jw1E3LnNG0o)
 
 > This project is a WIP.
 > The `main` branch should mostly work, but until I setup up automated testing I expect things to break without being caught.
