@@ -2,6 +2,9 @@
 
 A multi-user chat bot implemented in pure Rust using [Mistral-7B](https://mistral.ai/news/announcing-mistral-7b/) with  [HuggingFace/Candle](https://github.com/huggingface/candle/) over [Axum](https://github.com/tokio-rs/axum) Websockets and a [Leptos](https://www.leptos.dev/) (Wasm) frontend!
 
+Watch the introduction video:
+![Watch the video](https://i9.ytimg.com/vi_webp/Jw1E3LnNG0o/mqdefault.webp?v=656ae3d8&sqp=CKiWuqsG&rs=AOn4CLCAvtmHYvP2ZsOMl7VzTrcih2MexA)
+
 > This project is a WIP.
 > The `main` branch should mostly work, but until I setup up automated testing I expect things to break without being caught.
 > Sorry about that. 🤗
@@ -14,16 +17,25 @@ A multi-user chat bot implemented in pure Rust using [Mistral-7B](https://mistra
 
 My primary goal is to showcase the awesome power and simplicity of HuggingFace/Candle.
 
-## Setup / Run
+## Setup / Operation
 
 ### Debian/Ubuntu
 
 ```sh
-# apt-get install
-# install rust if not available
-# install wasm target if not available
-# install trunk if not available
-# install cargo-watch if not available
+# install make and git
+sudo apt-get install git make
+
+# clone with ssh
+git clone git@github.com:danielclough/candle_chat.git
+# or,
+# clone with https
+git clone https://github.com/danielclough/candle_chat.git
+
+# 0) apt-get install
+# 1) install rust if not available
+# 2) install wasm target if not available
+# 3) install trunk if not available
+# 4) install cargo-watch if not available
 make init
 
 # run release binaries
