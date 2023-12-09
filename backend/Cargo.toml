@@ -27,3 +27,7 @@ tracing = "0.1.40"
 tracing-chrome = "0.7.1"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 intel-mkl-src = { version = "0.8.1", features = ["mkl-static-lp64-iomp"] }
+tower-http = { version = "0.4.4", features = ["cors"] }
+http = "0.2.11"
+http-body-util = "0.1.0"
+gloo-net = { version = "0.5.0", features = ["json"] }

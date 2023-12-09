@@ -40,3 +40,4 @@ kill:
 	@kill -9 $$(ps aux | grep -v "grep" | grep "candle-chat-backend" | xargs | cut -d ' ' -f 2) 2&1> /dev/null
 	@kill -9 $$(ps aux | grep -v "grep" | grep "cargo-watch" | xargs | cut -d ' ' -f 2) 2&1> /dev/null
 	@kill -9 $$(ps aux | grep -v "grep" | grep "cargo run" | xargs | cut -d ' ' -f 2) 2&1> /dev/null
+	@kill -9 $$(ps aux | grep -v "grep" | grep "trunk serve" | xargs | cut -d ' ' -f 2) 2&1> /dev/null

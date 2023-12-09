@@ -1,7 +1,8 @@
 use leptonic::prelude::*;
 use leptos::*;
 
-use crate::components::sidebar::{inference::Inference, model::Model};
+// use crate::components::sidebar::{inference::Inference, model::Model};
+use crate::components::sidebar::inference::Inference;
 
 #[component]
 pub fn SideBar() -> impl IntoView {
@@ -15,6 +16,7 @@ pub fn SideBar() -> impl IntoView {
                     </CollapsibleBody>
                 </Collapsible>
 
+                // !!TODO!! - Requires a way to unload old model and load new model
                 // <Collapsible open=false>
                 //     <CollapsibleHeader slot>"Model Args"</CollapsibleHeader>
                 //     <CollapsibleBody slot>
