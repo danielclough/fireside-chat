@@ -59,13 +59,6 @@ pub fn Inference() -> impl IntoView {
     let repeat_last_n_string =
         Signal::derive(move || format!("{}", inference_args.get().repeat_last_n));
 
-    // // !!TODO!! Path from .env
-    let path = "http://127.0.0.1:3000/inference";
-    // // Instantiate addr websocket_server_address with .env or default values.
-    // let ipv4 = std::env::var("IPV4").unwrap_or("127.0.0.1".to_string());
-    // let port = std::env::var("PORT").unwrap_or("3000".to_string());
-    // let path_string = format!("http://{}:{}/inference", ipv4, port);
-
     // Set set_inference_args
     let set_args_for_form = async move |args: InferenceArgsForInput| {
         // Set InferenceArgs strut
@@ -81,6 +74,8 @@ pub fn Inference() -> impl IntoView {
     };
 
     let submit_args = create_action(async move |_| {
+        let path = get_path();
+
         // Args as individual vars
         let set_args_for_json = InferenceArgsForJson {
             temperature: temperature.get(),
@@ -91,7 +86,7 @@ pub fn Inference() -> impl IntoView {
             repeat_last_n: repeat_last_n.get() as usize,
         };
 
-        let resp = Request::patch(path)
+        let resp = Request::patch(&path)
             .header("Content-Type", "application/json")
             .json(&set_args_for_json)
             .unwrap()
@@ -104,7 +99,9 @@ pub fn Inference() -> impl IntoView {
 
     // !!FIX!! Running Twice
     let fetch_args = async move |_| {
-        let args = Request::get(path)
+        let path = get_path();
+
+        let args = Request::get(&path)
             .send()
             .await
             .unwrap()
@@ -172,4 +169,11 @@ pub fn Inference() -> impl IntoView {
             </Box>
         }.into_view()
     }}}
+}
+
+fn get_path() -> String {
+    // Instantiate addr websocket_server_address with .env or default values.
+    let ipv4 = std::env::var("IPV4").unwrap_or("127.0.0.1".to_string());
+    let port = std::env::var("PORT").unwrap_or("3000".to_string());
+    format!("http://{}:{}/inference", ipv4, port)
 }

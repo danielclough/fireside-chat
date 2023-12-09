@@ -55,10 +55,6 @@ In the future I may add a CLI tool for simplifying the setup experience.
 For now there will be two binaries in two project folders, one for the Frontend and one for the Backend.
 This layout is a consequence of Trunk not working well with workspaces ([Trunk Issue](https://github.com/thedodd/trunk/issues/575#issuecomment-1693471972)).
 
-### Known Issues
-
- - Use of .env is broken because of `/frontend/src/sidebar/inference` `line 63`.
-
 ## Backend (Axum)
 
 You can use yaml files to configure model and inference parameters, or use the defaults.
