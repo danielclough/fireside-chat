@@ -1,4 +1,4 @@
-use gloo_net::http::Request;
+use gloo_net::http::{Request, Response};
 use leptonic::prelude::*;
 use leptos::prelude::*;
 use leptos::*;
@@ -60,7 +60,7 @@ pub fn Inference() -> impl IntoView {
         Signal::derive(move || format!("{}", inference_args.get().repeat_last_n));
 
     // Set set_inference_args
-    let set_args_for_form = async move |args: InferenceArgsForInput| {
+    let set_args_for_form = move |args: InferenceArgsForInput| {
         // Set InferenceArgs strut
         set_inference_args.set(args);
 
@@ -73,9 +73,19 @@ pub fn Inference() -> impl IntoView {
         set_repeat_last_n.set(inference_args.get().repeat_last_n);
     };
 
-    let submit_args = create_action(async move |_| {
+    async fn patch_async(set_args_for_json: InferenceArgsForJson) -> Response {
         let path = get_path();
 
+        Request::patch(&path)
+            .header("Content-Type", "application/json")
+            .json(&set_args_for_json)
+            .unwrap()
+            .send()
+            .await
+            .unwrap()
+    }
+
+    let submit_args = create_action(move |_| {
         // Args as individual vars
         let set_args_for_json = InferenceArgsForJson {
             temperature: temperature.get(),
@@ -85,34 +95,30 @@ pub fn Inference() -> impl IntoView {
             repeat_penalty: repeat_penalty.get() as f32,
             repeat_last_n: repeat_last_n.get() as usize,
         };
+        let resp = patch_async(set_args_for_json);
 
-        let resp = Request::patch(&path)
-            .header("Content-Type", "application/json")
-            .json(&set_args_for_json)
-            .unwrap()
-            .send()
-            .await
-            .unwrap();
-
-        set_args_for_form(resp.json().await.unwrap()).await;
+        async move {
+            set_args_for_form(resp.await.json().await.unwrap());
+        }
     });
 
     // !!FIX!! Running Twice
-    let fetch_args = async move |_| {
+    let fetch_args = move |_| {
         let path = get_path();
 
-        let args = Request::get(&path)
-            .send()
-            .await
-            .unwrap()
-            .json()
-            .await
-            .unwrap();
+        async move {
+            let args = Request::get(&path)
+                .send()
+                .await
+                .unwrap()
+                .json()
+                .await
+                .unwrap();
 
-        set_args_for_form(args).await;
+            set_args_for_form(args);
+        }
     };
     let fetch_show = create_resource(move || inference_args.get(), fetch_args);
-
     view! {
         {move || match fetch_show.get() {
             None => view! { <p>"Loading..."</p> }.into_view(),

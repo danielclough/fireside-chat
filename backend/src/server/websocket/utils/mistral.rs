@@ -20,8 +20,6 @@ pub fn create_bot_msg(
     // Create prompt
     let prompt_starter = "<s>[INST] Always respond with concise messages with correct grammar. Avoid html tags, garbled content, and words that run into one another. If you don't know the answer to a question say 'I don't know'.[/INST] Understood! I will always respond with concise messages and correct grammar. If I don't know the answer to a question, I will say 'I don't know'.</s>".to_string();
 
-    println!("{:?}", history_split);
-
     let prompt = if history_split.is_empty() {
         format!(
             "{}
@@ -40,14 +38,14 @@ pub fn create_bot_msg(
         )
     };
 
-    println!("{}", prompt);
+    println!("\nPrompt:\n{}\n\n", prompt);
 
     // Produce response from Mistral
     let bot_response = mistral(prompt, &model_tokenizer_device, &inference_args)
         .unwrap_or("Bot is away at the moment, try again later.".to_string());
 
     // Parse Bot Response with Regex
-    let regex = Regex::new(r"(\[INST\]|\[\/INST\]|\[inst\]|\[\/inst\]|<\\s>|<\\S>|\\n)")
+    let regex = Regex::new(r"(\[INST\]|\[\/INST\]|\[inst\]|\[\/inst\]|<\/s>|<\/S>|\\n)")
         .expect("Invalid regex");
     let split_bot_response = regex
         .split(&bot_response)

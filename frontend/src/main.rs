@@ -1,4 +1,3 @@
-#![feature(async_closure)]
 use leptos::*;
 
 mod app;
