@@ -10,7 +10,6 @@ license-file = "LICENSE"
 [dependencies]
 console_error_panic_hook = "0.1.7"
 console_log = "1.0.0"
-dotenv = "0.15.0"
 leptos = { version = "0.5.4", features = ["csr"] }
 leptos-use = "0.8.2"
 log = "0.4.20"
@@ -26,6 +25,7 @@ leptos_icons = { version = "0.1.0", features = [
 gloo-net = "0.5.0"
 serde_json = "1.0.108"
 serde = { version = "1.0.193", features = ["derive"] }
+dotenv_codegen = "0.15.0"
 
 [build-dependencies]
 leptonic-theme = "0.3.0"

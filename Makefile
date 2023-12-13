@@ -26,6 +26,11 @@ init:
 	@if ! command -v cargo-watch; then \
 		cargo install cargo-watch; \
 	fi
+# create required frontend/.env file if not available
+	@if ! cat -v frontend/.env; then \
+		cp frontend/.env-example frontend/.env; \
+		echo "copied frontend/.env-example to frontend/.env"; \
+	fi
 
 dev:
 	cd backend && cargo watch -q -c -w src/ -x run &

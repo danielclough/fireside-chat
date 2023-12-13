@@ -36,6 +36,7 @@ git clone https://github.com/danielclough/candle_chat.git
 # 2) install wasm target if not available
 # 3) install trunk if not available
 # 4) install cargo-watch if not available
+# 5) cp .env-example to .env if not available
 make init
 
 # run release binaries
