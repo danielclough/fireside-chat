@@ -17,4 +17,4 @@ curl http://127.0.0.1:3000/model
 curl -X PATCH \
     http://127.0.0.1:3000/model \
     -H 'Content-Type: application/json' \
-    -d '{"model_id":"lmz/candle-mistral","revision":"main","tokenizer_file":null,"weight_files":null,"quantized":false,"use_flash_attn":false,"cpu":false}'
+    -d '{"repo_id":"DanielClough/Candle_Mistral-7B-Instruct-v0.1", "model_name":"Candle_Mistral-7B-Instruct-v0.1_q6k.gguf","revision":"main","tokenizer_file":null,"weight_files":null,"quantized":false,"use_flash_attn":false,"cpu":false}'

@@ -24,8 +24,10 @@ pub struct ModelTokenizerDevice {
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct LoadModel {
-    /// HuggingFace model Id
-    pub model_id: String,
+    /// HuggingFace repo Id
+    pub repo_id: String,
+    /// HuggingFace model name
+    pub model_name: String,
     /// HuggingFace model revision
     pub revision: String,
     /// Optional tokenizer file
@@ -54,13 +56,16 @@ impl LoadModel {
 
         let config_model_string = std::fs::read_to_string("./config_model.yaml");
         if config_model_string.is_ok() {
+            println!("Loading './config_model.yaml'");
             let unwrapped = &config_model_string.unwrap();
             serde_yaml::from_str(unwrapped.as_str()).unwrap()
         } else {
+            println!("Loading Default Config");
             LoadModel {
                 cpu: false,
                 use_flash_attn: false,
-                model_id: "lmz/candle-mistral".to_string(),
+                repo_id: "DanielClough/Candle_Mistral-7B-Instruct-v0.1".to_string(),
+                model_name: "Candle_Mistral-7B-Instruct-v0.1_q6k.gguf".to_string(),
                 revision: "main".to_string(),
                 tokenizer_file: None,
                 weight_files: None,
@@ -69,10 +74,11 @@ impl LoadModel {
         }
     }
     pub fn load(args: LoadModel) -> Result<ModelTokenizerDevice> {
+        println!("{:?}", args);
         let start = std::time::Instant::now();
         let api = Api::new()?;
         let repo = api.repo(Repo::with_revision(
-            args.model_id,
+            args.repo_id,
             RepoType::Model,
             args.revision,
         ));
@@ -87,7 +93,7 @@ impl LoadModel {
                 .collect::<Vec<_>>(),
             None => {
                 if args.quantized {
-                    vec![repo.get("model-q4k.gguf")?]
+                    vec![repo.get(&args.model_name)?]
                 } else {
                     vec![
                         repo.get("pytorch_model-00001-of-00002.safetensors")?,

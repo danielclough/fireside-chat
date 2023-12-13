@@ -1,6 +1,7 @@
 cpu: false
 use_flash_attn: false
-model_id: "lmz/candle-mistral"
+repo_id: "DanielClough/Candle_Mistral-7B-Instruct-v0.1"
+model_name: "Candle_Mistral-7B-Instruct-v0.1_q6k.gguf"
 revision: "main"
 tokenizer_file:
 weight_files:
