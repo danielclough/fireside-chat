@@ -36,6 +36,7 @@ git clone https://github.com/danielclough/candle_chat.git
 # 2) install wasm target if not available
 # 3) install trunk if not available
 # 4) install cargo-watch if not available
+# 5) cp .env-example to .env if not available
 make init
 
 # run release binaries
@@ -102,7 +103,6 @@ Here is a link to the [Trunk config on Github](https://github.com/thedodd/trunk/
 
 ### `.env` Config
 
-> use port 443 for tls
 Frontend server defaults to `127.0.0.1:8080`
 
 You can alter this by copying `/frontend/.env-example` to `/frontend/.env` and setting your desired config there.
