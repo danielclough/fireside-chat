@@ -5,6 +5,8 @@ use leptos::*;
 
 use serde::{Deserialize, Serialize};
 
+use crate::components::utils::get_path;
+
 #[derive(PartialEq, Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct InferenceArgsForInput {
     pub temperature: f64,
@@ -27,7 +29,6 @@ pub struct InferenceArgsForJson {
 
 #[component]
 pub fn Inference() -> impl IntoView {
-    dotenv::dotenv().ok();
     // f64 for input values
     let (inference_args, set_inference_args) = create_signal(InferenceArgsForInput {
         temperature: 0.0,
@@ -74,7 +75,7 @@ pub fn Inference() -> impl IntoView {
     };
 
     async fn patch_async(set_args_for_json: InferenceArgsForJson) -> Response {
-        let path = get_path();
+        let path = get_path("http");
 
         Request::patch(&path)
             .header("Content-Type", "application/json")
@@ -104,7 +105,7 @@ pub fn Inference() -> impl IntoView {
 
     // !!FIX!! Running Twice
     let fetch_args = move |_| {
-        let path = get_path();
+        let path = get_path("http");
 
         async move {
             let args = Request::get(&path)
@@ -175,11 +176,4 @@ pub fn Inference() -> impl IntoView {
             </Box>
         }.into_view()
     }}}
-}
-
-fn get_path() -> String {
-    // Instantiate addr websocket_server_address with .env or default values.
-    let ipv4 = std::env::var("IPV4").unwrap_or("127.0.0.1".to_string());
-    let port = std::env::var("PORT").unwrap_or("3000".to_string());
-    format!("http://{}:{}/inference", ipv4, port)
 }

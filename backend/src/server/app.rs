@@ -2,7 +2,6 @@ use axum::{routing::get, Router};
 use http::{header::CONTENT_TYPE, Method};
 use std::{
     collections::HashSet,
-    net::SocketAddr,
     sync::{Arc, Mutex},
 };
 use tokio::sync::broadcast;
@@ -23,7 +22,7 @@ use crate::server::websocket::utils::handler::websocket_handler;
 pub async fn start(
     model_tokenizer_device: Mutex<ModelTokenizerDevice>,
     inference_args: Mutex<InferenceArgs>,
-) {
+) -> Router {
     // Load dotenv
     dotenv::dotenv().ok();
 
@@ -45,22 +44,10 @@ pub async fn start(
     });
 
     // Instantiate new Router and serve.
-    let app = Router::new()
+    Router::new()
         .route("/websocket", get(websocket_handler))
         .route("/inference", get(get_inference).patch(update_inference))
         .route("/model", get(get_model_args).patch(update_model_args))
         .layer(cors)
-        .with_state(app_state);
-
-    // Instantiate addr websocket_server_address with .env or default values.
-    let ipv4 = std::env::var("IPV4").unwrap_or("127.0.0.1".to_string());
-    let port = std::env::var("PORT").unwrap_or("3000".to_string());
-    let websocket_server_address = format!("{}:{}", ipv4, port).parse::<SocketAddr>().unwrap();
-
-    // Serve
-    println!("listening on {}", websocket_server_address);
-    axum::Server::bind(&websocket_server_address)
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+        .with_state(app_state)
 }

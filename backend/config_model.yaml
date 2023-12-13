@@ -1,8 +1,8 @@
 cpu: false
 use_flash_attn: false
 repo_id: "DanielClough/Candle_Mistral-7B-Instruct-v0.1"
-model_name: "Candle_Mistral-7B-Instruct-v0.1_q6k.gguf"
+model_name: "Candle_Mistral-7B-Instruct-v0.1_q2k.gguf"
 revision: "main"
 tokenizer_file:
 weight_files:
-quantized: false
+quantized: true

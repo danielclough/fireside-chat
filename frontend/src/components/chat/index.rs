@@ -3,10 +3,11 @@ use leptos::{html::Input, *};
 use leptos_use::{core::ConnectionReadyState, use_websocket, UseWebsocketReturn};
 use web_sys::KeyboardEvent;
 
+use crate::components::utils::get_path;
+
 #[component]
 pub fn ChatBox() -> impl IntoView {
     // Load dotenv
-    dotenv::dotenv().ok();
     let (history, set_history) = create_signal(vec![]);
 
     fn update_history(&history: &WriteSignal<Vec<String>>, message: String) {
@@ -14,9 +15,7 @@ pub fn ChatBox() -> impl IntoView {
     }
 
     // Instantiate addr websocket_server_address with .env or default values.
-    let ipv4 = std::env::var("IPV4").unwrap_or("127.0.0.1".to_string());
-    let port = std::env::var("PORT").unwrap_or("3000".to_string());
-    let websocket_server_address = format!("ws://{}:{}/websocket", ipv4, port);
+    let websocket_server_address = get_path("ws");
 
     let UseWebsocketReturn {
         ready_state,

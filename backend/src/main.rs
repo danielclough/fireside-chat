@@ -6,8 +6,8 @@ use mistral::types::{inference_args::InferenceArgs, load_model::LoadModel};
 mod server;
 use server::app::start;
 
-#[tokio::main]
-async fn main() {
+#[shuttle_runtime::main]
+pub async fn axum() -> shuttle_axum::ShuttleAxum {
     // Load Mistral
     // Instantiate args for passing into AppState
     let model_tokenizer_device: Mutex<mistral::types::load_model::ModelTokenizerDevice> =
@@ -19,5 +19,5 @@ async fn main() {
     println!("Model Loaded!\n Starting Server!\n");
 
     // Start server
-    start(model_tokenizer_device, inference_args).await;
+    Ok(start(model_tokenizer_device, inference_args).await.into())
 }

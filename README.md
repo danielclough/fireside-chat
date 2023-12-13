@@ -102,6 +102,7 @@ Here is a link to the [Trunk config on Github](https://github.com/thedodd/trunk/
 
 ### `.env` Config
 
+> use port 443 for tls
 Frontend server defaults to `127.0.0.1:8080`
 
 You can alter this by copying `/frontend/.env-example` to `/frontend/.env` and setting your desired config there.
