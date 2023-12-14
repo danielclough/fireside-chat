@@ -87,7 +87,7 @@ cargo add candle-core -F "cuda"
 cargo add candle-transformers -F "cuda"
 ```
 
-## Frontend (Leptos)
+## Frontend
 
 Each user has their own chat history.
 
@@ -95,13 +95,27 @@ You can use the sidebar to adjust inference parameters.
 
 The Frontend is static for simple deployment on platforms such as Github Pages, or on a server with Trunk.
 
-## Trunk
+### Github Pages
+
+In your actions settings change "workflow permissions" to **read and write** in order to allow publishing by Github Actions.
+
+> Settings --> Actions --> general --> Workflow permissions
+
+https://github.com/<USERNAME>/candle_chat/settings/actions
+
+And in pages settings change "branch" to **gh-pages /(root)**
+
+https://github.com/<USERNAME>/candle_chat/settings/pages
+
+
+
+### Trunk
 
 This project serves static files with [Trunk](https://trunkrs.dev/).
 
 Here is a link to the [Trunk config on Github](https://github.com/thedodd/trunk/blob/master/Trunk.toml).
 
-### `.env` Config
+#### `.env` Config
 
 Frontend server defaults to `127.0.0.1:8080`
 
