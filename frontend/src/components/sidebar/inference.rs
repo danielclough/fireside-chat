@@ -125,42 +125,42 @@ pub fn Inference() -> impl IntoView {
             None => view! { <p>"Loading..."</p> }.into_view(),
             Some(_data) => view! {
             <Box class="api-box">
-                <P class="under-input">"Temperature: The temperature used to generate samples."</P>
+                <P class="above-input"><strong>"Temperature: "</strong> "The temperature used to generate samples."</P>
                 <NumberInput min=0.0 max=1.0 step=0.01
                     get=temperature
                     set=set_temperature
                 />
                 <P class="under-input">"Temperature is: " {move || temperature_string.get()}</P>
 
-                <P class="under-input">"Top_p: Nucleus sampling probability cutoff."</P>
+                <P class="above-input"><strong>"Top_p: "</strong> "Nucleus sampling probability cutoff."</P>
                 <NumberInput min=0.0 max=1.0 step=0.1
                     get=top_p
                     set=set_top_p
                 />
                 <P class="under-input">"Top_p is: " {move || top_p_string.get()}</P>
 
-                <P class="under-input">"Seed: The seed to use when generating random samples."</P>
+                <P class="above-input"><strong>"Seed: "</strong> "The seed to use when generating random samples."</P>
                 <NumberInput min=1.0 max=999999999.0 step=1.0
                     get=seed
                     set=set_seed
                 />
                 <P class="under-input">"Seed is: " {move || seed_string.get()}</P>
 
-                <P class="under-input">"Sample_len: The length of the sample to generate (in tokens)."</P>
+                <P class="above-input"><strong>"Sample_len: "</strong> "The length of the sample to generate (in tokens)."</P>
                 <NumberInput min=0.0 max=999.0 step=1.0
                     get=sample_len
                     set=set_sample_len
                 />
                 <P class="under-input">"Sample_len is: " {move || sample_len_string.get()}</P>
 
-                <P class="under-input">"Repeat_penalty: Penalty to be applied for repeating tokens, 1. means no penalty."</P>
+                <P class="above-input"><strong>"Repeat_penalty: "</strong> "Penalty to be applied for repeating tokens, 1. means no penalty."</P>
                 <NumberInput min=0.0 max=2.0 step=0.1
                     get=repeat_penalty
                     set=set_repeat_penalty
                 />
                 <P class="under-input">"Repeat_penalty is: " {move || repeat_penalty_string.get()}</P>
 
-                <P class="under-input">"Repeat_last_n: The context size to consider for the repeat penalty."</P>
+                <P class="above-input"><strong>"Repeat_last_n: "</strong> "The context size to consider for the repeat penalty."</P>
                 <NumberInput min=1.0 max=999.0 step=1.0
                     get=repeat_last_n
                     set=set_repeat_last_n

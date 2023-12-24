@@ -49,8 +49,9 @@ input {
     overflow-y: scroll;
     /* minus header and buttons */
     height: calc(100vh - 8.1rem);
-    color: #fff;
     padding: .25rem 1rem;
+    display: flex;
+    flex-direction: column;
 }
 
 #sidebar-container {
@@ -61,6 +62,7 @@ input {
     top: 0;
     left: 0;
     bottom: 0;
+    width: 90%;
     background-color: var(--brand-color);
     border-right: 1px solid gray;
 }
@@ -85,14 +87,19 @@ input {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    align-items: center;
     width: 100%;
     height: auto;
     padding: .25rem .5rem;
 }
 
+.above-input {
+    color: gray;
+    margin-bottom: 0;
+    font-style: italic;
+}
 .under-input {
     color: gray;
+    font-size: 75%;
     margin-top: 0;
     font-style: italic;
 }

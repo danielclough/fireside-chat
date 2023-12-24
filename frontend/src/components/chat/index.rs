@@ -12,6 +12,14 @@ pub fn ChatBox() -> impl IntoView {
 
     fn update_history(&history: &WriteSignal<Vec<String>>, message: String) {
         let _ = &history.update(|history: &mut Vec<_>| history.push(message));
+
+    }
+
+    fn scroll_down() {
+        let el = leptos_dom::document().get_element_by_id("chatbox");
+        if let Some(el) = el {
+            el.last_element_child().unwrap().scroll_into_view()
+        }
     }
 
     // Instantiate addr websocket_server_address with .env or default values.
@@ -51,17 +59,13 @@ pub fn ChatBox() -> impl IntoView {
             send(input_string.as_str());
             input_element.set_placeholder("Enter Prompt");
             input_element.set_value("");
-
-            let el = leptos_dom::document().get_element_by_id("chatbox");
-            if let Some(el) = el {
-                el.last_element_child().unwrap().scroll_into_view()
-            }
         }
     };
 
     create_effect(move |_| {
         if let Some(m) = message.get() {
             update_history(&set_history, format! {"{:?}", m});
+            scroll_down();
         };
     });
 
@@ -86,13 +90,13 @@ pub fn ChatBox() -> impl IntoView {
                     </button>
                 </div>
             </Box>
-            <div id="chatbox">
+            <div id="chatbox" >
                 <For
                     each=move || history.get().into_iter().enumerate()
                     key=|(index, _)| *index
                     let:item
                 >
-                    <div>{item.1}</div>
+                    <div>{item.1.replace("\\n","  ").replace("\\\"","'").replace("\"","")}</div>
                 </For>
             </div>
 
