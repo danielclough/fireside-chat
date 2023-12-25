@@ -14,6 +14,8 @@ pub struct InferenceArgs {
     pub repeat_penalty: f32,
     /// The context size to consider for the repeat penalty.
     pub repeat_last_n: usize,
+    /// Load context from backend/context/*
+    pub load_context: bool,
 }
 impl InferenceArgs {
     /// Default config to prevent failure.
@@ -33,6 +35,7 @@ impl InferenceArgs {
                 sample_len: 500,
                 repeat_penalty: 1.3,
                 repeat_last_n: 150,
+                load_context: false
             }
         }
     }

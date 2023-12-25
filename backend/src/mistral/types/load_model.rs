@@ -18,6 +18,7 @@ pub enum Model {
 #[derive(Clone, Debug)]
 pub struct ModelTokenizerDevice {
     pub model: Model,
+    pub model_config: Option<String>,
     pub tokenizer: Tokenizer,
     pub device: Device,
 }
@@ -28,6 +29,8 @@ pub struct LoadModel {
     pub repo_id: String,
     /// HuggingFace model name
     pub model_name: String,
+    /// Prompt Template (ChatML, MistralInstruct, Amazon, None)
+    pub model_config: Option<String>,
     /// HuggingFace model revision
     pub revision: String,
     /// Optional tokenizer file
@@ -66,6 +69,7 @@ impl LoadModel {
                 use_flash_attn: false,
                 repo_id: "DanielClough/Candle_Mistral-7B-Instruct-v0.1".to_string(),
                 model_name: "Candle_Mistral-7B-Instruct-v0.1_q6k.gguf".to_string(),
+                model_config: Some("MistralInstruct".to_string()),
                 revision: "main".to_string(),
                 tokenizer_file: None,
                 weight_files: None,
@@ -78,7 +82,7 @@ impl LoadModel {
         let start = std::time::Instant::now();
         let api = Api::new()?;
         let repo = api.repo(Repo::with_revision(
-            args.repo_id,
+            args.repo_id.clone(),
             RepoType::Model,
             args.revision,
         ));
@@ -95,10 +99,25 @@ impl LoadModel {
                 if args.quantized {
                     vec![repo.get(&args.model_name)?]
                 } else {
-                    vec![
-                        repo.get("pytorch_model-00001-of-00002.safetensors")?,
-                        repo.get("pytorch_model-00002-of-00002.safetensors")?,
-                    ]
+                    match args.repo_id.as_str() {
+                        "DanielClough/Candle_SOLAR-10.7B-Instruct-v1.0"
+                        | "DanielClough/Candle_SOLAR-10.7B-v1.0" => vec![
+                            repo.get("model-00001-of-00005.safetensors")?,
+                            repo.get("model-00002-of-00005.safetensors")?,
+                            repo.get("model-00003-of-00005.safetensors")?,
+                            repo.get("model-00004-of-00005.safetensors")?,
+                            repo.get("model-00005-of-00005.safetensors")?,
+                        ],
+                        "DanielClough/Candle_OrcaMini-3B" => vec![
+                            repo.get("model-00001-of-00003.safetensors")?,
+                            repo.get("model-00002-of-00003.safetensors")?,
+                            repo.get("model-00002-of-00003.safetensors")?,
+                        ],
+                        _ => vec![
+                            repo.get("model-00001-of-00002.safetensors")?,
+                            repo.get("model-00002-of-00002.safetensors")?,
+                        ],
+                    }
                 }
             }
         };
@@ -108,7 +127,19 @@ impl LoadModel {
         let tokenizer = Tokenizer::from_file(tokenizer_filename).map_err(E::msg)?;
 
         let start = std::time::Instant::now();
-        let config = Config::config_7b_v0_1(args.use_flash_attn);
+
+        let model_config = args.model_config.as_deref();
+        let config = match model_config {
+            Some("ChatML") =>
+                Config::config_chat_ml(args.use_flash_attn),
+            Some("Amazon") =>
+                Config::config_amazon_mistral_lite(args.use_flash_attn),
+            Some("SolarInstruct") | Some("Solar") =>
+                Config::config_upstage_solar(args.use_flash_attn),
+            _ =>
+                Config::config_7b_v0_1(args.use_flash_attn)
+        };
+
         let (model, device) = if args.quantized {
             let filename = &filenames[0];
             let vb = candle_transformers::quantized_var_builder::VarBuilder::from_gguf(filename)?;
@@ -134,6 +165,7 @@ impl LoadModel {
 
         let model_args_out = ModelTokenizerDevice {
             model,
+            model_config: args.model_config,
             tokenizer,
             device,
         };

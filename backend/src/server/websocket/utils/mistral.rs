@@ -1,6 +1,7 @@
 use crate::mistral::infer::mistral;
 use crate::mistral::types::inference_args::InferenceArgs;
 use crate::mistral::types::load_model::ModelTokenizerDevice;
+use crate::mistral::types::prompt_template::TemplateGenerator;
 use regex::Regex;
 
 pub fn create_bot_msg(
@@ -18,25 +19,7 @@ pub fn create_bot_msg(
         .collect::<Vec<String>>();
 
     // Create prompt
-    let prompt_starter = "<s>[INST] Always respond with concise messages with correct grammar. Avoid html tags, garbled content, and words that run into one another. If you don't know the answer to a question say 'I don't know'.[/INST] Understood! I will always respond with concise messages and correct grammar. If I don't know the answer to a question, I will say 'I don't know'.</s>".to_string();
-
-    let prompt = if history_split.is_empty() {
-        format!(
-            "{}
-[INST] {} [/INST] ",
-            prompt_starter,
-            text_from_chat.clone()
-        )
-    } else {
-        format!(
-            "{} [INST] {} [/INST] {} 
-[INST] {} [/INST] ",
-            prompt_starter,
-            history_split[0],
-            history_split[1],
-            text_from_chat.clone()
-        )
-    };
+    let prompt = TemplateGenerator::generate(&text_from_chat, history_split, &model_tokenizer_device.model_config, inference_args.load_context);
 
     println!("\nPrompt:\n{}\n\n", prompt);
 
@@ -45,7 +28,7 @@ pub fn create_bot_msg(
         .unwrap_or("Bot is away at the moment, try again later.".to_string());
 
     // Parse Bot Response with Regex
-    let regex = Regex::new(r"(\[INST\]|\[\/INST\]|\[inst\]|\[\/inst\]|<\/s>|<\/S>|\\n)")
+    let regex = Regex::new(r"(<\|im_end\|>|<\|/im_end\|>|\|im_end\||<\||assistant\n|\[INST\]|\[\/INST\]|\[inst\]|\[\/inst\]|<\/s>|<\/S>|\n\n### User:)")
         .expect("Invalid regex");
     let split_bot_response = regex
         .split(&bot_response)
@@ -59,5 +42,5 @@ pub fn create_bot_msg(
     conversation_history.push(split_bot_response.clone());
 
     // Send bot message
-    format!("Bot: {}", split_bot_response.clone())
+    format!("{}", split_bot_response.clone())
 }

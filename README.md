@@ -8,10 +8,6 @@ Watch the introduction video:
 > This project is a WIP.
 > The `main` branch should mostly work, but until I setup up automated testing I expect things to break without being caught.
 > Sorry about that. 🤗
->
-> I am pretty busy through the holiday season, but I hope to have more time to play with this project in the new year.
->
-> I will be adding more model options soon-ish.
 
 ## Goals
 
@@ -73,6 +69,8 @@ Default inference options can be configured with `/backend/config_inference.yaml
 ### Model Config
 
 Default model options can be configured with `/backend/config_model.yaml`.
+
+See [README-MODEL.md](https://github.com/danielclough/candle_chat/blob/main/README-MODEL.md).
 
 ### Cuda
 

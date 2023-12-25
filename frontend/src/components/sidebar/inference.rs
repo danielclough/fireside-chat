@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::components::utils::get_path;
 
-#[derive(PartialEq, Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(PartialEq, Debug, Clone, Serialize, Deserialize)]
 pub struct InferenceArgsForInput {
     pub temperature: f64,
     pub top_p: f64,
@@ -15,6 +15,7 @@ pub struct InferenceArgsForInput {
     pub sample_len: f64,
     pub repeat_penalty: f64,
     pub repeat_last_n: f64,
+    pub load_context: bool,
 }
 
 #[derive(PartialEq, Debug, Clone, Copy, Serialize, Deserialize)]
@@ -25,6 +26,14 @@ pub struct InferenceArgsForJson {
     pub sample_len: usize,
     pub repeat_penalty: f32,
     pub repeat_last_n: usize,
+    pub load_context: bool,
+}
+
+// Load context from backend/context/*
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+enum LoadContext {
+    True,
+    False
 }
 
 #[component]
@@ -37,6 +46,7 @@ pub fn Inference() -> impl IntoView {
         sample_len: 0.0,
         repeat_penalty: 0.0,
         repeat_last_n: 0.0,
+        load_context: false,
     });
 
     let (temperature, set_temperature) = create_signal(0.0);
@@ -60,6 +70,10 @@ pub fn Inference() -> impl IntoView {
     let repeat_last_n_string =
         Signal::derive(move || format!("{}", inference_args.get().repeat_last_n));
 
+    let (load_context, set_load_context) = create_signal(LoadContext::False);
+    let load_context_enum =
+        Signal::derive(move || if inference_args.get().load_context == true {LoadContext::True} else {LoadContext::False} );
+
     // Set set_inference_args
     let set_args_for_form = move |args: InferenceArgsForInput| {
         // Set InferenceArgs strut
@@ -72,6 +86,9 @@ pub fn Inference() -> impl IntoView {
         set_sample_len.set(inference_args.get().sample_len);
         set_repeat_penalty.set(inference_args.get().repeat_penalty);
         set_repeat_last_n.set(inference_args.get().repeat_last_n);
+        // Bool to Enum
+        let load_context_value = if inference_args.get().load_context == true {LoadContext::True} else {LoadContext::False};
+        set_load_context.set(load_context_value);
     };
 
     async fn patch_async(set_args_for_json: InferenceArgsForJson) -> Response {
@@ -87,6 +104,11 @@ pub fn Inference() -> impl IntoView {
     }
 
     let submit_args = create_action(move |_| {
+        let load_context = if load_context.get() == LoadContext::True {
+            true
+        } else {
+            false
+        };
         // Args as individual vars
         let set_args_for_json = InferenceArgsForJson {
             temperature: temperature.get(),
@@ -95,6 +117,7 @@ pub fn Inference() -> impl IntoView {
             sample_len: sample_len.get() as usize,
             repeat_penalty: repeat_penalty.get() as f32,
             repeat_last_n: repeat_last_n.get() as usize,
+            load_context,
         };
         let resp = patch_async(set_args_for_json);
 
@@ -166,6 +189,17 @@ pub fn Inference() -> impl IntoView {
                     set=set_repeat_last_n
                 />
                 <P class="under-input">"Repeat_last_n is: " {move || repeat_last_n_string.get()}</P>
+
+                <P class="above-input"><strong>"Load_context: "</strong> "Load context from backend/context/*"</P>
+                <Select
+                    options=vec![LoadContext::True, LoadContext::False]
+                    search_text_provider=move |o| format!("{:?}", o)
+                    render_option=move |o| format!("{o:?}")
+                    selected=load_context
+                    set_selected=move |v| set_load_context.set(v)
+                />
+                <P class="under-input">"Load_context is: " {move || format!("{:?}", load_context_enum.get())}</P>
+                
 
                 <form on:submit= move |ev| {
                     ev.prevent_default();

@@ -27,6 +27,7 @@ async fn websocket(stream: WebSocket, state: Arc<AppState>) {
     let mut conversation_history: Vec<String> = vec![];
 
     // By splitting, we can send and receive at the same time.
+    // !!TODO!! Setup MPSC
     let (mut sender, mut receiver) = stream.split();
 
     // Username gets set in the receive loop, if it's valid.
@@ -66,12 +67,12 @@ async fn websocket(stream: WebSocket, state: Arc<AppState>) {
         while let Ok(msg) = rx.recv().await {
             // In any websocket error, break loop.
 
-            if sender.send(Message::Text(msg)).await.is_err() {
+            if sender.send(Message::Text(msg.clone())).await.is_err() {
                 break;
             }
         }
     });
-
+    
     // Clone things we want to pass (move) to the receiving task.
     let tx = state.tx.clone();
     let name = username.clone();
@@ -84,15 +85,17 @@ async fn websocket(stream: WebSocket, state: Arc<AppState>) {
     let mut recv_task = tokio::spawn(async move {
         while let Some(Ok(Message::Text(text_from_chat))) = receiver.next().await {
             // Add username before message and send on websocket.
-            let msg_to_send = format!("{}:  {} ", name, text_from_chat.clone());
-            let _ = tx.send(msg_to_send.clone());
+            let msg_to_send = format!("{}:  {} ", name.clone(), text_from_chat);
+            let _ = tx.clone().send(msg_to_send.clone());
 
-            let bot_msg_to_send = create_bot_msg(
+            // Process bot message and send on websocket.
+            let bot_msg = create_bot_msg(
                 text_from_chat,
                 &mut conversation_history,
                 model_tokenizer_device.clone(),
                 inference_args,
             );
+            let bot_msg_to_send = format!("Bot: {}, {}",name, bot_msg);
             let _ = tx.send(bot_msg_to_send);
         }
     });
