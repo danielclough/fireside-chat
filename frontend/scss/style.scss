@@ -1,15 +1,34 @@
 @import "../generated/leptonic/leptonic-themes";
 
-[data-theme="light"] {
-    --brand-color: #e66956;
+:root {
+    --theme-blue: #0000ff;
+    --theme-dark-orange: #fc9502;
+    --theme-light-orange: #fd8205;
+    --theme-yellow: #fce202;
+}
 
-    --drawer-background-color: none;
-    --drawer-box-shadow: none;
+[data-theme="light"] {
+    --tertiary-background: #fff;
+    --tertiary-text: #333;
+    --secondary-background: #ddd;
+    --secondary-text: #000;
+    --secondary-link: var(--theme-blue);
+    --highlight-subtle: rgba(0,0,0,0.1);
+
+    --chat-user-background:#adc4f6; 
+    --chat-bot-background:#fff;
 }
 
 [data-theme="dark"] {
-    --brand-color: #e66956;
+    --tertiary-background: #111;
+    --tertiary-text: #eee;
+    --secondary-background: #333;
+    --secondary-text: #fff;
+    --secondary-link: var(--theme-dark-orange);
+    --highlight-subtle: rgba(175,175,175,0.1);
 
-    --drawer-background-color: none;
-    --drawer-box-shadow: none;
+    --chat-user-background: #175def;
+    --chat-bot-background: #3b3b3b;
 }
+
+

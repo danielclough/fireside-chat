@@ -1,6 +1,13 @@
 **/.env
 
+**/tmp
 **/target
 **/dist
-
+**/generated
 **/Cargo.lock
+
+**/sqlite.*
+
+**/generated/leptonic
+
+**/coverage
