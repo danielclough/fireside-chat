@@ -1,23 +1,38 @@
 use crate::components::sidebar::model_config::model_list_chip::ModelListChip;
 use crate::components::sidebar::model_config::model_list_item::ModelListItem;
 use common::llm::model_list::ModelDLList;
-use leptonic::prelude::*;
+use leptonic::{
+    grid::{Grid, Row},
+    typography::H1,
+    Size,
+};
 use leptos::*;
 
 #[component]
 pub fn ModelListGrid(
-    model_list_signal: ReadSignal<ModelDLList>,
+    model_list: ReadSignal<ModelDLList>,
     tags_all: ReadSignal<Vec<String>>,
-    tags_enabled: ReadSignal<Vec<String>>,
-    set_tags_enabled: WriteSignal<Vec<String>>,
-    all_enabled: ReadSignal<bool>,
     ipv4: Signal<String>,
     template_current: ReadSignal<String>,
     repo_id: ReadSignal<String>,
     quantized_current: ReadSignal<bool>,
     quantized: bool,
     gpu_type: Signal<String>,
+    q_lvl: ReadSignal<String>,
 ) -> impl IntoView {
+    let (tags_enabled, set_tags_enabled) = create_signal::<Vec<String>>({
+        let mut list = tags_all.get()[1..tags_all.get().len()].to_owned();
+        if quantized {
+            list.retain(|x| x != "safetensors")
+        } else {
+            list.retain(|x| x != "gguf")
+        };
+        list
+    });
+
+    let (all_enabled, _set_all_enabled) =
+        create_signal::<bool>(tags_all.get().len() == tags_enabled.get().len());
+
     view! {
         <Grid style="padding:1rem;" spacing=Size::Em(0.6)>
             <H1 style="width:100%;padding:0.25rem;text-align:center;box-shadow:2px 2px 8px #000;">
@@ -42,7 +57,7 @@ pub fn ModelListGrid(
 
             <Row>
                 <For
-                    each=move || model_list_signal.get().list.clone()
+                    each=move || model_list.get().list.clone()
                     key=|list| list.clone()
                     let:item
                 >
@@ -55,6 +70,7 @@ pub fn ModelListGrid(
                         quantized=quantized
                         tags_enabled=tags_enabled
                         gpu_type=gpu_type
+                        q_lvl=q_lvl
                     />
                 </For>
             </Row>

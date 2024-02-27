@@ -77,7 +77,7 @@ list:
     base: mistral
     template:
     n_safetensors: 2
-    tags: gguf,safetensors,
+    tags:
   -
     name: MistralLite
     repo_id: DanielClough/Candle_MistralLite
@@ -147,14 +147,14 @@ list:
     template: PhiCode, PhiChat, PhiQA
     base: phi
     n_safetensors: 2
-    tags: gguf,safetensors,code,
+    tags: safetensors,code,
   -
     name: phi-2_old
     repo_id: DanielClough/Candle_phi-2_old
     template: PhiCode, PhiChat, PhiQA
     base: phi
     n_safetensors: 2
-    tags: gguf,safetensors,code,
+    tags: safetensors,code,
   -
     name: Puffin-Phi-v2
     repo_id: DanielClough/Candle_Puffin-Phi-v2

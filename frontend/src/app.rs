@@ -8,7 +8,11 @@ use crate::functions::rest::{
 use common::database::user::UserForJson;
 use common::llm::inference::InferenceArgsForInput;
 use common::llm::model_list::ModelArgs;
-use leptonic::prelude::*;
+use leptonic::{
+    drawer::{Drawer, DrawerSide},
+    root::Root,
+    {prelude::Box, theme::LeptonicTheme},
+};
 use leptos::*;
 use leptos_use::storage::use_local_storage;
 use leptos_use::utils::JsonCodec;
@@ -111,7 +115,7 @@ pub fn App() -> impl IntoView {
 
                                     <Drawer
                                         id="sidebar-container"
-                                        side=DrawerSide::Left
+                                        side=DrawerSide::Right
                                         shown=drawer_state
                                     >
                                         <SideBar

@@ -6,7 +6,13 @@ use common::{
     },
     llm::{inference::InferenceArgsForInput, model_list::{ModelArgs, ModelDLList}},
 };
-use leptonic::prelude::*;
+use leptonic::{{
+    prelude::Box,
+    stack::Stack,
+    typography::{H2, H3, H4},
+},
+Size,
+};
 use leptos::*;
 
 use crate::{components::home::{init_model::InitModelModal, init_user::InitUserModal}, functions::rest::conversation::get_conversations_by_user_id};
@@ -29,6 +35,7 @@ pub fn Home(
             get_conversations_by_user_id(user.get().id).await
         },
     );
+    let (model_args_signal, set_model_args_signal) = create_signal(model_args.clone());
     let (show_user_init_modal, set_show_user_init_modal) = create_signal(user.get().name == "None".to_string() || user.get().name.len() < 2);
     let (show_model_init_modal, _set_show_model_init_modal) = create_signal(model_args.clone().template == Some("NoModel".to_string()));
 
@@ -36,7 +43,7 @@ pub fn Home(
     view! {
         <Box class="outer-container">
             <InitModelModal
-                model_args=model_args.clone()
+                model_args=model_args_signal.get()
                 model_list=model_list
                 ipv4=ipv4
                 show_when=show_model_init_modal
@@ -90,45 +97,82 @@ pub fn Home(
                         <p>"Do something nice for yourself, or someone else."</p>
                     </Box>
                 </article>
-                <aside class="args-area">
-                    <H3>"User Parameters"</H3>
+                <Box class="args-area">
+                    <H3>"Overview"</H3>
                     <ul>
-                        <li>"Username: " {user.get().name}</li>
+                        <H4>"User: "
+                            <code>
+                                {user.get().name}
+                            </code>
+                        </H4>
+                        <H4>"Role: "
+                            <code>
+                                {if inference_args.get().role.is_empty() {"None".to_string()} else {inference_args.get().role}}
+                            </code>
+                        </H4>
                     </ul>
-                    <H3>"Model Parameters"</H3>
+                    <H3>"Model"</H3>
                     <ul>
                         <li>
-                            "repo_id: "
-                            {if model_args.template == Some("NoModel".to_string()) {
-                                "None".to_string()
-                            } else {
-                                model_args.repo_id
-                            }}
-
+                            <code>
+                                {model_args_signal.get().repo_id}
+                            </code>
                         </li>
-                        <li>"q_lvl: " {model_args.q_lvl}</li>
-                        <li>"revision: " {model_args.revision}</li>
-                        <li>tokenizer_file: {model_args.tokenizer_file}</li>
-                        <li>weight_file: {model_args.weight_file}</li>
-                        <li>"quantized: " {model_args.quantized}</li>
-                        <li>"use_flash_attn: " {model_args.use_flash_attn}</li>
-                        <li>"template: " {model_args.template}</li>
+                        <Show when= move || model_args_signal.get().quantized
+                            fallback= move || view! {
+                                <li>"cpu: "
+                                    <code>
+                                        {model_args_signal.get().cpu}
+                                    </code>
+                                </li>
+                            }
+                        >
+                            <li>"Quantization: " 
+                                <code>
+                                    {model_args_signal.get().q_lvl}
+                                </code>
+                            </li>
+                        </Show>
+                        <li>"revision: "
+                        <code>
+                            {model_args_signal.get().revision}
+                        </code>
+                        </li>
+                        <Show when= move || model_args_signal.get().tokenizer_file.is_some()>
+                            <li>tokenizer_file:
+                                <code>
+                                    {model_args_signal.get().tokenizer_file}
+                                </code>
+                            </li>
+                        </Show>
+                        <Show when= move || model_args_signal.get().weight_file.is_some()>
+                            <li>weight_file:
+                                <code>
+                                    {model_args_signal.get().weight_file}
+                                </code>
+                            </li>
+                        </Show>
+
+                        <Show when= move || model_args_signal.get().use_flash_attn>
+                            <li>"Using Flash Attention!"</li>
+                        </Show>
+                        <li>"template: "
+                            <code>
+                                {model_args_signal.get().template}
+                            </code>
+                        </li>
                     </ul>
 
-                    <H3>"Inference Parameters"</H3>
+                    <H3>"Inference"</H3>
                     <ul>
-                        <li>"role: " {inference_args.get().role}</li>
-                        <li>"temperature: " {inference_args.get().temperature}</li>
-                        <li>"top_p: " {inference_args.get().top_p}</li>
-                        <li>"seed: " {inference_args.get().seed}</li>
-                        <li>"sample_len: " {inference_args.get().sample_len}</li>
-                        <li>"repeat_penalty: " {inference_args.get().repeat_penalty}</li>
-                        <li>"repeat_last_n: " {inference_args.get().repeat_last_n}</li>
                         <li>
-                            "load_context: " {format!("{:?}", inference_args.get().load_context)}
+                            "txt / pdf directory: "
+                            <code>
+                                {format!("{:?}", inference_args.get().load_context)}
+                            </code>
                         </li>
                     </ul>
-                </aside>
+                </Box>
                 <Box class="conversation-area">
                     <H3>Conversations</H3>
                     <Stack style="justify-content: start;align-items:start;" spacing=Size::Em(0.6)>

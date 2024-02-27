@@ -1,29 +1,26 @@
-use leptonic::prelude::*;
+use leptonic::select::Select;
 use leptos::*;
 
 #[component]
 pub fn GpuSelect(
-    quantized: bool,
     gpu_type: Signal<String>,
     set_gpu_type: WriteSignal<String>,
+    set_repo_id_signal: WriteSignal<String>,
 ) -> impl IntoView {
     let gpu_for_select = vec!["None".to_string(), "CUDA".to_string(), "Mac".to_string(), "Intel".to_string(), "AMD".to_string()];
+    let init_type = gpu_type.get();
     view! {
-        <span>"GPU Type: "</span>
+        <span>"Use GPU? "</span>
         <Select
             options=gpu_for_select.clone()
             search_text_provider=move |o: String| format!("{:?}", o)
             render_option=move |o: String| {
-                if o == "".to_string() || o == "None".to_string() {
-                    "None (gpu: ❌)".to_string()
-                } else if quantized == true && o == "Mac".to_string() {
+                if o == "Mac".to_string() || o == "CUDA".to_string() {
+                    if o != init_type {set_repo_id_signal.set("NoModel".to_string())};
                     format!("{} (gpu: ✅)", o)
-                } else if o == "None".to_string() {
-                    format!("{} (gpu: ❌)", o)
-                } else if quantized == true && o != "Mac".to_string() {
-                    format!("{} (gpu: ❌)", o)
                 } else {
-                    format!("{} (gpu: ✅)", o)
+                    if o != init_type {set_repo_id_signal.set("NoModel".to_string())};
+                    format!("{} (gpu: ❌)", o)
                 }
             }
 
