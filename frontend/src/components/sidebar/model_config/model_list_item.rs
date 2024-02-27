@@ -1,5 +1,11 @@
 use common::llm::model_list::{ModelArgs, ModelDLListEntry};
-use leptonic::prelude::*;
+use leptonic::{
+    grid::Col,
+    icon::Icon,
+    prelude::Box,
+    progress_bar::ProgressBar,
+    select::Select,
+};
 use leptos::{html::Input, *};
 
 use crate::functions::rest::llm::{model_download, model_update};
@@ -8,6 +14,7 @@ use crate::functions::rest::llm::{model_download, model_update};
 pub fn ModelListItem(
     ipv4: Signal<String>,
     item: ModelDLListEntry,
+    q_lvl: ReadSignal<String>,
     repo_id: String,
     quantized: bool,
     quantized_current: bool,
@@ -32,18 +39,16 @@ pub fn ModelListItem(
     let (tokenizer_file, set_tokenizer_file) = create_signal(String::new());
     let (weight_file, set_weight_file) = create_signal(String::new());
     let (use_flash_attn, set_use_flash_attn) = create_signal(false);
+    let check_cuda_or_mac = gpu_type.get() == "Mac" || gpu_type.get() == "CUDA";
     let (cpu, set_cpu) = create_signal({
         if gpu_type.get() == "None" {
             true
-        } else if gpu_type.get() == "Mac" {
+        } else if check_cuda_or_mac && quantized.get() {
             false
-        } else if gpu_type.get() != "Mac" && quantized.get() {
-            true
         } else {
-            false
+            true
         }
     });
-    let (q_lvl, set_q_lvl) = create_signal("q2k".to_string());
 
     let (name_signal, _set_name_signal) = create_signal(item.clone().name);
     let (base_signal, _set_base_signal) = create_signal(item.clone().base.to_ascii_uppercase());
@@ -92,21 +97,18 @@ pub fn ModelListItem(
         // Set ModelArgs strut
         set_model_args.set(args);
 
-        // FIX CPU == QUANTIZED (for mac)
         // Args as individual vars
         set_current_repo_id.set(current_repo_id.get());
-        set_q_lvl.set(q_lvl.get());
         set_model_config.set(model_config.get());
         set_revision.set(revision.get());
         set_tokenizer_file.set(tokenizer_file.get());
         set_weight_file.set(weight_file.get());
         set_quantized.set(quantized.get());
-        set_cpu.set(quantized.get());
+        set_cpu.set(cpu.get());
         set_use_flash_attn.set(use_flash_attn.get());
     };
 
     let submit = create_action(move |_| {
-        // FIX CPU == QUANTIZED (for mac)
         // Args as individual vars
         let set_args_for_json = ModelArgs {
             repo_id: current_repo_id.get().to_string(),

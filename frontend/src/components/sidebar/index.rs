@@ -7,7 +7,7 @@ use crate::functions::rest::role::get_role_list;
 use common::database::user::UserForJson;
 use common::llm::inference::InferenceArgsForInput;
 use common::llm::model_list::{ModelArgs, ModelDLList};
-use leptonic::prelude::*;
+use leptonic::{prelude::Box, tab::Tab, tabs::Tabs, Mount};
 use leptos::*;
 
 #[component]
@@ -48,8 +48,8 @@ pub fn SideBar(
                 <Box style="width:100%">
                     <ModelConfig
                         ipv4=ipv4
-                        model_list=model_list_signal.get()
-                        model_args=model_args_signal.get()
+                        model_list=model_list_signal
+                        model_args=model_args_signal
                         gpu_type=gpu_type
                         set_gpu_type=set_gpu_type
                     />

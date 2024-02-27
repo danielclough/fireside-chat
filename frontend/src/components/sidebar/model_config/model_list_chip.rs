@@ -1,4 +1,7 @@
-use leptonic::prelude::*;
+use leptonic::{
+    button::Button,
+    chip::{Chip, ChipColor},
+};
 use leptos::*;
 
 #[component]

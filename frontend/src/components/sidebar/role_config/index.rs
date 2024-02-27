@@ -1,6 +1,9 @@
 use super::role_list_tab::RoleListTab;
 use common::llm::{inference::InferenceArgsForInput, role_list::RoleList};
-use leptonic::prelude::*;
+use leptonic::{
+    tab::Tab,
+    tabs::Tabs, Mount,
+};
 use leptos::*;
 
 #[component]

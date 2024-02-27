@@ -128,7 +128,7 @@ input {
   top: 0;
   left: 0;
   bottom: 0;
-  width: 90%;
+  width: 100%;
   background-color: var(--secondary-background);
   border-right: 1px solid gray;
 }
@@ -174,12 +174,25 @@ blockquote h2 {
   height: 100%;
 } */
 
+.args-area {
+  background: var(--secondary-background);
+  color: var(--secondary-text);
+  padding: .5rem;
+}
+
 .args-area h3 {
   margin-bottom: 0;
 }
 .args-area ul {
   margin-top: .2rem;
 }
+
+.args-area code {
+  background-color: #222;
+  padding: .2rem .4rem;
+  border-radius: .25rem;
+}
+
 
 .wrapper {
   display: grid;

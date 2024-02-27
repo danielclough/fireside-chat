@@ -1,5 +1,5 @@
 use common::database::user::UserForJson;
-use leptonic::prelude::*;
+use leptonic::typography::{H2, P};
 use leptos::{html::Input, *};
 use web_sys::KeyboardEvent;
 

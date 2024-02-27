@@ -1,5 +1,4 @@
 use leptonic::collapsible::{Collapsible, CollapsibleBody, CollapsibleHeader};
-// use leptonic::prelude::*;
 use common::llm::{
     inference::{InferenceArgsForInput, InferenceArgsForJson},
     role_list::RoleListEntry,

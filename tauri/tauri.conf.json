@@ -1,7 +1,7 @@
 {
   "package": {
     "productName": "Fireside Chat",
-    "version": "0.1.0-beta5"
+    "version": "0.1.0-beta6"
   },
   "build": {
     "beforeDevCommand": "cd frontend && trunk serve",
@@ -43,13 +43,19 @@
         "files": {}
       },
       "macOS": {
-        "frameworks": [],
+        "frameworks": [
+          "aarch64-apple-darwin",
+          "x86_64-apple-darwin"
+        ],
         "exceptionDomain": "localhost",
         "signingIdentity": null,
         "providerShortName": null,
         "entitlements": null
       },
       "windows": {
+        "webviewInstallMode": {
+          "type": "offlineInstaller"
+        },
         "certificateThumbprint": null,
         "digestAlgorithm": "sha256",
         "timestampUrl": ""
@@ -62,7 +68,7 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "Fireside Chat",
+        "title": "Fireside Chat - 🔥 Blazing LLMs 🔥",
         "width": 1920,
         "height": 1080
       }

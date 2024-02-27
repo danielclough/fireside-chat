@@ -1,6 +1,6 @@
 use common::llm::model_list::{ModelArgs, ModelDLList};
 use leptonic::modal::{Modal, ModalBody, ModalHeader, ModalTitle};
-use leptos::{component, create_signal, view, IntoView, Signal, SignalGet, WriteSignal};
+use leptos::{component, create_signal, view, IntoView, Signal, WriteSignal};
 
 use crate::components::sidebar::model_config::model_list_container::ModelListContainer;
 
@@ -23,8 +23,8 @@ pub fn InitModelModal(
             <ModalBody>
                 <ModelListContainer
                     ipv4=ipv4.clone()
-                    model_args=model_args_signal.get()
-                    model_list=model_list_signal.get()
+                    model_args=model_args_signal
+                    model_list=model_list_signal
                     gpu_type=gpu_type
                     set_gpu_type=set_gpu_type
                 />

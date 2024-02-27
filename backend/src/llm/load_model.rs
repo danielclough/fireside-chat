@@ -28,7 +28,7 @@ impl LoadModel {
                 revision: "main".to_string(),
                 tokenizer_file: None,
                 weight_file: None,
-                quantized: false,
+                quantized: true,
                 cpu: true,
             }
         }
@@ -264,7 +264,6 @@ impl LoadModel {
                         _ => MistralConfig::config_7b_v0_1(args.use_flash_attn),
                     };
                     if args.quantized {
-                        // FIX cpu == quantized
                         let vb = candle_transformers::quantized_var_builder::VarBuilder::from_gguf(
                             &filenames[0],
                             &device,

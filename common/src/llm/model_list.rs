@@ -56,7 +56,7 @@ impl Default for ModelArgs {
             weight_file: None,
             quantized: false,
             use_flash_attn: false,
-            cpu: false,
+            cpu: true,
             template: Some("NoModel".to_string()),
         }
     }
