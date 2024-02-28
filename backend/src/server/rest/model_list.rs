@@ -1,12 +1,12 @@
-use crate::{llm::load_model::LoadModel, utilities::cache_path::cache_file_path};
-use axum::{http::StatusCode, Json};
+use crate::utilities::cache_path::cache_file_path;
+use axum::{extract::Path, http::StatusCode, Json};
 use common::llm::model_list::{ModelDLList, ModelDLListEntry, ModelList};
 use glob::glob;
 
 // use serde::{Deserialize, Serialize};
 
 // fn to handle getting model_lists from frontend
-pub async fn get_model_list() -> Result<Json<ModelDLList>, StatusCode> {
+pub async fn get_model_list(Path(q_lvl): Path<String>) -> Result<Json<ModelDLList>, StatusCode> {
     let model_list: ModelList = get_default_list();
 
     let entry_collection = model_list
@@ -14,30 +14,45 @@ pub async fn get_model_list() -> Result<Json<ModelDLList>, StatusCode> {
         .iter()
         .map(|list| {
             let repo_id_path = format!("models--{}", list.repo_id.clone().replace('/', "--"));
-            let gguf;
-            let safetensors;
-            let bin;
-            if cache_file_path(&repo_id_path).is_dir() {
-              // check current level of quantization and then check if .gguf is downloaded
-              let args = LoadModel::load_current_args();
-              let gguf_path = format!("{repo_id_path}/**/{}.gguf", args.q_lvl);
-              gguf = glob(&gguf_path).is_ok();
-              // check if .safetensors are downloaded
-              let safetensors_path = format!("{repo_id_path}/**/*.safetensors");
-              safetensors = glob(&safetensors_path).is_ok();
-              // check if .bin are downloaded
-              let bin_path = format!("{repo_id_path}/**/*.bin");
-              bin = glob(&bin_path).is_ok();
-            } else {
-              gguf = false;
-              safetensors = false;
-              bin = false;
-            }
-
+            let mut gguf= false;
+            let mut safetensors= false;
+            let mut bin= false;
+            let cache_file_path = cache_file_path(&repo_id_path);
+            if cache_file_path.is_dir() {
+                let q_lvl = if q_lvl.as_str() == "NoModel" {"q5k".to_string()} else {q_lvl.clone()};
+                // check current level of quantization and then check if .gguf is downloaded
+                let gguf_path = format!("{}/snapshots/**/*{}.gguf", cache_file_path.display(), q_lvl);
+                for entry in glob(gguf_path.as_str()).unwrap() {
+                    if let Ok(_path) = entry {
+                        gguf = true;
+                    }
+                }
+                // check if .safetensors are downloaded
+                let safetensors_path =
+                    format!("{}/snapshots/**/*.safetensors", cache_file_path.display());
+                    for entry in glob(safetensors_path.as_str()).unwrap() {
+                        if let Ok(path) = entry {
+                            safetensors = true;
+                        }
+                    }
+                // check if .bin are downloaded
+                let bin_path = format!("{}/snapshots/**/*.bin", cache_file_path.display());
+                for entry in glob(bin_path.as_str()).unwrap() {
+                    if let Ok(_path) = entry {
+                        bin = true;
+                    }
+                }
+            };
             ModelDLListEntry {
                 name: list.name.clone(),
                 repo_id: list.repo_id.clone(),
-                template: Some(list.template.clone().split(',').map(|x| x.trim().to_string()).collect()),
+                template: Some(
+                    list.template
+                        .clone()
+                        .split(',')
+                        .map(|x| x.trim().to_string())
+                        .collect(),
+                ),
                 base: list.base.clone(),
                 n_safetensors: list.n_safetensors,
                 gguf,
@@ -52,13 +67,13 @@ pub async fn get_model_list() -> Result<Json<ModelDLList>, StatusCode> {
         list: entry_collection,
     };
 
-    // println!("{:?}", model_list);
+    // println!("{}", model_list.display());
 
     Ok(Json(model_dl_list))
 }
 
 // fn to handle patching model_lists from frontend
-pub async fn update_model_list(Json(args): Json<ModelList>) -> Result<Json<ModelList>, StatusCode> {
+pub async fn update_model_list(Path(_q_lvl): Path<String>, Json(args): Json<ModelList>) -> Result<Json<ModelList>, StatusCode> {
     // Create args from Json
     let new_args = ModelList { ..args };
 
@@ -69,7 +84,8 @@ pub async fn update_model_list(Json(args): Json<ModelList>) -> Result<Json<Model
 // Narsil/amall-7b
 // meta-llama/Llama-2-7b-hf
 pub fn get_default_list() -> ModelList {
-    serde_yaml::from_str("---
+    serde_yaml::from_str(
+        "---
 list:
   -
     name: Mistral-7B-v0.1
@@ -210,7 +226,6 @@ list:
 // n_safetensors: 0
 // tags: gguf, n_safetensors,
 
-
 // -
 // name: TinyMistral-248M
 // repo_id: DanielClough/Candle_TinyMistral-248M
@@ -218,10 +233,10 @@ list:
 // template:
 // n_safetensors: 1
 // tags: gguf, n_safetensors,
-      // -
-      // name: tiny-mistral
-      // repo_id: DanielClough/Candle_tiny-mistral
-      // base: mistral
-      // template:
-      // n_safetensors: 1
-      // tags: gguf, n_safetensors,
+// -
+// name: tiny-mistral
+// repo_id: DanielClough/Candle_tiny-mistral
+// base: mistral
+// template:
+// n_safetensors: 1
+// tags: gguf, n_safetensors,

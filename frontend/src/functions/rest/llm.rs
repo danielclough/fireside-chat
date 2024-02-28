@@ -64,25 +64,34 @@ pub async fn get_inference_args(ipv4: String) -> InferenceArgsForInput {
 pub async fn get_model_args(ipv4: String) -> ModelArgs {
     let path = get_llm_path("model", ipv4);
 
-    Request::get(&path)
-        .send()
-        .await
-        .expect("Load model args from API")
-        .json()
-        .await
-        .unwrap()
+    let response = Request::get(&path).send().await;
+
+    if response.is_ok() {
+        response
+            .expect("Load model args from API")
+            .json()
+            .await
+            .unwrap()
+    } else {
+        ModelArgs::error()
+    }
 }
 
-pub async fn get_model_list(ipv4: String) -> ModelDLList {
-    let path = get_llm_path("model-list", ipv4);
+pub async fn get_model_list(q_lvl: String, ipv4: String) -> ModelDLList {
+    let slug = format!("model-list/{}", q_lvl);
+    let path = get_llm_path(&slug, ipv4);
 
-    Request::get(&path)
-        .send()
-        .await
-        .expect("Load model list from API")
-        .json()
-        .await
-        .unwrap()
+    let response = Request::get(&path).send().await;
+
+    if response.is_ok() {
+        response
+            .expect("Load model list from API")
+            .json()
+            .await
+            .unwrap()
+    } else {
+        ModelDLList { list: vec![] }
+    }
 }
 
 pub async fn model_download(model_args: ModelArgs, ipv4: String) -> ModelArgs {

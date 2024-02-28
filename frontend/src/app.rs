@@ -7,7 +7,9 @@ use crate::functions::rest::{
 };
 use common::database::user::UserForJson;
 use common::llm::inference::InferenceArgsForInput;
-use common::llm::model_list::ModelArgs;
+use common::llm::model_list::{ModelArgs, ModelDLList};
+use leptonic::modal::{Modal, ModalBody, ModalHeader, ModalTitle};
+use leptonic::typography::{H1, H2, H3, H4};
 use leptonic::{
     drawer::{Drawer, DrawerSide},
     root::Root,
@@ -31,7 +33,6 @@ pub fn App() -> impl IntoView {
     //
     let (gpu_type, set_gpu_type, _) = use_local_storage::<String, JsonCodec>("gpu");
     // set_gpu_type.set("None".to_string());
-    
 
     // User
     //
@@ -39,13 +40,13 @@ pub fn App() -> impl IntoView {
 
     // Model
     //
-    let (_model_args, _set_model_args, _) = use_local_storage::<ModelArgs, JsonCodec>("model");
+    let (model_args, _set_model_args, _) = use_local_storage::<ModelArgs, JsonCodec>("model");
     let init_everything = create_resource(
         || (),
         move |_| async move {
             logging::log!("loading model_list from API");
             (
-                get_model_list(ipv4.get()).await,
+                get_model_list(model_args.get().q_lvl, ipv4.get()).await,
                 get_model_args(ipv4.get()).await,
                 get_active_user().await,
             )
@@ -66,7 +67,7 @@ pub fn App() -> impl IntoView {
     // View
     //
     let (home_view, set_home_view) = create_signal(true);
-    
+
     // Drawer
     //
     let (drawer_state, set_drawer_state) = create_signal(false);
@@ -81,6 +82,15 @@ pub fn App() -> impl IntoView {
         };
     };
 
+    let (database_error, set_database_error) = create_signal(false);
+    let (backend_error, set_backend_error) = create_signal(false);
+
+    let (model_list_signal, set_model_list_signal) =
+        create_signal::<ModelDLList>(ModelDLList::error());
+    let (model_args_signal, set_model_args_signal) = create_signal::<ModelArgs>(ModelArgs::error());
+    let (active_user_signal, set_active_user_signal) =
+        create_signal::<UserForJson>(UserForJson::error());
+
     view! {
         <Root default_theme=LeptonicTheme::default()>
             <Header
@@ -88,27 +98,60 @@ pub fn App() -> impl IntoView {
                 home_view=home_view
                 set_drawer_state=set_drawer_state
                 drawer_state=drawer_state
+                database_error=database_error
+                backend_error=backend_error
             />
             <Box id="main-area">
-                <Transition fallback=move || {
-                    view! { <p>"Loading..."</p> }
-                }>
+
+                <Show
+                    when=move || (!database_error.get() && !backend_error.get())
+                    fallback=move || {
+                        view! {
+                            <Box class="outer-container">
+                                <H2>"Troubleshoot and Restart (top right)"</H2>
+                                <Show when=move || database_error.get()>
+                                    <H3>"⚠️ Database Error ⚠️"</H3>
+                                </Show>
+                                <br/>
+                                <Show when=move || backend_error.get()>
+                                    <H3>"⚠️ Backend Error ⚠️"</H3>
+                                </Show>
+                                <H4>
+                                    "If you open the app through the command line you should find useful debugging info!"
+                                </H4>
+                            </Box>
+                        }
+                    }
+                >
+
                     {move || {
                         init_everything
                             .get()
                             .map(|(model_list, model_args, active_user)| {
+                                {
+                                    set_model_list_signal.set(model_list);
+                                    set_model_args_signal.set(model_args);
+                                    set_active_user_signal.set(active_user);
+                                }
+                                if model_args_signal.get().repo_id
+                                    == "LLM Backend Error".to_string()
+                                {
+                                    set_backend_error.set(true);
+                                }
+                                if active_user_signal.get().name == "Database Error".to_string() {
+                                    set_database_error.set(true);
+                                }
                                 view! {
                                     <Show when=move || !home_view.get()>
                                         <ChatBox user=user ipv4=ipv4 set_home_view=set_home_view/>
                                     </Show>
-
                                     <Home
                                         ipv4=ipv4
                                         user=user
                                         set_user=set_user
                                         inference_args=inference_args
-                                        model_args=model_args.clone()
-                                        model_list=model_list.clone()
+                                        model_args=model_args_signal
+                                        model_list=model_list_signal
                                         gpu_type=gpu_type
                                         set_gpu_type=set_gpu_type
                                     />
@@ -125,19 +168,19 @@ pub fn App() -> impl IntoView {
                                             set_ipv4=set_ipv4
                                             inference_args=inference_args
                                             set_inference_args=set_inference_args
-                                            active_user=active_user
                                             user=user
                                             set_user=set_user
                                             fetch_show=fetch_show
-                                            model_list=model_list
-                                            model_args=model_args
+                                            active_user=active_user_signal
+                                            model_list=model_list_signal
+                                            model_args=model_args_signal
                                         />
                                     </Drawer>
                                 }
                             })
                     }}
 
-                </Transition>
+                </Show>
             </Box>
         </Root>
     }

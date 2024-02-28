@@ -24,7 +24,7 @@ impl LoadModel {
                 use_flash_attn: false,
                 repo_id: "NoModel".to_string(),
                 template: Some("NoModel".to_string()),
-                q_lvl: "q2k".to_string(),
+                q_lvl: "q5k".to_string(),
                 revision: "main".to_string(),
                 tokenizer_file: None,
                 weight_file: None,

@@ -42,6 +42,7 @@ pub fn ModelListChip(
                         } else {
                             "DISABLE ALL".to_string()
                         }}
+
                     </Button>
                 }
             }
@@ -61,11 +62,13 @@ pub fn ModelListChip(
                     };
                 }
             >
+
                 {if name_signal.get() != String::new() {
                     name_signal.get()
                 } else {
                     "EMPTY".to_string()
                 }}
+
             </Chip>
         </Show>
     }

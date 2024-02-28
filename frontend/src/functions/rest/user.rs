@@ -6,20 +6,25 @@ use crate::functions::get_path::get_database_path;
 
 pub async fn get_active_user() -> UserForJson {
     let path = get_database_path("users/active/true");
-    Request::get(&path)
-        .send()
-        .await
-        .expect("Load active user from API")
-        .json()
-        .await
-        .unwrap_or(vec![UserForJson {
-            id: 0,
-            name: "None".to_string(),
-            active: true,
-        }])
-        .first()
-        .unwrap()
-        .to_owned()
+
+    let default_vec = vec![UserForJson {
+        id: 0,
+        name: "Database Error".to_string(),
+        active: true,
+    }];
+    let response = Request::get(&path).send().await;
+    if response.is_ok() {
+        response
+            .unwrap()
+            .json()
+            .await
+            .unwrap_or(default_vec)
+            .first()
+            .unwrap()
+            .to_owned()
+    } else {
+        default_vec.first().unwrap().to_owned()
+    }
 }
 pub async fn check_user_exists(name: String) -> UserForJson {
     let slug = format!("user/name/{}", name);
@@ -66,8 +71,11 @@ pub async fn patch_existing_user(set_args_for_json: UserForJson) -> UserForJson 
         .unwrap()
 }
 
-
-pub fn switch_users(user: Signal<UserForJson>, set_user: WriteSignal<UserForJson>, input_string: String) -> UserForJson {
+pub fn switch_users(
+    user: Signal<UserForJson>,
+    set_user: WriteSignal<UserForJson>,
+    input_string: String,
+) -> UserForJson {
     // Create User structs
     let old_user = user.get();
     spawn_local(async move {
@@ -79,7 +87,7 @@ pub fn switch_users(user: Signal<UserForJson>, set_user: WriteSignal<UserForJson
         spawn_local(async move {
             // Update "new" user  (active: true OR create new)
             let new_user_exists: UserForJson = if old_user.clone().id != 0 {
-                    check_user_exists(input_string.clone()).await
+                check_user_exists(input_string.clone()).await
             } else {
                 old_user.clone()
             };

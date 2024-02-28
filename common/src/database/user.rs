@@ -30,3 +30,13 @@ impl Default for UserForJson {
         }
     }
 }
+
+impl UserForJson {
+    pub fn error() -> Self {
+        Self {
+            id: 0,
+            name: "Database Error".to_string(),
+            active: false,
+        }
+    }
+}

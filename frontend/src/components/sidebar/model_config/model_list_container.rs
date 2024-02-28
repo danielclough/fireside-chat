@@ -63,8 +63,9 @@ pub fn ModelListContainer(
                     set_selected=move |v| set_quantized_str.set(v)
                 />
 
-                <Show when= move || repo_id_signal.get() != "NoModel".to_string()
-                    fallback= move || view! {"NoModel"}
+                <Show
+                    when=move || repo_id_signal.get() != "NoModel".to_string()
+                    fallback=move || view! { "NoModel" }
                 >
                     <a
                         href=format!("https://hf.co/{}", repo_id_signal.get())
@@ -82,51 +83,55 @@ pub fn ModelListContainer(
 
         // Check if quantized  & check if "Mac" or "CUDA"
         // reload if any of those values change
-        <Show when=move || quantized_str.get() == "Quantized"
-            fallback= move || view! {
-                <Show
-                    when=move || gpu_type.get() == "Mac" || gpu_type.get() == "CUDA"
-                    fallback=move || {
-                        view! {
-                            <GpuSelect
-                                gpu_type=gpu_type
-                                set_gpu_type=set_gpu_type
-                                set_repo_id_signal=set_repo_id_signal
-                            />
-                            <ModelListGrid
-                                model_list=model_list
-                                tags_all=tags_all
-                                ipv4=ipv4
-                                template_current=template_current
-                                repo_id=repo_id_signal
-                                quantized_current=quantized_current
-                                quantized=quantized_str.get() == "Quantized"
-                                gpu_type=gpu_type
-                                q_lvl=q_lvl
-                            />
+        <Show
+            when=move || quantized_str.get() == "Quantized"
+            fallback=move || {
+                view! {
+                    <Show
+                        when=move || gpu_type.get() == "Mac" || gpu_type.get() == "CUDA"
+                        fallback=move || {
+                            view! {
+                                <GpuSelect
+                                    gpu_type=gpu_type
+                                    set_gpu_type=set_gpu_type
+                                    set_repo_id_signal=set_repo_id_signal
+                                />
+                                <ModelListGrid
+                                    model_list=model_list
+                                    tags_all=tags_all
+                                    ipv4=ipv4
+                                    template_current=template_current
+                                    repo_id=repo_id_signal
+                                    quantized_current=quantized_current
+                                    quantized=quantized_str.get() == "Quantized"
+                                    gpu_type=gpu_type
+                                    q_lvl=q_lvl
+                                />
+                            }
                         }
-                    }
-                >
+                    >
 
-                    <GpuSelect
-                        gpu_type=gpu_type
-                        set_gpu_type=set_gpu_type
-                        set_repo_id_signal=set_repo_id_signal
-                    />
-                    <ModelListGrid
-                        model_list=model_list
-                        tags_all=tags_all
-                        ipv4=ipv4
-                        template_current=template_current
-                        repo_id=repo_id_signal
-                        quantized_current=quantized_current
-                        quantized=quantized_str.get() == "Quantized"
-                        gpu_type=gpu_type
-                        q_lvl=q_lvl
-                    />
-                </Show>
+                        <GpuSelect
+                            gpu_type=gpu_type
+                            set_gpu_type=set_gpu_type
+                            set_repo_id_signal=set_repo_id_signal
+                        />
+                        <ModelListGrid
+                            model_list=model_list
+                            tags_all=tags_all
+                            ipv4=ipv4
+                            template_current=template_current
+                            repo_id=repo_id_signal
+                            quantized_current=quantized_current
+                            quantized=quantized_str.get() == "Quantized"
+                            gpu_type=gpu_type
+                            q_lvl=q_lvl
+                        />
+                    </Show>
+                }
             }
         >
+
             <Show
                 when=move || gpu_type.get() == "Mac" || gpu_type.get() == "CUDA"
                 fallback=move || {
@@ -150,6 +155,7 @@ pub fn ModelListContainer(
                     }
                 }
             >
+
                 <GpuSelect
                     gpu_type=gpu_type
                     set_gpu_type=set_gpu_type

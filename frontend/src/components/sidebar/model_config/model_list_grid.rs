@@ -56,11 +56,7 @@ pub fn ModelListGrid(
             </Row>
 
             <Row>
-                <For
-                    each=move || model_list.get().list.clone()
-                    key=|list| list.clone()
-                    let:item
-                >
+                <For each=move || model_list.get().list.clone() key=|list| list.clone() let:item>
                     <ModelListItem
                         ipv4=ipv4
                         item=item
