@@ -30,17 +30,11 @@ pub fn ChatMessage(user: Signal<UserForJson>, index: usize, text: String) -> imp
     let (text_vec_signal, _set_text_vec_signal) = create_signal(text_vec);
 
     view! {
-        <Show when=move || user_response >
+        <Show when=move || user_response>
             <div class="chat-user-response-tab">{username_signal.get()}</div>
             <div class="chat-user-response">
-                <For
-                    each=move || text_vec_signal.get()
-                    key=|list| list.clone()
-                    let:engagement
-                >
-                    <p>
-                        {engagement}
-                    </p>
+                <For each=move || text_vec_signal.get() key=|list| list.clone() let:engagement>
+                    <p>{engagement}</p>
                 </For>
             </div>
         </Show>
@@ -48,14 +42,8 @@ pub fn ChatMessage(user: Signal<UserForJson>, index: usize, text: String) -> imp
         <Show when=move || bot_response>
             <div class="chat-bot-response-tab">"Bot"</div>
             <div class="chat-bot-response">
-                <For
-                    each=move || text_vec_signal.get()
-                    key=|list| list.clone()
-                    let:engagement
-                >
-                    <p>
-                        {engagement}
-                    </p>
+                <For each=move || text_vec_signal.get() key=|list| list.clone() let:engagement>
+                    <p>{engagement}</p>
                 </For>
             </div>
         </Show>

@@ -138,8 +138,7 @@ pub fn ModelListItem(
     let (template_signal, _set_template_signal) = create_signal(template_current);
 
     view! {
-        <Show // only show when tag is included (ignore "")
-        when=move || {
+        <Show when=move || {
             if tags_enabled.get().iter().any(|t| item.tags.join(" ").contains(t) && t != "") {
                 true
             } else {

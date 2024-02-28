@@ -218,15 +218,15 @@ pub fn ChatBox(user: Signal<UserForJson>, ipv4: Signal<String>, set_home_view: W
 
     view! {
         <Box class="outer-container" style="position:absolute;">
-        // moving here allows it work
-        <div class="hidden"> {move || time_to_send} </div>
+            // moving here allows it work
+            <div class="hidden">{move || time_to_send}</div>
             <div id="chat-box" class="outer-container">
                 <For
                     each=move || history.get().into_iter().enumerate()
                     key=|(index, _)| *index
                     let:item
                 >
-                    <ChatMessage user=user index=item.0 text=item.1 />
+                    <ChatMessage user=user index=item.0 text=item.1/>
                 </For>
             </div>
 
@@ -239,7 +239,7 @@ pub fn ChatBox(user: Signal<UserForJson>, ipv4: Signal<String>, set_home_view: W
             }}
 
             <textarea
-                rows={move || text_area_height.get()}
+                rows=move || text_area_height.get()
                 type="text"
                 name="input"
                 id="chat-box-input"
@@ -248,17 +248,17 @@ pub fn ChatBox(user: Signal<UserForJson>, ipv4: Signal<String>, set_home_view: W
                 on:keydown=send_message
                 disabled=move || chat_message_state_signal.get() == ChatMessageState::Coming
                 node_ref=input_element
-            />
+            ></textarea>
             <Box id="btn-row">
                 // <button
-                //     style:display=move || {
-                //         (if status() == "Open" { "none" } else { "block" }).to_string()
-                //     }
+                // style:display=move || {
+                // (if status() == "Open" { "none" } else { "block" }).to_string()
+                // }
 
-                //     on:click=open_connection
-                //     disabled=connected
+                // on:click=open_connection
+                // disabled=connected
                 // >
-                //     "Join"
+                // "Join"
                 // </button>
                 // <button
                 // style:display=move || {
@@ -300,6 +300,7 @@ pub fn ChatBox(user: Signal<UserForJson>, ipv4: Signal<String>, set_home_view: W
                         format!("Title: {}", conversation.get().unwrap().name)
                     }
                 }}
+
             </Box>
         </Box>
     }

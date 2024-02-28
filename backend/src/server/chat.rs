@@ -91,7 +91,7 @@ pub async fn start(
     let app = Router::new()
         .route("/websocket", get(websocket_handler))
         .route("/model", get(get_model_args).patch(update_model_args))
-        .route("/model-list", get(get_model_list).patch(update_model_list))
+        .route("/model-list/:q_lvl", get(get_model_list).patch(update_model_list))
         .route("/model-download", post(download_model))
         .route("/model-download/:repo_id", post(download_model))
         .route("/inference", get(get_inference).patch(update_inference))

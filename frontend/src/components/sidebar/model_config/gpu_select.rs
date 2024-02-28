@@ -16,10 +16,14 @@ pub fn GpuSelect(
             search_text_provider=move |o: String| format!("{:?}", o)
             render_option=move |o: String| {
                 if o == "Mac".to_string() || o == "CUDA".to_string() {
-                    if o != init_type {set_repo_id_signal.set("NoModel".to_string())};
+                    if o != init_type {
+                        set_repo_id_signal.set("NoModel".to_string())
+                    }
                     format!("{} (gpu: ✅)", o)
                 } else {
-                    if o != init_type {set_repo_id_signal.set("NoModel".to_string())};
+                    if o != init_type {
+                        set_repo_id_signal.set("NoModel".to_string())
+                    }
                     format!("{} (gpu: ❌)", o)
                 }
             }

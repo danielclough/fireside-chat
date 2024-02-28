@@ -22,11 +22,15 @@ pub async fn patch_role_list(inference_args: InferenceArgsForJson, ipv4: String)
 pub async fn get_role_list(ipv4: String) -> RoleList {
     let path = get_llm_path("role-list",ipv4);
 
-    Request::get(&path)
-        .send()
-        .await
-        .expect("Load role list from API")
-        .json()
-        .await
-        .unwrap()
+    let response = Request::get(&path).send().await;
+
+    if response.is_ok() {
+        response
+            .expect("Load role list from API")
+            .json()
+            .await
+            .unwrap()
+    } else {
+        RoleList { human: vec![], computer: vec![]  }
+    }
 }

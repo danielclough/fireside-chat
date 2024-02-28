@@ -10,6 +10,8 @@ pub fn Header<F>(
     home_view: ReadSignal<bool>,
     set_drawer_state: WriteSignal<bool>,
     drawer_state: ReadSignal<bool>,
+    database_error: ReadSignal<bool>,
+    backend_error: ReadSignal<bool>,
 ) -> impl IntoView
 where
     F: Fn(MouseEvent) + 'static
@@ -25,7 +27,14 @@ where
             <div id="header-button-group">
                 // Toggle Theme
                 <button on:click=home_view_toggle>
-                    {move || if home_view.get() { "Start Chat" } else { "End Chat" }}
+                    {move || {
+                        if database_error.get() || backend_error.get() {
+                            "Double Click to Restart"
+                        } else {
+                            if home_view.get() { "Start Chat" } else { "End Chat" }
+                        }
+                    }}
+
                 </button>
                 <ThemeToggle off=LeptonicTheme::Light on=LeptonicTheme::Dark/>
                 <Toggle
@@ -37,6 +46,7 @@ where
                         off: icondata::BsList,
                     }
                 />
+
             </div>
         </Box>
     }

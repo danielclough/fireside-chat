@@ -19,15 +19,12 @@ pub fn SideBar(
     inference_args: Signal<InferenceArgsForInput>,
     set_inference_args: WriteSignal<InferenceArgsForInput>,
     fetch_show: Resource<InferenceArgsForInput, ()>,
-    model_list: ModelDLList,
-    model_args: ModelArgs,
-    active_user: UserForJson,
+    model_list: ReadSignal<ModelDLList>,
+    model_args: ReadSignal<ModelArgs>,
+    active_user: ReadSignal<UserForJson>,
     user: Signal<UserForJson>,
     set_user: WriteSignal<UserForJson>,
 ) -> impl IntoView {
-    let (model_list_signal, _set_model_list_signal) = create_signal(model_list);
-    let (model_args_signal, _set_model_args_signal) = create_signal(model_args);
-    let (active_user_signal, _set_active_user_signal) = create_signal(active_user);
 
     let role_list = create_resource(
         || (),
@@ -41,15 +38,15 @@ pub fn SideBar(
         <Tabs mount=Mount::Once>
             <Tab name="user_tab" label="User".into_view()>
                 <Box style="width:100%">
-                    <UserConfig active_user=active_user_signal.get() user=user set_user=set_user/>
+                    <UserConfig active_user=active_user.get() user=user set_user=set_user/>
                 </Box>
             </Tab>
             <Tab name="models_tab" label="Models".into_view()>
                 <Box style="width:100%">
                     <ModelConfig
                         ipv4=ipv4
-                        model_list=model_list_signal
-                        model_args=model_args_signal
+                        model_list=model_list
+                        model_args=model_args
                         gpu_type=gpu_type
                         set_gpu_type=set_gpu_type
                     />

@@ -56,11 +56,38 @@ impl Default for ModelArgs {
             weight_file: None,
             quantized: false,
             use_flash_attn: false,
-            cpu: true,
+            cpu: false,
             template: Some("NoModel".to_string()),
         }
     }
 }
+impl ModelDLList {
+    pub fn default() -> ModelDLList {
+        ModelDLList {
+            list: vec![]
+        }
+    }
+    pub fn error() -> ModelDLList {
+        ModelDLList { list: vec![] }
+    }
+}
+
+impl ModelArgs {
+    pub fn error() -> ModelArgs {
+        ModelArgs {
+            repo_id: "LLM Backend Error".to_string(),
+            q_lvl: "LLM Backend Error".to_string(),
+            revision: "LLM Backend Error".to_string(),
+            tokenizer_file: Some("LLM Backend Error".to_string()),
+            weight_file: Some("LLM Backend Error".to_string()),
+            quantized: false,
+            use_flash_attn: false,
+            cpu: false,
+            template: Some("LLM Backend Error".to_string()),
+        }
+    }    
+}
+
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Tags {
