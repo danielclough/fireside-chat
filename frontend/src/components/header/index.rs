@@ -30,9 +30,7 @@ where
                     {move || {
                         if database_error.get() || backend_error.get() {
                             "Double Click to Restart"
-                        } else {
-                            if home_view.get() { "Start Chat" } else { "End Chat" }
-                        }
+                        } else if home_view.get() { "Start Chat" } else { "End Chat" }
                     }}
 
                 </button>

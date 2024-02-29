@@ -15,21 +15,14 @@ pub struct UserQuery {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
+#[derive(Default)]
 pub struct UserForJson {
     pub id: i64,
     pub name: String,
     pub active: bool,
 }
 
-impl Default for UserForJson {
-    fn default() -> Self {
-        Self {
-            id: 0,
-            name: String::new(),
-            active: false,
-        }
-    }
-}
+
 
 impl UserForJson {
     pub fn error() -> Self {

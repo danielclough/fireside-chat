@@ -22,7 +22,7 @@ pub fn InitModelModal(
             </ModalHeader>
             <ModalBody>
                 <ModelListContainer
-                    ipv4=ipv4.clone()
+                    ipv4=ipv4
                     model_args=model_args_signal
                     model_list=model_list_signal
                     gpu_type=gpu_type

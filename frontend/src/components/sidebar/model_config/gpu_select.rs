@@ -15,7 +15,7 @@ pub fn GpuSelect(
             options=gpu_for_select.clone()
             search_text_provider=move |o: String| format!("{:?}", o)
             render_option=move |o: String| {
-                if o == "Mac".to_string() || o == "CUDA".to_string() {
+                if o == *"Mac" || o == *"CUDA" {
                     if o != init_type {
                         set_repo_id_signal.set("NoModel".to_string())
                     }

@@ -1,7 +1,5 @@
 use crate::components::index::Index;
-use crate::components::{
-    chat::index::ChatBox, header::index::Header, home::index::Home, sidebar::index::SideBar,
-};
+
 use crate::functions::rest::{
     llm::{get_inference_args, get_model_args, get_model_list},
     user::get_active_user,
@@ -9,13 +7,8 @@ use crate::functions::rest::{
 use common::database::user::UserForJson;
 use common::llm::inference::InferenceArgsForInput;
 use common::llm::model_list::{ModelArgs, ModelDLList};
-use leptonic::modal::{Modal, ModalBody, ModalHeader, ModalTitle};
-use leptonic::typography::{H1, H2, H3, H4};
-use leptonic::{
-    drawer::{Drawer, DrawerSide},
-    root::Root,
-    {prelude::Box, theme::LeptonicTheme},
-};
+
+use leptonic::{root::Root, theme::LeptonicTheme};
 use leptos::*;
 use leptos_use::storage::use_local_storage;
 use leptos_use::utils::JsonCodec;
@@ -85,8 +78,8 @@ pub fn App() -> impl IntoView {
     let (active_user_signal, set_active_user_signal) =
         create_signal::<UserForJson>(UserForJson::error());
 
-    let (refresh_token, set_refresh_token) = create_signal(0);
-    let (refreshed_token, set_refreshed_token) = create_signal(0);
+    let (_refresh_token, _set_refresh_token) = create_signal(0);
+    let (_refreshed_token, _set_refreshed_token) = create_signal(0);
 
     view! {
         <Root default_theme=LeptonicTheme::default()>

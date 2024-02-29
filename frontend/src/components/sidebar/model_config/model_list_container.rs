@@ -15,8 +15,8 @@ pub fn ModelListContainer(
 ) -> impl IntoView {
     let (repo_id_signal, set_repo_id_signal) = create_signal(model_args.get().repo_id.clone());
 
-    let q_levels = ["q2k", "q3k", "q4_0", "q4_1", "q4k", "q5_0", "q5_1", "q5k", "q6k", "q8_0", "q8_1", "f16",];
-    let (q_lvl, set_q_lvl) = create_signal(model_args.get().q_lvl);
+    let _q_levels = ["q2k", "q3k", "q4_0", "q4_1", "q4k", "q5_0", "q5_1", "q5k", "q6k", "q8_0", "q8_1", "f16",];
+    let (q_lvl, _set_q_lvl) = create_signal(model_args.get().q_lvl);
 
     let quantized_safetensors_for_select = vec!["Quantized", "Safetensors"];
 
@@ -28,7 +28,7 @@ pub fn ModelListContainer(
     
     let (quantized_current, _set_quantized_current) = create_signal(model_args.get().quantized);
     let (template_current, _set_template_current) =
-        create_signal(model_args.get().template.unwrap_or(String::new()).clone());
+        create_signal(model_args.get().template.unwrap_or_default().clone());
     let (tags_all, _set_tags_all) = create_signal::<Vec<String>>({
         let tag_list_list = model_list
             .get()
@@ -64,7 +64,7 @@ pub fn ModelListContainer(
                 />
 
                 <Show
-                    when=move || repo_id_signal.get() != "NoModel".to_string()
+                    when=move || repo_id_signal.get() != *"NoModel"
                     fallback=move || view! { "NoModel" }
                 >
                     <a

@@ -16,14 +16,14 @@ pub fn ChatMessage(user: Signal<UserForJson>, index: usize, text: String) -> imp
             .get()
             .replace(username_prefix_signal.get().as_str(), "")
             .split("\\n")
-            .map(|x| x.replace("\\\"", "'").replace("\"", "").to_string())
+            .map(|x| x.replace("\\\"", "'").replace('\"', "").to_string())
             .collect()
     } else {
         text_signal
             .get()
             .replace("Bot: ", "")
             .split("\\n")
-            .map(|x| x.replace("\\\"", "'").replace("\"", "").to_string())
+            .map(|x| x.replace("\\\"", "'").replace('\"', "").to_string())
             .collect()
     };
 

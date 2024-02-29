@@ -31,7 +31,7 @@ pub async fn get_model_list(Path(q_lvl): Path<String>) -> Result<Json<ModelDLLis
                 let safetensors_path =
                     format!("{}/snapshots/**/*.safetensors", cache_file_path.display());
                     for entry in glob(safetensors_path.as_str()).unwrap() {
-                        if let Ok(path) = entry {
+                        if let Ok(_path) = entry {
                             safetensors = true;
                         }
                     }

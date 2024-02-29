@@ -1,23 +1,20 @@
 use crate::components::{
     chat::index::ChatBox, header::index::Header, home::index::Home, sidebar::index::SideBar,
 };
-use crate::functions::rest::{
-    llm::{get_inference_args, get_model_args, get_model_list},
-    user::get_active_user,
-};
+
 use common::database::user::UserForJson;
 use common::llm::inference::InferenceArgsForInput;
 use common::llm::model_list::{ModelArgs, ModelDLList};
-use leptonic::modal::{Modal, ModalBody, ModalHeader, ModalTitle};
-use leptonic::typography::{H1, H2, H3, H4};
+
+use leptonic::typography::{H2, H3, H4};
 use leptonic::{
     drawer::{Drawer, DrawerSide},
     root::Root,
     {prelude::Box, theme::LeptonicTheme},
 };
 use leptos::*;
-use leptos_use::storage::use_local_storage;
-use leptos_use::utils::JsonCodec;
+
+
 
 #[component]
 pub fn Index(
@@ -99,11 +96,11 @@ pub fn Index(
                                     set_active_user_signal.set(active_user);
                                 }
                                 if model_args_signal.get().repo_id
-                                    == "LLM Backend Error".to_string()
+                                    == *"LLM Backend Error"
                                 {
                                     set_backend_error.set(true);
                                 }
-                                if active_user_signal.get().name == "Database Error".to_string() {
+                                if active_user_signal.get().name == *"Database Error" {
                                     set_database_error.set(true);
                                 }
                                 view! {

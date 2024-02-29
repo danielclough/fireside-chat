@@ -43,11 +43,7 @@ pub fn ModelListItem(
     let (cpu, set_cpu) = create_signal({
         if gpu_type.get() == "None" {
             true
-        } else if check_cuda_or_mac && quantized.get() {
-            false
-        } else {
-            true
-        }
+        } else { !(check_cuda_or_mac && quantized.get()) }
     });
 
     let (name_signal, _set_name_signal) = create_signal(item.clone().name);
@@ -139,11 +135,7 @@ pub fn ModelListItem(
 
     view! {
         <Show when=move || {
-            if tags_enabled.get().iter().any(|t| item.tags.join(" ").contains(t) && t != "") {
-                true
-            } else {
-                false
-            }
+            tags_enabled.get().iter().any(|t| item.tags.join(" ").contains(t) && !t.is_empty())
         }>
 
             <Col class="model-cols" xl=3 lg=4 md=5 sm=6 xs=8>

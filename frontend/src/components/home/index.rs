@@ -35,7 +35,7 @@ pub fn Home(
             get_conversations_by_user_id(user.get().id).await
         },
     );
-    let (show_user_init_modal, set_show_user_init_modal) = create_signal(user.get().name == "None".to_string() || user.get().name.len() < 2);
+    let (show_user_init_modal, set_show_user_init_modal) = create_signal(user.get().name == *"None" || user.get().name.len() < 2);
     let (show_model_init_modal, _set_show_model_init_modal) = create_signal(model_args.get().clone().template == Some("NoModel".to_string()));
 
     // let (init_conversations_signal, _set_init_conversations_signal) = create_signal(init_conversations.get());

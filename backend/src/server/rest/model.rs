@@ -35,7 +35,7 @@ pub async fn update_model_args(
     let mut mutable_mtd_state = state.model_tokenizer_device.lock().expect("lock state");
     
     // load model
-    let no_model = new_args.clone().template.unwrap_or(String::new()) == *"NoModel";
+    let no_model = new_args.clone().template.unwrap_or_default() == *"NoModel";
     let model_tokenizer_device: ModelTokenizerDevice = LoadModel::load(new_args.clone(),no_model).expect("*** load_model should work.");
     *mutable_mtd_state = model_tokenizer_device;
 
