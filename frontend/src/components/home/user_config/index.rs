@@ -24,7 +24,7 @@ pub fn UserConfig(
 
     create_effect(move |_| {
         if user.get().name != init_user.get().name {
-            set_refresh_token.update(|x| *x = *x+1);
+            set_refresh_token.update(|x| *x += 1);
         }
     });
 

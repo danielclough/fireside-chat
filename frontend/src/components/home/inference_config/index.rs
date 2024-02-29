@@ -70,7 +70,7 @@ pub fn Inference(
 
         async move {
             set_args_for_form(patch_inference_args(set_args_for_json, ipv4.get()).await);
-            set_refresh_token.update(|x| *x = *x+1);
+            set_refresh_token.update(|x| *x += 1);
         }
     });
     view! {

@@ -16,7 +16,7 @@ pub fn NetworkConfig(
             let input_element = input_element.get().expect("<input> to exist");
             set_ipv4.set(input_element.value());
             input_element.set_value("");
-            set_refresh_token.update(|x| *x = *x+1);
+            set_refresh_token.update(|x| *x += 1);
         }
     };
 

@@ -67,12 +67,12 @@ pub fn Index(
         set_home_view.update(|value| *value = !*value);
         if home_view.get() {
             // refresh conversations
-            set_refresh_token.update(|x| *x = *x+1);
+            set_refresh_token.update(|x| *x += 1);
         } else if database_error.get() || backend_error.get() {
             // Refresh error
             set_database_error.update(|err| *err = false);
             set_backend_error.update(|err| *err = false);
-            set_refresh_token.update(|x| *x = *x+1);
+            set_refresh_token.update(|x| *x += 1);
         };
     };
 
