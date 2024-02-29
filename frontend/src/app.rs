@@ -1,3 +1,4 @@
+use crate::components::index::Index;
 use crate::components::{
     chat::index::ChatBox, header::index::Header, home::index::Home, sidebar::index::SideBar,
 };
@@ -74,13 +75,6 @@ pub fn App() -> impl IntoView {
 
     // Header
     //
-    let home_view_toggle = move |_| {
-        set_home_view.update(|value| *value = !*value);
-        // FIX refresh conversations
-        if home_view.get() {
-            _ = leptos_dom::window().location().reload();
-        };
-    };
 
     let (database_error, set_database_error) = create_signal(false);
     let (backend_error, set_backend_error) = create_signal(false);
@@ -91,97 +85,37 @@ pub fn App() -> impl IntoView {
     let (active_user_signal, set_active_user_signal) =
         create_signal::<UserForJson>(UserForJson::error());
 
+    let (refresh_token, set_refresh_token) = create_signal(0);
+    let (refreshed_token, set_refreshed_token) = create_signal(0);
+
     view! {
         <Root default_theme=LeptonicTheme::default()>
-            <Header
-                home_view_toggle=home_view_toggle
-                home_view=home_view
+            <Index
+                ipv4=ipv4
+                set_ipv4=set_ipv4
+                gpu_type=gpu_type
+                set_gpu_type=set_gpu_type
+                inference_args=inference_args
+                set_inference_args=set_inference_args
+                fetch_show=fetch_show
+                user=user
+                set_user=set_user
                 set_drawer_state=set_drawer_state
                 drawer_state=drawer_state
                 database_error=database_error
                 backend_error=backend_error
+                home_view=home_view
+                set_home_view=set_home_view
+                model_list_signal=model_list_signal
+                set_model_list_signal=set_model_list_signal
+                model_args_signal=model_args_signal
+                set_model_args_signal=set_model_args_signal
+                set_active_user_signal=set_active_user_signal
+                active_user_signal=active_user_signal
+                set_backend_error=set_backend_error
+                set_database_error=set_database_error
+                init_everything=init_everything
             />
-            <Box id="main-area">
-
-                <Show
-                    when=move || (!database_error.get() && !backend_error.get())
-                    fallback=move || {
-                        view! {
-                            <Box class="outer-container">
-                                <H2>"Troubleshoot and Restart (top right)"</H2>
-                                <Show when=move || database_error.get()>
-                                    <H3>"⚠️ Database Error ⚠️"</H3>
-                                </Show>
-                                <br/>
-                                <Show when=move || backend_error.get()>
-                                    <H3>"⚠️ Backend Error ⚠️"</H3>
-                                </Show>
-                                <H4>
-                                    "If you open the app through the command line you should find useful debugging info!"
-                                </H4>
-                            </Box>
-                        }
-                    }
-                >
-
-                    {move || {
-                        init_everything
-                            .get()
-                            .map(|(model_list, model_args, active_user)| {
-                                {
-                                    set_model_list_signal.set(model_list);
-                                    set_model_args_signal.set(model_args);
-                                    set_active_user_signal.set(active_user);
-                                }
-                                if model_args_signal.get().repo_id
-                                    == "LLM Backend Error".to_string()
-                                {
-                                    set_backend_error.set(true);
-                                }
-                                if active_user_signal.get().name == "Database Error".to_string() {
-                                    set_database_error.set(true);
-                                }
-                                view! {
-                                    <Show when=move || !home_view.get()>
-                                        <ChatBox user=user ipv4=ipv4 set_home_view=set_home_view/>
-                                    </Show>
-                                    <Home
-                                        ipv4=ipv4
-                                        user=user
-                                        set_user=set_user
-                                        inference_args=inference_args
-                                        model_args=model_args_signal
-                                        model_list=model_list_signal
-                                        gpu_type=gpu_type
-                                        set_gpu_type=set_gpu_type
-                                    />
-
-                                    <Drawer
-                                        id="sidebar-container"
-                                        side=DrawerSide::Right
-                                        shown=drawer_state
-                                    >
-                                        <SideBar
-                                            gpu_type=gpu_type
-                                            set_gpu_type=set_gpu_type
-                                            ipv4=ipv4
-                                            set_ipv4=set_ipv4
-                                            inference_args=inference_args
-                                            set_inference_args=set_inference_args
-                                            user=user
-                                            set_user=set_user
-                                            fetch_show=fetch_show
-                                            active_user=active_user_signal
-                                            model_list=model_list_signal
-                                            model_args=model_args_signal
-                                        />
-                                    </Drawer>
-                                }
-                            })
-                    }}
-
-                </Show>
-            </Box>
         </Root>
     }
 }
