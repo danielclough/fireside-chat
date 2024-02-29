@@ -54,8 +54,12 @@ pub fn Home(
             </Tab>
             <Tab name="user_tab" label="User".into_view()>
                 <Box style="width:100%">
-                    <UserConfig active_user=active_user.get() user=user set_user=set_user
-                    set_refresh_token=set_refresh_token />
+                    <UserConfig
+                        active_user=active_user.get()
+                        user=user
+                        set_user=set_user
+                        set_refresh_token=set_refresh_token
+                    />
                 </Box>
             </Tab>
             <Tab name="models_tab" label="Models".into_view()>
@@ -103,8 +107,7 @@ pub fn Home(
             </Tab>
             <Tab name="network_tab" label="Network".into_view()>
                 <Box style="width:100%">
-                    <NetworkConfig ipv4=ipv4 set_ipv4=set_ipv4
-                    set_refresh_token=set_refresh_token/>
+                    <NetworkConfig ipv4=ipv4 set_ipv4=set_ipv4 set_refresh_token=set_refresh_token/>
                 </Box>
             </Tab>
         </Tabs>

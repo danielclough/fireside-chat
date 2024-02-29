@@ -20,7 +20,9 @@ pub fn ModelListChip(
             when=move || {
                 if catch_all && all_enabled.get() {
                     true
-                } else { tags_enabled.get().iter().any(|t| *t == name.clone()) }
+                } else {
+                    tags_enabled.get().iter().any(|t| *t == name.clone())
+                }
             }
 
             fallback=move || {

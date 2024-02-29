@@ -115,20 +115,22 @@ pub fn Index(
                                     set_model_args_signal.set(model_args);
                                     set_active_user_signal.set(active_user);
                                 }
-                                if model_args_signal.get().repo_id
-                                    == *"LLM Backend Error"
-                                {
+                                if model_args_signal.get().repo_id == *"LLM Backend Error" {
                                     set_backend_error.set(true);
                                 }
                                 if active_user_signal.get().name == *"Database Error" {
                                     set_database_error.set(true);
                                 }
                                 view! {
-                                    <Show when=move || home_view.get()
-                                        fallback = move || view! {
-                                            <ChatBox user=user ipv4=ipv4 set_home_view=set_home_view/>
+                                    <Show
+                                        when=move || home_view.get()
+                                        fallback=move || {
+                                            view! {
+                                                <ChatBox user=user ipv4=ipv4 set_home_view=set_home_view/>
+                                            }
                                         }
                                     >
+
                                         <Home
                                             gpu_type=gpu_type
                                             set_gpu_type=set_gpu_type

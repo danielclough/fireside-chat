@@ -55,34 +55,38 @@ pub fn App() -> impl IntoView {
 
     view! {
         <Root default_theme=LeptonicTheme::default()>
-            <Show when= move || refresh_token.get() % 2 == 0
-                fallback= move || view! {
-                    <Index
-                        ipv4=ipv4
-                        set_ipv4=set_ipv4
-                        gpu_type=gpu_type
-                        set_gpu_type=set_gpu_type
-                        inference_args=inference_args
-                        set_inference_args=set_inference_args
-                        user=user
-                        set_user=set_user
-                        database_error=database_error
-                        backend_error=backend_error
-                        home_view=home_view
-                        set_home_view=set_home_view
-                        model_list_signal=model_list_signal
-                        set_model_list_signal=set_model_list_signal
-                        model_args=model_args
-                        model_args_signal=model_args_signal
-                        set_model_args_signal=set_model_args_signal
-                        set_active_user_signal=set_active_user_signal
-                        active_user_signal=active_user_signal
-                        set_backend_error=set_backend_error
-                        set_database_error=set_database_error
-                        set_refresh_token=set_refresh_token
-                    />
+            <Show
+                when=move || refresh_token.get() % 2 == 0
+                fallback=move || {
+                    view! {
+                        <Index
+                            ipv4=ipv4
+                            set_ipv4=set_ipv4
+                            gpu_type=gpu_type
+                            set_gpu_type=set_gpu_type
+                            inference_args=inference_args
+                            set_inference_args=set_inference_args
+                            user=user
+                            set_user=set_user
+                            database_error=database_error
+                            backend_error=backend_error
+                            home_view=home_view
+                            set_home_view=set_home_view
+                            model_list_signal=model_list_signal
+                            set_model_list_signal=set_model_list_signal
+                            model_args=model_args
+                            model_args_signal=model_args_signal
+                            set_model_args_signal=set_model_args_signal
+                            set_active_user_signal=set_active_user_signal
+                            active_user_signal=active_user_signal
+                            set_backend_error=set_backend_error
+                            set_database_error=set_database_error
+                            set_refresh_token=set_refresh_token
+                        />
+                    }
                 }
-                >
+            >
+
                 <Index
                     ipv4=ipv4
                     set_ipv4=set_ipv4
