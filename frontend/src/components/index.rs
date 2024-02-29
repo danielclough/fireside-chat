@@ -1,5 +1,10 @@
+use crate::components::home::index::Home;
 use crate::components::{
-    chat::index::ChatBox, header::index::Header, home::index::Home, sidebar::index::SideBar,
+    chat::index::ChatBox, header::index::Header
+};
+use crate::functions::rest::{
+    llm::{get_inference_args, get_model_args, get_model_list},
+    user::get_active_user,
 };
 
 use common::database::user::UserForJson;
@@ -8,13 +13,10 @@ use common::llm::model_list::{ModelArgs, ModelDLList};
 
 use leptonic::typography::{H2, H3, H4};
 use leptonic::{
-    drawer::{Drawer, DrawerSide},
     root::Root,
     {prelude::Box, theme::LeptonicTheme},
 };
 use leptos::*;
-
-
 
 #[component]
 pub fn Index(
@@ -24,33 +26,53 @@ pub fn Index(
     set_gpu_type: WriteSignal<String>,
     inference_args: Signal<InferenceArgsForInput>,
     set_inference_args: WriteSignal<InferenceArgsForInput>,
-    fetch_show: Resource<InferenceArgsForInput, ()>,
     user: Signal<UserForJson>,
     set_user: WriteSignal<UserForJson>,
-    set_drawer_state: WriteSignal<bool>,
-    drawer_state: ReadSignal<bool>,
     database_error: ReadSignal<bool>,
     backend_error: ReadSignal<bool>,
+    set_database_error: WriteSignal<bool>,
+    set_backend_error: WriteSignal<bool>,
     home_view: ReadSignal<bool>,
     set_home_view: WriteSignal<bool>,
     model_list_signal: ReadSignal<ModelDLList>,
     set_model_list_signal: WriteSignal<ModelDLList>,
+    model_args: Signal<ModelArgs>,
     model_args_signal: ReadSignal<ModelArgs>,
     set_model_args_signal: WriteSignal<ModelArgs>,
     set_active_user_signal: WriteSignal<UserForJson>,
     active_user_signal: ReadSignal<UserForJson>,
-    set_backend_error: WriteSignal<bool>,
-    set_database_error: WriteSignal<bool>,
-    init_everything: Resource<(), (ModelDLList, ModelArgs, UserForJson)>,
+    set_refresh_token: WriteSignal<i32>,
 ) -> impl IntoView {
+
+    let fetch_args = move |_| async move {
+        set_inference_args.set(get_inference_args(ipv4.get()).await);
+    };
+    let fetch_show = create_resource(move || inference_args.get(), fetch_args);
+
+    let init_everything = create_resource(
+        || (),
+        move |_| async move {
+            logging::log!("loading model_list from API");
+            (
+                get_model_list(model_args.get().q_lvl, ipv4.get()).await,
+                get_model_args(ipv4.get()).await,
+                get_active_user().await,
+            )
+        },
+    );
 
     // Header
     //
     let home_view_toggle = move |_| {
         set_home_view.update(|value| *value = !*value);
-        // FIX refresh conversations
         if home_view.get() {
-            _ = leptos_dom::window().location().reload();
+            // refresh conversations
+            set_refresh_token.update(|x| *x = *x+1);
+        } else if database_error.get() || backend_error.get() {
+            // Refresh error
+            set_database_error.update(|err| *err = false);
+            set_backend_error.update(|err| *err = false);
+            set_refresh_token.update(|x| *x = *x+1);
         };
     };
 
@@ -59,8 +81,6 @@ pub fn Index(
             <Header
                 home_view_toggle=home_view_toggle
                 home_view=home_view
-                set_drawer_state=set_drawer_state
-                drawer_state=drawer_state
                 database_error=database_error
                 backend_error=backend_error
             />
@@ -104,26 +124,12 @@ pub fn Index(
                                     set_database_error.set(true);
                                 }
                                 view! {
-                                    <Show when=move || !home_view.get()>
-                                        <ChatBox user=user ipv4=ipv4 set_home_view=set_home_view/>
-                                    </Show>
-                                    <Home
-                                        ipv4=ipv4
-                                        user=user
-                                        set_user=set_user
-                                        inference_args=inference_args
-                                        model_args=model_args_signal
-                                        model_list=model_list_signal
-                                        gpu_type=gpu_type
-                                        set_gpu_type=set_gpu_type
-                                    />
-
-                                    <Drawer
-                                        id="sidebar-container"
-                                        side=DrawerSide::Right
-                                        shown=drawer_state
+                                    <Show when=move || home_view.get()
+                                        fallback = move || view! {
+                                            <ChatBox user=user ipv4=ipv4 set_home_view=set_home_view/>
+                                        }
                                     >
-                                        <SideBar
+                                        <Home
                                             gpu_type=gpu_type
                                             set_gpu_type=set_gpu_type
                                             ipv4=ipv4
@@ -136,8 +142,9 @@ pub fn Index(
                                             active_user=active_user_signal
                                             model_list=model_list_signal
                                             model_args=model_args_signal
+                                            set_refresh_token=set_refresh_token
                                         />
-                                    </Drawer>
+                                    </Show>
                                 }
                             })
                     }}

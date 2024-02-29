@@ -1,4 +1,4 @@
-use crate::components::sidebar::model_config::model_list_container::ModelListContainer;
+use crate::components::home::model_config::model_list_container::ModelListContainer;
 use common::llm::model_list::{ModelArgs, ModelDLList};
 use leptonic::prelude::Box;
 use leptos::*;
@@ -10,6 +10,7 @@ pub fn ModelConfig(
     ipv4: Signal<String>,
     gpu_type: Signal<String>,
     set_gpu_type: WriteSignal<String>,
+    set_refresh_token: WriteSignal<i32>,
 ) -> impl IntoView {
     view! {
         <Box style="width:100%">
@@ -19,6 +20,7 @@ pub fn ModelConfig(
                 model_list=model_list
                 gpu_type=gpu_type
                 set_gpu_type=set_gpu_type
+                set_refresh_token=set_refresh_token
             />
         </Box>
     }

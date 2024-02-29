@@ -10,6 +10,7 @@ pub fn UserConfig(
     active_user: UserForJson,
     user: Signal<UserForJson>,
     set_user: WriteSignal<UserForJson>,
+    set_refresh_token: WriteSignal<i32>,
 ) -> impl IntoView {
     let (init_user, set_init_user) = create_signal(active_user.clone());
     {
@@ -22,9 +23,8 @@ pub fn UserConfig(
     let input_str = String::new();
 
     create_effect(move |_| {
-        // FIX SO NO RELOAD NEEDED!
         if user.get().name != init_user.get().name {
-            _ = leptos_dom::window().location().reload();
+            set_refresh_token.update(|x| *x = *x+1);
         }
     });
 

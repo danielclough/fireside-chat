@@ -1,5 +1,5 @@
-use crate::components::sidebar::model_config::model_list_chip::ModelListChip;
-use crate::components::sidebar::model_config::model_list_item::ModelListItem;
+use crate::components::home::model_config::model_list_chip::ModelListChip;
+use crate::components::home::model_config::model_list_item::ModelListItem;
 use common::llm::model_list::ModelDLList;
 use leptonic::{
     grid::{Grid, Row},
@@ -19,6 +19,7 @@ pub fn ModelListGrid(
     quantized: bool,
     gpu_type: Signal<String>,
     q_lvl: ReadSignal<String>,
+    set_refresh_token: WriteSignal<i32>,
 ) -> impl IntoView {
     let (tags_enabled, set_tags_enabled) = create_signal::<Vec<String>>({
         let mut list = tags_all.get()[1..tags_all.get().len()].to_owned();
@@ -67,6 +68,7 @@ pub fn ModelListGrid(
                         tags_enabled=tags_enabled
                         gpu_type=gpu_type
                         q_lvl=q_lvl
+                        set_refresh_token=set_refresh_token
                     />
                 </For>
             </Row>

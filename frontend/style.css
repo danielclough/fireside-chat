@@ -142,6 +142,16 @@ input {
 
 /* HOME */
 
+.home-container {
+  overflow-y: scroll;
+  /* minus header */
+  height: calc(100vh - 9rem);
+  padding: 0.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+
 blockquote {
   margin: 0;
   padding: .5rem 1rem;

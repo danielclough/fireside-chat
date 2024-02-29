@@ -1,5 +1,5 @@
-use crate::components::sidebar::model_config::gpu_select::GpuSelect;
-use crate::components::sidebar::model_config::model_list_grid::ModelListGrid;
+use crate::components::home::model_config::gpu_select::GpuSelect;
+use crate::components::home::model_config::model_list_grid::ModelListGrid;
 use common::llm::model_list::ModelArgs;
 use common::llm::model_list::ModelDLList;
 use leptonic::{prelude::Box, select::Select, typography::H1};
@@ -12,6 +12,7 @@ pub fn ModelListContainer(
     ipv4: Signal<String>,
     gpu_type: Signal<String>,
     set_gpu_type: WriteSignal<String>,
+    set_refresh_token: WriteSignal<i32>,
 ) -> impl IntoView {
     let (repo_id_signal, set_repo_id_signal) = create_signal(model_args.get().repo_id.clone());
 
@@ -106,6 +107,7 @@ pub fn ModelListContainer(
                                     quantized=quantized_str.get() == "Quantized"
                                     gpu_type=gpu_type
                                     q_lvl=q_lvl
+                                    set_refresh_token=set_refresh_token
                                 />
                             }
                         }
@@ -126,6 +128,7 @@ pub fn ModelListContainer(
                             quantized=quantized_str.get() == "Quantized"
                             gpu_type=gpu_type
                             q_lvl=q_lvl
+                            set_refresh_token=set_refresh_token
                         />
                     </Show>
                 }
@@ -151,6 +154,7 @@ pub fn ModelListContainer(
                             quantized=quantized_str.get() == "Quantized"
                             gpu_type=gpu_type
                             q_lvl=q_lvl
+                            set_refresh_token=set_refresh_token
                         />
                     }
                 }
@@ -171,6 +175,7 @@ pub fn ModelListContainer(
                     quantized=quantized_str.get() == "Quantized"
                     gpu_type=gpu_type
                     q_lvl=q_lvl
+                    set_refresh_token=set_refresh_token
                 />
             </Show>
         </Show>

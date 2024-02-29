@@ -1,6 +1,6 @@
 use common::database::user::{NewUser, UserForJson};
 use gloo_net::http::Request;
-use leptos::{spawn_local, Signal, SignalGet, SignalSet, WriteSignal};
+use leptos::{spawn_local, Signal, SignalGet, SignalUpdate, WriteSignal};
 
 use crate::functions::get_path::get_database_path;
 
@@ -81,7 +81,7 @@ pub fn switch_users(
     spawn_local(async move {
         // Update "old" user (active: false)
         if old_user.clone().id != 0 {
-            _ = patch_existing_user(old_user.clone()).await;
+            _ = patch_existing_user(UserForJson { id: old_user.clone().id, name: old_user.clone().name, active: false }).await;
         };
 
         spawn_local(async move {
@@ -92,24 +92,22 @@ pub fn switch_users(
                 old_user.clone()
             };
 
-            let new_user = if new_user_exists.id == 0 {
+            if new_user_exists.id == 0 {
                 let new_user = NewUser {
                     name: input_string,
                     active: true,
                 };
-                post_new_user(new_user).await
+                let new_user = post_new_user(new_user).await;
+                set_user.update(|x| *x = new_user);
             } else {
                 let new_user = UserForJson {
                     id: new_user_exists.id,
                     name: new_user_exists.name,
                     active: true,
                 };
-                patch_existing_user(new_user).await
+                set_user.update(|x| *x = new_user.clone());
+                _ = patch_existing_user(new_user).await;
             };
-            // set user
-            spawn_local(async move {
-                set_user.set(new_user);
-            });
         });
     });
     user.get()

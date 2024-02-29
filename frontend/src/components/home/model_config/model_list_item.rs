@@ -21,6 +21,7 @@ pub fn ModelListItem(
     template_current: String,
     tags_enabled: ReadSignal<Vec<String>>,
     gpu_type: Signal<String>,
+    set_refresh_token: WriteSignal<i32>,
 ) -> impl IntoView {
     let (repo_id_in_use, _set_repo_id_in_use) = create_signal(repo_id);
     let (current_repo_id, set_current_repo_id) = create_signal(item.clone().repo_id);
@@ -43,7 +44,7 @@ pub fn ModelListItem(
     let (cpu, set_cpu) = create_signal({
         if gpu_type.get() == "None" {
             true
-        } else { !(check_cuda_or_mac && quantized.get()) }
+        } else { !check_cuda_or_mac }
     });
 
     let (name_signal, _set_name_signal) = create_signal(item.clone().name);
@@ -126,7 +127,7 @@ pub fn ModelListItem(
                     model_download(set_args_for_json, ipv4.get()).await
                 },
             );
-            _ = leptos_dom::window().location().reload();
+            set_refresh_token.update(|x| *x = *x+1);
         }
     });
 

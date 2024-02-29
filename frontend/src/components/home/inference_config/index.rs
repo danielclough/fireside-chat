@@ -11,6 +11,7 @@ pub fn Inference(
     inference_args: Signal<InferenceArgsForInput>,
     set_inference_args: WriteSignal<InferenceArgsForInput>,
     fetch_show: Resource<InferenceArgsForInput, ()>,
+    set_refresh_token: WriteSignal<i32>,
 ) -> impl IntoView {
 
     let load_context_enum = Signal::derive(move || {
@@ -69,7 +70,7 @@ pub fn Inference(
 
         async move {
             set_args_for_form(patch_inference_args(set_args_for_json, ipv4.get()).await);
-            _ = leptos_dom::window().location().reload();
+            set_refresh_token.update(|x| *x = *x+1);
         }
     });
     view! {

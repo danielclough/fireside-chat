@@ -6,6 +6,7 @@ use web_sys::KeyboardEvent;
 pub fn NetworkConfig(
     ipv4: Signal<String>,
     set_ipv4: WriteSignal<String>,
+    set_refresh_token: WriteSignal<i32>,
 ) -> impl IntoView {
     let input_element: NodeRef<Input> = create_node_ref();
     let input_str = String::new();
@@ -15,7 +16,7 @@ pub fn NetworkConfig(
             let input_element = input_element.get().expect("<input> to exist");
             set_ipv4.set(input_element.value());
             input_element.set_value("");
-            _ = leptos_dom::window().location().reload();
+            set_refresh_token.update(|x| *x = *x+1);
         }
     };
 

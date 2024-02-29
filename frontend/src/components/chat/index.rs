@@ -217,7 +217,7 @@ pub fn ChatBox(user: Signal<UserForJson>, ipv4: Signal<String>, set_home_view: W
     });
 
     view! {
-        <Box class="outer-container" style="position:absolute;">
+        <Box class="outer-container">
             // moving here allows it work
             <div class="hidden">{move || time_to_send}</div>
             <div id="chat-box" class="outer-container">
