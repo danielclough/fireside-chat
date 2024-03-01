@@ -348,9 +348,9 @@ impl LoadModel {
         let model_args_out = ModelTokenizerDevice {
             model,
             model_cache: cache,
-            model_config: model_config,
+            model_config,
             template: args.template,
-            tokenizer: tokenizer,
+            tokenizer,
             device,
         };
 

@@ -32,7 +32,7 @@ where
     };
 
     view! {
-        <Modal show_when=show_when on_escape=move || (on_cancel)()>
+        <Modal show_when=show_when on_escape=on_cancel>
             <ModalHeader>
                 <ModalTitle>"Create Username!"</ModalTitle>
             </ModalHeader>

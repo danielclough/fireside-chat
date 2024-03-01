@@ -6,7 +6,7 @@ use leptonic::{
 use common::llm::{inference::InferenceArgsForInput, role_list::RoleListEntry};
 use leptos::*;
 
-use crate::components::sidebar::role_config::role_list_item::RoleListItem;
+use crate::components::home::role_config::role_list_item::RoleListItem;
 
 #[component]
 pub fn RoleListTab(
@@ -14,6 +14,7 @@ pub fn RoleListTab(
     role_list: Vec<RoleListEntry>,
     inference_args: Signal<InferenceArgsForInput>,
     set_inference_args: WriteSignal<InferenceArgsForInput>,
+    set_refresh_token: WriteSignal<i32>,
 ) -> impl IntoView {
     view! {
         <Collapsibles default_on_open=OnOpen::CloseOthers>
@@ -25,6 +26,7 @@ pub fn RoleListTab(
                         item=item
                         inference_args=inference_args
                         set_inference_args=set_inference_args
+                        set_refresh_token=set_refresh_token
                     />
                 </For>
             </Stack>

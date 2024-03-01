@@ -18,12 +18,10 @@ pub fn ModelListChip(
     view! {
         <Show
             when=move || {
-                if catch_all.clone() && all_enabled.get() {
-                    true
-                } else if tags_enabled.get().iter().any(|t| t.to_string() == name.clone()) {
+                if catch_all && all_enabled.get() {
                     true
                 } else {
-                    false
+                    tags_enabled.get().iter().any(|t| *t == name.clone())
                 }
             }
 
@@ -34,7 +32,7 @@ pub fn ModelListChip(
                             set_tags_enabled.update(|x| *x = vec![String::new()]);
                         } else {
                             set_tags_enabled.update(|x| x.push(name_signal.get()));
-                            set_tags_enabled.update(|x| x.retain(|x| x != ""));
+                            set_tags_enabled.update(|x| x.retain(|x| !x.is_empty()));
                         };
                     }>
                         {if name_signal.get() != String::new() {
@@ -56,7 +54,7 @@ pub fn ModelListChip(
                         set_tags_enabled.update(|x| x.retain(|x| x != name_signal.get().as_str()));
                     } else {
                         set_tags_enabled.update(|x| x.retain(|x| x != name_signal.get().as_str()));
-                        if tags_enabled.get().len() == 0 {
+                        if tags_enabled.get().is_empty() {
                             set_tags_enabled.update(|x| x.push("".to_string()));
                         }
                     };

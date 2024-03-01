@@ -30,7 +30,7 @@ pub async fn app(ipv4: String, port: u16) {
     // Load Mistral
     // Instantiate args to get current repo_id to load model
     let model_args_for_loading_model = LoadModel::load_current_args();
-    let no_model = model_args_for_loading_model.clone().template.unwrap_or(String::new()) == *"NoModel";
+    let no_model = model_args_for_loading_model.clone().template.unwrap_or_default() == *"NoModel";
     println!("\nNoModel: {}\n",no_model);
     let model_tokenizer_device: Mutex<ModelTokenizerDevice> = Mutex::new(
         LoadModel::load(model_args_for_loading_model.clone(), no_model)

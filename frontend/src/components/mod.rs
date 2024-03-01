@@ -1,4 +1,4 @@
 pub mod chat;
-pub mod sidebar;
-pub mod home;
 pub mod header;
+pub mod index;
+pub mod home;

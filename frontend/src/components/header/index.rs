@@ -8,8 +8,6 @@ use web_sys::MouseEvent;
 pub fn Header<F>(
     home_view_toggle: F,
     home_view: ReadSignal<bool>,
-    set_drawer_state: WriteSignal<bool>,
-    drawer_state: ReadSignal<bool>,
     database_error: ReadSignal<bool>,
     backend_error: ReadSignal<bool>,
 ) -> impl IntoView
@@ -29,24 +27,16 @@ where
                 <button on:click=home_view_toggle>
                     {move || {
                         if database_error.get() || backend_error.get() {
-                            "Double Click to Restart"
+                            "Click to Restart"
+                        } else if home_view.get() {
+                            "Start Chat"
                         } else {
-                            if home_view.get() { "Start Chat" } else { "End Chat" }
+                            "End Chat"
                         }
                     }}
 
                 </button>
                 <ThemeToggle off=LeptonicTheme::Light on=LeptonicTheme::Dark/>
-                <Toggle
-                    state=drawer_state
-                    set_state=set_drawer_state
-                    variant=ToggleVariant::Stationary
-                    icons=ToggleIcons {
-                        on: icondata::FaXmarkSolid,
-                        off: icondata::BsList,
-                    }
-                />
-
             </div>
         </Box>
     }

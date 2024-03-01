@@ -1,3 +1,7 @@
 pub mod index;
-pub mod init_user;
-pub mod init_model;
+pub mod inference_config;
+pub mod model_config;
+pub mod role_config;
+pub mod user_config;
+pub mod network_config;
+pub mod overview;

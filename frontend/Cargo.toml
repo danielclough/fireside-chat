@@ -15,12 +15,9 @@ leptos-use = { version = "0.10", features = ["serde"] }
 log = "0.4.20"
 web-sys = "0.3.65"
 leptonic = "0.5"
-leptos_icons = { version = "0.3.0" }
 icondata = { version = "0.3.0" }
 gloo-net = "0.5.0"
-serde_json = "1.0.108"
 serde = { version = "1.0.193", features = ["derive"] }
-struct_iterable = "0.1.1"
 time = "0.3.31"
 uuid = { version = "1.7.0", features = ["v4"] }
 
