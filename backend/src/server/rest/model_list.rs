@@ -144,47 +144,19 @@ list:
     n_safetensors: 2
     tags: gguf,safetensors,
   -
-    name: phi-1
-    repo_id: DanielClough/Candle_phi-1
-    template: PhiCode
-    base: phi
-    n_safetensors: 1
-    tags: gguf,safetensors,code,
-  -
-    name: phi-1_5
-    repo_id: DanielClough/Candle_phi-1_5
-    template: PhiCode, PhiChat, PhiQA
-    base: phi
-    n_safetensors: 1
-    tags: gguf,safetensors,code,
-  -
-    name: phi-2
-    repo_id: DanielClough/Candle_phi-2
-    template: PhiCode, PhiChat, PhiQA
-    base: phi
-    n_safetensors: 2
-    tags: safetensors,code,
-  -
-    name: phi-2_old
-    repo_id: DanielClough/Candle_phi-2_old
-    template: PhiCode, PhiChat, PhiQA
-    base: phi
-    n_safetensors: 2
-    tags: safetensors,code,
-  -
     name: Puffin-Phi-v2
     repo_id: DanielClough/Candle_Puffin-Phi-v2
     template: ShareGPT
     base: phi
     n_safetensors: 1
-    tags: safetensors,
+    tags: gguf,
   -
     name: Phi-Hermes-1.3B
     repo_id: DanielClough/Candle_Phi-Hermes-1.3B
     template: Alpaca
     base: phi
     n_safetensors: 1
-    tags: safetensors,
+    tags: gguf,
 ",
     )
     .expect("Model List from String")
@@ -240,3 +212,34 @@ list:
 // template:
 // n_safetensors: 1
 // tags: gguf, n_safetensors,
+
+
+
+// -
+// name: phi-1
+// repo_id: DanielClough/Candle_phi-1
+// template: PhiCode
+// base: phi
+// n_safetensors: 1
+// tags: code,
+// -
+// name: phi-1_5
+// repo_id: DanielClough/Candle_phi-1_5
+// template: PhiCode, PhiChat, PhiQA
+// base: phi
+// n_safetensors: 1
+// tags: code,
+// -
+// name: phi-2
+// repo_id: DanielClough/Candle_phi-2
+// template: PhiCode, PhiChat, PhiQA
+// base: phi
+// n_safetensors: 2
+// tags: code,
+// -
+// name: phi-2_old
+// repo_id: DanielClough/Candle_phi-2_old
+// template: PhiCode, PhiChat, PhiQA
+// base: phi
+// n_safetensors: 2
+// tags: code,

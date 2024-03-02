@@ -23,7 +23,7 @@
     },
     "bundle": {
       "active": true,
-      "targets": "all",
+      "targets": "deb",
       "identifier": "us.danielc.chat",
       "copyright": "AGPL-v3",
       "category": "Utility",
