@@ -116,13 +116,6 @@ list:
     n_safetensors: 3
     tags: gguf,safetensors,
   -
-    name: Mistralic-7B-1
-    repo_id: DanielClough/Candle_Mistralic-7B-1
-    template: ChatML
-    base: mistral
-    n_safetensors: 2
-    tags: gguf,safetensors,
-  -
     name: dolphin-2.2.1-mistral-7b
     repo_id: DanielClough/Candle_dolphin-2.2.1-mistral-7b
     template: ChatML
@@ -144,52 +137,31 @@ list:
     n_safetensors: 2
     tags: gguf,safetensors,
   -
-    name: phi-1
-    repo_id: DanielClough/Candle_phi-1
-    template: PhiCode
-    base: phi
-    n_safetensors: 1
-    tags: gguf,safetensors,code,
-  -
-    name: phi-1_5
-    repo_id: DanielClough/Candle_phi-1_5
-    template: PhiCode, PhiChat, PhiQA
-    base: phi
-    n_safetensors: 1
-    tags: gguf,safetensors,code,
-  -
-    name: phi-2
-    repo_id: DanielClough/Candle_phi-2
-    template: PhiCode, PhiChat, PhiQA
-    base: phi
-    n_safetensors: 2
-    tags: safetensors,code,
-  -
-    name: phi-2_old
-    repo_id: DanielClough/Candle_phi-2_old
-    template: PhiCode, PhiChat, PhiQA
-    base: phi
-    n_safetensors: 2
-    tags: safetensors,code,
-  -
     name: Puffin-Phi-v2
     repo_id: DanielClough/Candle_Puffin-Phi-v2
     template: ShareGPT
     base: phi
     n_safetensors: 1
-    tags: safetensors,
+    tags: gguf,
   -
     name: Phi-Hermes-1.3B
     repo_id: DanielClough/Candle_Phi-Hermes-1.3B
     template: Alpaca
     base: phi
     n_safetensors: 1
-    tags: safetensors,
+    tags: gguf,
 ",
     )
     .expect("Model List from String")
 }
 
+// -
+// name: Mistralic-7B-1
+// repo_id: DanielClough/Candle_Mistralic-7B-1
+// template: ChatML
+// base: mistral
+// n_safetensors: 2
+// tags: gguf,safetensors,
 // -
 // name: SOLAR-10.7B-v1.0
 // repo_id: DanielClough/Candle_SOLAR-10.7B-v1.0
@@ -240,3 +212,34 @@ list:
 // template:
 // n_safetensors: 1
 // tags: gguf, n_safetensors,
+
+
+
+// -
+// name: phi-1
+// repo_id: DanielClough/Candle_phi-1
+// template: PhiCode
+// base: phi
+// n_safetensors: 1
+// tags: code,
+// -
+// name: phi-1_5
+// repo_id: DanielClough/Candle_phi-1_5
+// template: PhiCode, PhiChat, PhiQA
+// base: phi
+// n_safetensors: 1
+// tags: code,
+// -
+// name: phi-2
+// repo_id: DanielClough/Candle_phi-2
+// template: PhiCode, PhiChat, PhiQA
+// base: phi
+// n_safetensors: 2
+// tags: code,
+// -
+// name: phi-2_old
+// repo_id: DanielClough/Candle_phi-2_old
+// template: PhiCode, PhiChat, PhiQA
+// base: phi
+// n_safetensors: 2
+// tags: code,

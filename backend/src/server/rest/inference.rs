@@ -55,6 +55,7 @@ pub async fn update_inference(
     // Mutate AppState
     let mut mutable_state = state.inference_args.lock().unwrap();
     *mutable_state = new_args.clone();
+    drop(mutable_state);
 
     tracing::debug!("{:?}", state.inference_args);
 

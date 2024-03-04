@@ -13,7 +13,6 @@ pub fn RoleListItem(
     item: RoleListEntry,
     inference_args: Signal<InferenceArgsForInput>,
     set_inference_args: WriteSignal<InferenceArgsForInput>,
-    set_refresh_token: WriteSignal<i32>,
 ) -> impl IntoView {
     let item_role_input_element: NodeRef<Input> = create_node_ref();
 
@@ -45,18 +44,8 @@ pub fn RoleListItem(
 
         async move {
             set_args_for_form(patch_role_list(set_args_for_json, ipv4.get()).await);
-            set_refresh_token.update(|x| *x += 1);
         }
     });
-
-    // create_effect(move |_| {
-    //     // FIX SO NO RELOAD NEEDED!
-    //     if role.get() != inference_args.get().role {
-    //         spawn_local(async move {
-            // set_refresh_token.update(|x| *x = *x+1);
-    //         })
-    //     }
-    // });
 
     view! {
         <Collapsible>

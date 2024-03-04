@@ -19,13 +19,12 @@ pub fn Home(
     set_gpu_type: WriteSignal<String>,
     inference_args: Signal<InferenceArgsForInput>,
     set_inference_args: WriteSignal<InferenceArgsForInput>,
-    fetch_show: Resource<InferenceArgsForInput, ()>,
     model_list: ReadSignal<ModelDLList>,
-    model_args: ReadSignal<ModelArgs>,
+    model_args: Signal<ModelArgs>,
+    set_model_args: WriteSignal<ModelArgs>,
     active_user: ReadSignal<UserForJson>,
     user: Signal<UserForJson>,
     set_user: WriteSignal<UserForJson>,
-    set_refresh_token: WriteSignal<i32>,
 ) -> impl IntoView {
     let role_list = create_resource(
         || (),
@@ -45,21 +44,16 @@ pub fn Home(
                         set_user=set_user
                         inference_args=inference_args
                         model_args=model_args
+                        set_model_args=set_model_args
                         model_list=model_list
                         gpu_type=gpu_type
                         set_gpu_type=set_gpu_type
-                        set_refresh_token=set_refresh_token
                     />
                 </Box>
             </Tab>
             <Tab name="user_tab" label="User".into_view()>
                 <Box style="width:100%">
-                    <UserConfig
-                        active_user=active_user.get()
-                        user=user
-                        set_user=set_user
-                        set_refresh_token=set_refresh_token
-                    />
+                    <UserConfig active_user=active_user.get() user=user set_user=set_user/>
                 </Box>
             </Tab>
             <Tab name="models_tab" label="Models".into_view()>
@@ -68,9 +62,9 @@ pub fn Home(
                         ipv4=ipv4
                         model_list=model_list
                         model_args=model_args
+                        set_model_args=set_model_args
                         gpu_type=gpu_type
                         set_gpu_type=set_gpu_type
-                        set_refresh_token=set_refresh_token
                     />
                 </Box>
             </Tab>
@@ -80,8 +74,6 @@ pub fn Home(
                         ipv4=ipv4
                         inference_args=inference_args
                         set_inference_args=set_inference_args
-                        fetch_show=fetch_show
-                        set_refresh_token=set_refresh_token
                     />
                 </Box>
             </Tab>
@@ -97,7 +89,6 @@ pub fn Home(
                                         role_list=role_list
                                         inference_args=inference_args
                                         set_inference_args=set_inference_args
-                                        set_refresh_token=set_refresh_token
                                     />
                                 }
                             })
@@ -107,7 +98,7 @@ pub fn Home(
             </Tab>
             <Tab name="network_tab" label="Network".into_view()>
                 <Box style="width:100%">
-                    <NetworkConfig ipv4=ipv4 set_ipv4=set_ipv4 set_refresh_token=set_refresh_token/>
+                    <NetworkConfig ipv4=ipv4 set_ipv4=set_ipv4/>
                 </Box>
             </Tab>
         </Tabs>

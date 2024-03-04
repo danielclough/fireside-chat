@@ -8,13 +8,12 @@ use leptos::*;
 #[component]
 pub fn ModelListContainer(
     model_list: ReadSignal<ModelDLList>,
-    model_args: ReadSignal<ModelArgs>,
+    model_args: Signal<ModelArgs>,
     ipv4: Signal<String>,
     gpu_type: Signal<String>,
     set_gpu_type: WriteSignal<String>,
-    set_refresh_token: WriteSignal<i32>,
+    set_model_args: WriteSignal<ModelArgs>,
 ) -> impl IntoView {
-    let (repo_id_signal, set_repo_id_signal) = create_signal(model_args.get().repo_id.clone());
 
     let _q_levels = ["q2k", "q3k", "q4_0", "q4_1", "q4k", "q5_0", "q5_1", "q5k", "q6k", "q8_0", "q8_1", "f16",];
     let (q_lvl, _set_q_lvl) = create_signal(model_args.get().q_lvl);
@@ -50,6 +49,7 @@ pub fn ModelListContainer(
     });
 
     view! {
+        {move || model_args.get().repo_id}
         <Box style="margin-top:1rem;padding:1rem 0.25rem;display:flex;flex-direction:column;">
             <H1 style="width:100%;padding:0.25rem;text-align:center;box-shadow:2px 2px 8px #000;">
                 "Current Model"
@@ -65,16 +65,16 @@ pub fn ModelListContainer(
                 />
 
                 <Show
-                    when=move || repo_id_signal.get() != *"NoModel"
+                    when=move || model_args.get().repo_id.clone() != *"NoModel"
                     fallback=move || view! { "NoModel" }
                 >
                     <a
-                        href=format!("https://hf.co/{}", repo_id_signal.get())
+                        href=format!("https://hf.co/{}", model_args.get().repo_id.clone())
                         target="_blank"
                         rel="noreferrer"
                         style="padding:0.25rem;font-size:xx-large;background:#ccc;box-shadow:2px 2px 8px #000;margin:0 1rem;"
                     >
-                        {repo_id_signal.get()}
+                        {model_args.get().repo_id.clone()}
                         " 🔗"
                     </a>
                 </Show>
@@ -92,43 +92,35 @@ pub fn ModelListContainer(
                         when=move || gpu_type.get() == "Mac" || gpu_type.get() == "CUDA"
                         fallback=move || {
                             view! {
-                                <GpuSelect
-                                    gpu_type=gpu_type
-                                    set_gpu_type=set_gpu_type
-                                    set_repo_id_signal=set_repo_id_signal
-                                />
+                                <GpuSelect gpu_type=gpu_type set_gpu_type=set_gpu_type/>
                                 <ModelListGrid
                                     model_list=model_list
                                     tags_all=tags_all
                                     ipv4=ipv4
                                     template_current=template_current
-                                    repo_id=repo_id_signal
                                     quantized_current=quantized_current
                                     quantized=quantized_str.get() == "Quantized"
                                     gpu_type=gpu_type
                                     q_lvl=q_lvl
-                                    set_refresh_token=set_refresh_token
+                                    model_args=model_args
+                                    set_model_args=set_model_args
                                 />
                             }
                         }
                     >
 
-                        <GpuSelect
-                            gpu_type=gpu_type
-                            set_gpu_type=set_gpu_type
-                            set_repo_id_signal=set_repo_id_signal
-                        />
+                        <GpuSelect gpu_type=gpu_type set_gpu_type=set_gpu_type/>
                         <ModelListGrid
                             model_list=model_list
                             tags_all=tags_all
                             ipv4=ipv4
                             template_current=template_current
-                            repo_id=repo_id_signal
                             quantized_current=quantized_current
                             quantized=quantized_str.get() == "Quantized"
                             gpu_type=gpu_type
                             q_lvl=q_lvl
-                            set_refresh_token=set_refresh_token
+                            model_args=model_args
+                            set_model_args=set_model_args
                         />
                     </Show>
                 }
@@ -139,43 +131,35 @@ pub fn ModelListContainer(
                 when=move || gpu_type.get() == "Mac" || gpu_type.get() == "CUDA"
                 fallback=move || {
                     view! {
-                        <GpuSelect
-                            gpu_type=gpu_type
-                            set_gpu_type=set_gpu_type
-                            set_repo_id_signal=set_repo_id_signal
-                        />
+                        <GpuSelect gpu_type=gpu_type set_gpu_type=set_gpu_type/>
                         <ModelListGrid
                             model_list=model_list
                             tags_all=tags_all
                             ipv4=ipv4
                             template_current=template_current
-                            repo_id=repo_id_signal
                             quantized_current=quantized_current
                             quantized=quantized_str.get() == "Quantized"
                             gpu_type=gpu_type
                             q_lvl=q_lvl
-                            set_refresh_token=set_refresh_token
+                            model_args=model_args
+                            set_model_args=set_model_args
                         />
                     }
                 }
             >
 
-                <GpuSelect
-                    gpu_type=gpu_type
-                    set_gpu_type=set_gpu_type
-                    set_repo_id_signal=set_repo_id_signal
-                />
+                <GpuSelect gpu_type=gpu_type set_gpu_type=set_gpu_type/>
                 <ModelListGrid
                     model_list=model_list
                     tags_all=tags_all
                     ipv4=ipv4
                     template_current=template_current
-                    repo_id=repo_id_signal
                     quantized_current=quantized_current
                     quantized=quantized_str.get() == "Quantized"
                     gpu_type=gpu_type
                     q_lvl=q_lvl
-                    set_refresh_token=set_refresh_token
+                    model_args=model_args
+                    set_model_args=set_model_args
                 />
             </Show>
         </Show>

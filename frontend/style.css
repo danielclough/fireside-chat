@@ -469,3 +469,35 @@ leptonic-grid-col > form > button {
 leptonic-modal {
   overflow: auto;
 }
+
+/*  */
+/* LANDING */
+/*  */
+
+.landing {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-position: center;
+  background-clip: border-box;
+  background-size: cover;
+  background-image: url("/images/3d-fireside.webp");
+  filter: opacity(0.6);
+  -webkit-filter: opacity(0.6);
+}
+
+.landing button {
+  color: var(--theme-dark-orange);
+  width: 18rem;
+  height: 6rem;
+  font-size: 3rem;
+  background-color: rgba(0,0,0,.6);
+  box-shadow: 1rem 1rem .5rem black;
+  transition: 0.3s;
+  cursor: pointer;
+  opacity: .8;
+}
+
+.landing button:hover {opacity: 1}

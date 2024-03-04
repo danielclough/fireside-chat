@@ -28,6 +28,7 @@ pub async fn update_model_args(
     if state.model_args.lock().is_ok() {
         let mut mutable_arg_state = state.model_args.lock().unwrap();
         *mutable_arg_state = new_args.clone();
+        drop(mutable_arg_state);
     };
 
     println!("rest/model.rs MTD");
@@ -35,11 +36,20 @@ pub async fn update_model_args(
     
     // Mutate AppState
     if state.model_tokenizer_device.lock().is_ok() {
+        // Drop current model
         let mut mutable_mtd_state = state.model_tokenizer_device.lock().expect("lock state");
+        let model_tokenizer_device: ModelTokenizerDevice = LoadModel::load(new_args.clone(),true).expect("*** load_model should work.");
+        *mutable_mtd_state = model_tokenizer_device;
+        drop(mutable_mtd_state);
+
+        println!("Dropped old and ready to load new model.");
+
         // load model
+        let mut mutable_mtd_state = state.model_tokenizer_device.lock().expect("lock state");
         let no_model = new_args.clone().template.unwrap_or_default() == *"NoModel";
         let model_tokenizer_device: ModelTokenizerDevice = LoadModel::load(new_args.clone(),no_model).expect("*** load_model should work.");
         *mutable_mtd_state = model_tokenizer_device;
+        drop(mutable_mtd_state);
     }
     
 

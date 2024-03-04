@@ -1,9 +1,7 @@
 use crate::components::home::index::Home;
-use crate::components::{
-    chat::index::ChatBox, header::index::Header
-};
+use crate::components::{chat::index::ChatBox, header::index::Header};
 use crate::functions::rest::{
-    llm::{get_inference_args, get_model_args, get_model_list},
+    llm::{get_model_args, get_model_list},
     user::get_active_user,
 };
 
@@ -36,25 +34,27 @@ pub fn Index(
     set_home_view: WriteSignal<bool>,
     model_list_signal: ReadSignal<ModelDLList>,
     set_model_list_signal: WriteSignal<ModelDLList>,
-    model_args: Signal<ModelArgs>,
-    model_args_signal: ReadSignal<ModelArgs>,
-    set_model_args_signal: WriteSignal<ModelArgs>,
+    model_args_local_storage: Signal<ModelArgs>,
+    set_model_args_local_storage: WriteSignal<ModelArgs>,
     set_active_user_signal: WriteSignal<UserForJson>,
     active_user_signal: ReadSignal<UserForJson>,
-    set_refresh_token: WriteSignal<i32>,
 ) -> impl IntoView {
-
-    let fetch_args = move |_| async move {
-        set_inference_args.set(get_inference_args(ipv4.get()).await);
-    };
-    let fetch_show = create_resource(move || inference_args.get(), fetch_args);
-
     let init_everything = create_resource(
-        || (),
+        move || {
+            (
+                model_args_local_storage.get(),
+                model_args_local_storage.get(),
+                user.get(),
+                inference_args.get(),
+                ipv4.get(),
+            )
+        },
         move |_| async move {
             logging::log!("loading model_list from API");
+            logging::log!("loading model_args from API");
+            logging::log!("loading active_user from API");
             (
-                get_model_list(model_args.get().q_lvl, ipv4.get()).await,
+                get_model_list(model_args_local_storage.get().q_lvl, ipv4.get()).await,
                 get_model_args(ipv4.get()).await,
                 get_active_user().await,
             )
@@ -64,15 +64,11 @@ pub fn Index(
     // Header
     //
     let home_view_toggle = move |_| {
-        set_home_view.update(|value| *value = !*value);
-        if home_view.get() {
-            // refresh conversations
-            set_refresh_token.update(|x| *x += 1);
-        } else if database_error.get() || backend_error.get() {
+        if database_error.get() || backend_error.get() {
             // Refresh error
-            set_database_error.update(|err| *err = false);
-            set_backend_error.update(|err| *err = false);
-            set_refresh_token.update(|x| *x += 1);
+            set_home_view.update(|value| *value = true);
+        } else {
+            set_home_view.update(|value| *value = !*value);
         };
     };
 
@@ -106,51 +102,60 @@ pub fn Index(
                     }
                 >
 
-                    {move || {
-                        init_everything
-                            .get()
-                            .map(|(model_list, model_args, active_user)| {
-                                {
-                                    set_model_list_signal.set(model_list);
-                                    set_model_args_signal.set(model_args);
-                                    set_active_user_signal.set(active_user);
-                                }
-                                if model_args_signal.get().repo_id == *"LLM Backend Error" {
-                                    set_backend_error.set(true);
-                                }
-                                if active_user_signal.get().name == *"Database Error" {
-                                    set_database_error.set(true);
-                                }
-                                view! {
-                                    <Show
-                                        when=move || home_view.get()
-                                        fallback=move || {
-                                            view! {
-                                                <ChatBox user=user ipv4=ipv4 set_home_view=set_home_view/>
+                    <Transition // the fallback will show initially
+                    // on subsequent reloads, the current child will
+                    // continue showing
+                    fallback=move || {
+                        view! { <p>"Initializing..."</p> }
+                    }>
+                        {move || {
+                            init_everything
+                                .get()
+                                .map(|(model_list, model_args, active_user)| {
+                                    leptos_dom::log!("Init Map");
+                                    {
+                                        set_model_list_signal.set(model_list);
+                                        set_model_args_local_storage.set(model_args);
+                                        set_active_user_signal.set(active_user);
+                                    }
+                                    if model_args_local_storage.get().repo_id
+                                        == *"LLM Backend Error"
+                                    {
+                                        set_backend_error.set(true);
+                                    }
+                                    if active_user_signal.get().name == *"Database Error" {
+                                        set_database_error.set(true);
+                                    }
+                                    view! {
+                                        <Show
+                                            when=move || home_view.get()
+                                            fallback=move || {
+                                                view! {
+                                                    <ChatBox user=user ipv4=ipv4 set_home_view=set_home_view/>
+                                                }
                                             }
-                                        }
-                                    >
+                                        >
 
-                                        <Home
-                                            gpu_type=gpu_type
-                                            set_gpu_type=set_gpu_type
-                                            ipv4=ipv4
-                                            set_ipv4=set_ipv4
-                                            inference_args=inference_args
-                                            set_inference_args=set_inference_args
-                                            user=user
-                                            set_user=set_user
-                                            fetch_show=fetch_show
-                                            active_user=active_user_signal
-                                            model_list=model_list_signal
-                                            model_args=model_args_signal
-                                            set_refresh_token=set_refresh_token
-                                        />
-                                    </Show>
-                                }
-                            })
-                    }}
+                                            <Home
+                                                gpu_type=gpu_type
+                                                set_gpu_type=set_gpu_type
+                                                ipv4=ipv4
+                                                set_ipv4=set_ipv4
+                                                inference_args=inference_args
+                                                set_inference_args=set_inference_args
+                                                user=user
+                                                set_user=set_user
+                                                active_user=active_user_signal
+                                                model_list=model_list_signal
+                                                model_args=model_args_local_storage
+                                                set_model_args=set_model_args_local_storage
+                                            />
+                                        </Show>
+                                    }
+                                })
+                        }}
 
+                    </Transition>
                 </Show>
             </Box>
         </Root>

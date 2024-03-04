@@ -1,12 +1,6 @@
 use common::llm::model_list::{ModelArgs, ModelDLListEntry};
-use leptonic::{
-    grid::Col,
-    icon::Icon,
-    prelude::Box,
-    progress_bar::ProgressBar,
-    select::Select,
-};
-use leptos::{html::Input, *};
+use leptonic::{grid::Col, icon::Icon, prelude::Box, progress_bar::ProgressBar, select::Select};
+use leptos::*;
 
 use crate::functions::rest::llm::{model_download, model_update};
 
@@ -21,30 +15,25 @@ pub fn ModelListItem(
     template_current: String,
     tags_enabled: ReadSignal<Vec<String>>,
     gpu_type: Signal<String>,
-    set_refresh_token: WriteSignal<i32>,
+    set_model_args: WriteSignal<ModelArgs>,
 ) -> impl IntoView {
-    let (repo_id_in_use, _set_repo_id_in_use) = create_signal(repo_id);
-    let (current_repo_id, set_current_repo_id) = create_signal(item.clone().repo_id);
-    let (quantized, set_quantized) = create_signal(quantized);
+    let (quantized, _set_quantized) = create_signal(quantized);
+    let (has_gguf, set_has_gguf) = create_signal(item.gguf);
 
     // do the models have gguf/safetensors?
-    let (gguf, set_gguf) = create_signal(false);
-    let (safetensors, set_safetensors) = create_signal(false);
+    let (has_safetensors, set_has_safetensors) = create_signal(item.safetensors);
 
     // show current if repo and gguf/safetensors match
-    let is_current =
-        (current_repo_id.get() == repo_id_in_use.get()) && (quantized_current == quantized.get());
+    let (current_repo_id, _set_current_repo_id) = create_signal(item.clone().repo_id);
+    let is_current = (current_repo_id.get() == repo_id) && (quantized_current == quantized.get());
 
-    let (model_config, set_model_config) = create_signal(String::new());
-    let (revision, set_revision) = create_signal(String::new());
-    let (tokenizer_file, set_tokenizer_file) = create_signal(String::new());
-    let (weight_file, set_weight_file) = create_signal(String::new());
-    let (use_flash_attn, set_use_flash_attn) = create_signal(false);
     let check_cuda_or_mac = gpu_type.get() == "Mac" || gpu_type.get() == "CUDA";
-    let (cpu, set_cpu) = create_signal({
+    let (cpu, _set_cpu) = create_signal({
         if gpu_type.get() == "None" {
             true
-        } else { !check_cuda_or_mac }
+        } else {
+            !check_cuda_or_mac
+        }
     });
 
     let (name_signal, _set_name_signal) = create_signal(item.clone().name);
@@ -73,37 +62,7 @@ pub fn ModelListItem(
     let (template_for_select_signal, _set_template_for_select_signal) =
         create_signal(template_for_select.clone());
 
-    let repo_id_input_element: NodeRef<Input> = create_node_ref();
-    let gguf_input_element: NodeRef<Input> = create_node_ref();
-    let safetensors_input_element: NodeRef<Input> = create_node_ref();
-
-    let (_get_model_args, set_model_args) = create_signal(ModelArgs {
-        use_flash_attn: false,
-        repo_id: String::new(),
-        template: None,
-        q_lvl: q_lvl.get(),
-        revision: "main".to_string(),
-        tokenizer_file: None,
-        weight_file: None,
-        quantized: quantized.get(),
-        cpu: cpu.get(),
-    });
-
-    // Set set_model_args
-    let set_args_for_form = move |args: ModelArgs| {
-        // Set ModelArgs strut
-        set_model_args.set(args);
-
-        // Args as individual vars
-        set_current_repo_id.set(current_repo_id.get());
-        set_model_config.set(model_config.get());
-        set_revision.set(revision.get());
-        set_tokenizer_file.set(tokenizer_file.get());
-        set_weight_file.set(weight_file.get());
-        set_quantized.set(quantized.get());
-        set_cpu.set(cpu.get());
-        set_use_flash_attn.set(use_flash_attn.get());
-    };
+    let (loading, set_loading) = create_signal(false);
 
     let submit = create_action(move |_| {
         // Args as individual vars
@@ -120,69 +79,43 @@ pub fn ModelListItem(
         };
 
         async move {
-            set_args_for_form(
-                if (quantized.get() && gguf.get()) || (!quantized.get() && safetensors.get()) {
-                    model_update(set_args_for_json, ipv4.get()).await
-                } else {
-                    model_download(set_args_for_json, ipv4.get()).await
-                },
-            );
-            set_refresh_token.update(|x| *x += 1);
+            if (quantized.get() && has_gguf.get()) || (!quantized.get() && has_safetensors.get()) {
+                leptos_dom::log!("Update Model");
+                let args_to_set = model_update(set_args_for_json.clone(), ipv4.get()).await;
+                set_model_args.set(args_to_set);
+                // set_model_args.set(set_args_for_json.clone());
+            } else if quantized.get() && !has_gguf.get() {
+                leptos_dom::log!("Download GGUF");
+                model_download(set_args_for_json.clone(), ipv4.get()).await;
+                // indicate .gguf is downloaded
+                set_has_gguf.set(true);
+                set_loading.set(false);
+            } else if !quantized.get() && !has_safetensors.get() {
+                leptos_dom::log!("Download Safetensors");
+                model_download(set_args_for_json.clone(), ipv4.get()).await;
+                // indicate .safetensors is downloaded
+                set_has_safetensors.set(true);
+                set_loading.set(false);
+            };
         }
     });
 
-    let (loading, set_loading) = create_signal(false);
     let (template_signal, _set_template_signal) = create_signal(template_current);
 
     view! {
         <Show when=move || {
             tags_enabled.get().iter().any(|t| item.tags.join(" ").contains(t) && !t.is_empty())
         }>
-
             <Col class="model-cols" xl=3 lg=4 md=5 sm=6 xs=8>
                 <form
                     style=""
                     on:submit=move |ev| {
                         ev.prevent_default();
                         set_loading.set(true);
-                        let repo_id_element_value = repo_id_input_element
-                            .get()
-                            .expect("<input> exists")
-                            .value();
-                        let gguf_element_value = gguf_input_element
-                            .get()
-                            .expect("<input> exists")
-                            .value();
-                        let safetensors_element_value = safetensors_input_element
-                            .get()
-                            .expect("<input> exists")
-                            .value();
-                        set_current_repo_id.set(repo_id_element_value);
-                        set_gguf.set(gguf_element_value == "value");
-                        set_safetensors.set(safetensors_element_value == "value");
                         submit.dispatch(());
                     }
                 >
 
-                    // invisible inputs for node_ref
-                    <input
-                        class="hidden"
-                        type="text"
-                        value=current_repo_id.get()
-                        node_ref=repo_id_input_element
-                    />
-                    <input
-                        class="hidden"
-                        type="text"
-                        value=item.gguf.clone()
-                        node_ref=gguf_input_element
-                    />
-                    <input
-                        class="hidden"
-                        type="text"
-                        value=item.safetensors.clone()
-                        node_ref=safetensors_input_element
-                    />
                     <a
                         href=format!("https://hf.co/{}", current_repo_id.get())
                         target="_blank"
@@ -218,6 +151,7 @@ pub fn ModelListItem(
                         </Show>
 
                     </Box>
+
                     <Show
                         when=move || !loading.get()
                         fallback=move || view! { <ProgressBar progress=create_signal(None).0/> }
@@ -240,12 +174,12 @@ pub fn ModelListItem(
                                         "Using Safetensors! ✅"
                                     }
                                 } else if quantized.get() {
-                                    if !item.gguf {
+                                    if !has_gguf.get() {
                                         "Download Quantized! 📥"
                                     } else {
                                         "Use Quantized! 🗃️"
                                     }
-                                } else if !item.safetensors {
+                                } else if !has_safetensors.get() {
                                     "Download Safetensors! 📥"
                                 } else {
                                     "Use Safetensors! 🗃️"

@@ -6,21 +6,21 @@ use leptos::*;
 #[component]
 pub fn ModelConfig(
     model_list: ReadSignal<ModelDLList>,
-    model_args: ReadSignal<ModelArgs>,
     ipv4: Signal<String>,
+    model_args: Signal<ModelArgs>,
+    set_model_args: WriteSignal<ModelArgs>,
     gpu_type: Signal<String>,
     set_gpu_type: WriteSignal<String>,
-    set_refresh_token: WriteSignal<i32>,
 ) -> impl IntoView {
     view! {
         <Box style="width:100%">
             <ModelListContainer
+                model_list=model_list
                 ipv4=ipv4
                 model_args=model_args
-                model_list=model_list
+                set_model_args=set_model_args
                 gpu_type=gpu_type
                 set_gpu_type=set_gpu_type
-                set_refresh_token=set_refresh_token
             />
         </Box>
     }
