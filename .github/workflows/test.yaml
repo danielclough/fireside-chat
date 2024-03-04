@@ -1,10 +1,10 @@
-name: 'publish'
+name: 'test'
 
-# This will trigger the action on each push to the `release` branch.
+# This will trigger the action on each push to the `main` branch.
 on:
   push:
     branches:
-      - release
+      - main
 
 env:
   CARGO_TERM_COLOR: always
@@ -42,18 +42,9 @@ jobs:
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
           rustup target add wasm32-unknown-unknown
           # Download Trunk
-          cd ~/.cargo/bin
-          curl -L https://github.com/trunk-rs/trunk/releases/download/v0.18.8/trunk-x86_64-unknown-linux-gnu.tar.gz | tar xvz
+          # cd ~/.cargo/bin
+          # curl -L https://github.com/trunk-rs/trunk/releases/download/v0.18.8/trunk-x86_64-unknown-linux-gnu.tar.gz | tar xvz
 
-      - uses: tauri-apps/tauri-action@v0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CUDA_COMPUTE_CAP: 75
-          LD_LIBRARY_PATH: /usr/local/cuda-12.3/targets/x86_64-linux/lib/stubs/:$LD_LIBRARY_PATH
-        with:
-          projectPath: tauri
-          tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
-          releaseName: 'App v__VERSION__'
-          releaseBody: 'See the assets to download this version and install.'
-          prerelease: true
-          args: --verbose
+      - name: run tests
+        run: |
+          cargo test
