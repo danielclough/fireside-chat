@@ -1,3 +1,5 @@
 pub mod chat;
-pub mod sidebar;
-pub mod utils;
+pub mod header;
+pub mod index;
+pub mod home;
+pub mod landing;

@@ -28,9 +28,7 @@ jobs:
     - name: Build
       run: |
         cd frontend
-        echo "BACKEND_URL='candle-chat.shuttleapp.rs'" >> .env
-        echo "BACKEND_PORT='443'" >> .env
-        trunk build --release --public-url /candle_chat/ #insert your repo name
+        trunk build --release --public-url /fireside-chat/ #insert your repo name
     - name: Optimize WASM
       run: find frontend/dist -name "*.wasm" -exec wasm-opt {} -o {} -Oz -c --dae --dce --rse -s 4 --vacuum \;
     - name: Add .nojekyll file

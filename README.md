@@ -1,128 +1,83 @@
-# Candle Chat
+# Fireside Chat
 
-A multi-user chat bot implemented in pure Rust using [Mistral-7B](https://mistral.ai/news/announcing-mistral-7b/) with  [HuggingFace/Candle](https://github.com/huggingface/candle/) over [Axum](https://github.com/tokio-rs/axum) Websockets and a [Leptos](https://www.leptos.dev/) (Wasm) frontend!
+(prev. "Candle Chat")
+
+An LLM interface implemented in pure Rust using [HuggingFace/Candle](https://github.com/huggingface/candle/) over [Axum](https://github.com/tokio-rs/axum) Websockets, an [SQLite](https://https://sqlite.org/index.html) Database, and a [Leptos](https://www.leptos.dev/) (Wasm) frontend packaged with [Tauri](https://tauri.app)!
 
 Watch the introduction video:
 [![Watch the video](https://img.youtube.com/vi/Jw1E3LnNG0o/0.jpg)](https://youtu.be/Jw1E3LnNG0o)
 
-> This project is a WIP.
-> The `main` branch should mostly work, but until I setup up automated testing I expect things to break without being caught.
-> Sorry about that. 🤗
->
-> I am pretty busy through the holiday season, but I hope to have more time to play with this project in the new year.
->
-> I will be adding more model options soon-ish.
 
 ## Goals
 
-My primary goal is to showcase the awesome power and simplicity of HuggingFace/Candle.
+This project is designed for single and multi-user chat with many Large Language Models (LLMs).
+
+### Features
+
+- Local or Remote Inference Backend
+- Local SQLite Database
+
 
 ## Setup / Operation
 
-### Debian/Ubuntu
+You can configure your model and default inference settings by putting files in your `Config Directory`.
+This is automatically configured when you choose a model in the frontend, but you can manually add models if you like.
 
-```sh
-# install make and git
-sudo apt-get install git make
+Example:
 
-# clone with ssh
-git clone git@github.com:danielclough/candle_chat.git
-# or,
-# clone with https
-git clone https://github.com/danielclough/candle_chat.git
-
-# 0) apt-get install
-# 1) install rust if not available
-# 2) install wasm target if not available
-# 3) install trunk if not available
-# 4) install cargo-watch if not available
-# 5) cp .env-example to .env if not available
-make init
-
-# run release binaries
-make prod
-
-# kill running processes
-make kill
+```yaml
+# config_model.yaml
+repo_id: DanielClough/Candle_Puffin-Phi-v2
+q_lvl: q2k
+revision: main
+tokenizer_file: null
+weight_file: null
+quantized: true
+cpu: false
+use_flash_attn: false
+template: ShareGPT
 ```
 
-`make prod` runs both Frontend (Leptos) and Backend (Axum) in with the `--release` flag.
-
-View `make help` to see all commands.
-
-## Limitations
-
-In the future I may add a CLI tool for simplifying the setup experience.
-For now there will be two binaries in two project folders, one for the Frontend and one for the Backend.
-This layout is a consequence of Trunk not working well with workspaces ([Trunk Issue](https://github.com/thedodd/trunk/issues/575#issuecomment-1693471972)).
-
-## Backend (Axum)
-
-You can use yaml files to configure model and inference parameters, or use the defaults.
-
-### Server Config
-
-Backend defaults to `127.0.0.1:3000`.
-
-You can alter this by copying `/backend/.env-example` to `/backend/.env` and setting your desired config there.
-
-### Inference Config
-
-Default inference options can be configured with `/backend/config_inference.yaml`
-
-### Model Config
-
-Default model options can be configured with `/backend/config_model.yaml`.
-
-### Cuda
-
-Running with `Cuda`` is the default configuration.
-
- - `/backend/config_model.yaml` must include `cpu: false`.
-
-And, enable the cuda feature flags must be enabled:
-
-```sh
-cargo add candle-core -F "cuda"
-cargo add candle-transformers -F "cuda"
+```yaml
+# config_inference.yaml
+temperature: 
+top_p: 
+seed: 299792458
+sample_len: 150
+repeat_penalty: 1.3
+repeat_last_n: 150
+load_context: false
+role: 
 ```
 
-## Frontend
+If `load_context: true` then you can add (small) in `<Config Directory>/fireside-chat/context/`.
+Large files may cause Out Of Memory errors.
 
-Each user has their own chat history.
+### Linux
 
-You can use the sidebar to adjust inference parameters.
+`Config Directory` is `$XDG_CONFIG_HOME` or `$HOME/.config`
 
-The Frontend is static for simple deployment on platforms such as Github Pages, or on a server with Trunk.
-
-### Github Pages
-
-In your actions settings change "workflow permissions" to **read and write** in order to allow publishing by Github Actions.
-
-> Settings --> Actions --> general --> Workflow permissions
-
-https://github.com/<USERNAME>/candle_chat/settings/actions
-
-And in pages settings change "branch" to **gh-pages /(root)**
-
-https://github.com/<USERNAME>/candle_chat/settings/pages
+### macOS
 
 
+`Config Directory` is `$HOME/Library/Application Support`
 
-### Trunk
+### Windows
 
-This project serves static files with [Trunk](https://trunkrs.dev/).
-
-Here is a link to the [Trunk config on Github](https://github.com/thedodd/trunk/blob/master/Trunk.toml).
-
-#### `.env` Config
-
-Frontend server defaults to `127.0.0.1:8080`
-
-You can alter this by copying `/frontend/.env-example` to `/frontend/.env` and setting your desired config there.
-
-Since the frontend and backend are designed to run separately you must keep the backend Port and IPV4 in sync!
-
+`Config Directory` is `{FOLDERID_RoamingAppData}`
 
 ## Development
 
+You can compile with environment variable the `FIRESIDE_BACKEND_IPV4` to call a server other than `localhost`.
+
+This can be configured in `tauri.conf.json`, or in your system environment.
+
+```sh
+# eg. for Linux
+export FIRESIDE_BACKEND_IPV4=192.168.1.6 && trunk serve
+```
+
+## Limitations
+
+- Right now `Huggingface/Candle` does not allow for Quantized models to work with `CUDA`.
+- I am not testing in Mac or Windows environments, so while everything may work fine I could use some help in order to ensure correctness on those systems.

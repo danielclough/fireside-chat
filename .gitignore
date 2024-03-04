@@ -1,6 +1,10 @@
 **/.env
 
+**/tmp
 **/target
 **/dist
-
 **/Cargo.lock
+
+**/sqlite.*
+
+**/coverage

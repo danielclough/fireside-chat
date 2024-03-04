@@ -1,0 +1,77 @@
+{
+  "package": {
+    "productName": "Fireside Chat",
+    "version": "0.1.0-beta.9"
+  },
+  "build": {
+    "beforeDevCommand": "cd frontend && trunk serve",
+    "beforeBuildCommand": "cd frontend && trunk build",
+    "devPath": "http://localhost:16982",
+    "distDir": "../frontend/dist",
+    "withGlobalTauri": true
+  },
+  "tauri": {
+    "allowlist": {
+      "all": false,
+      "shell": {
+        "all": false,
+        "open": true
+      },
+      "fs": {
+        "scope": ["$APPDATA/fireside-chat/*"]
+      }
+    },
+    "bundle": {
+      "active": true,
+      "targets": "deb",
+      "identifier": "us.danielc.chat",
+      "copyright": "AGPL-v3",
+      "category": "Utility",
+      "shortDescription": "A Blazing LLM Interface",
+      "longDescription": "Pure Rust LLM Chat Interface built with HuggingFace/Candle, Axum, SQLite, Leptos, and Tauri.",
+      "icon": [
+        "icons/32x32.png",
+        "icons/128x128.png",
+        "icons/128x128@2x.png",
+        "icons/icon.icns",
+        "icons/icon.ico"
+      ],
+      "appimage": {
+        "bundleMediaFramework": false
+      },
+      "deb": {
+        "files": {}
+      },
+      "macOS": {
+        "frameworks": [
+          "aarch64-apple-darwin",
+          "x86_64-apple-darwin"
+        ],
+        "exceptionDomain": "localhost",
+        "signingIdentity": null,
+        "providerShortName": null,
+        "entitlements": null
+      },
+      "windows": {
+        "webviewInstallMode": {
+          "type": "offlineInstaller"
+        },
+        "certificateThumbprint": null,
+        "digestAlgorithm": "sha256",
+        "timestampUrl": ""
+      }
+    },
+    "security": {
+      "csp": null
+    },
+    "windows": [
+      {
+        "fullscreen": false,
+        "resizable": true,
+        "title": "Fireside Chat - 🔥 Blazing LLMs 🔥",
+        "width": 1920,
+        "height": 1080
+      }
+    ]
+  }
+}

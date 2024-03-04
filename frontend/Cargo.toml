@@ -1,5 +1,5 @@
 [package]
-name = "candle-chat"
+name = "frontend"
 version = "0.1.0"
 edition = "2021"
 description = "Frontend for a pure Rust chat app using Axum Webhooks (multi-user), HuggingFace/Candle for LLM inference, and Leptos for a WASM frontend."
@@ -10,23 +10,18 @@ license-file = "LICENSE"
 [dependencies]
 console_error_panic_hook = "0.1.7"
 console_log = "1.0.0"
-leptos = { version = "0.5.4", features = ["csr"] }
-leptos-use = "0.8.2"
+leptos = { version = "0.6", features = ["csr"] }
+leptos-use = { version = "0.10", features = ["serde"] }
 log = "0.4.20"
 web-sys = "0.3.65"
-leptonic = "0.3.0"
-leptos_icons = { version = "0.1.0", features = [
-    "BsGithub",
-    "BsList",
-    "BsThreeDots",
-    "BsPower",
-    "FaXmarkSolid",
-] }
+leptonic = "0.5"
+icondata = { version = "0.3.0" }
 gloo-net = "0.5.0"
-serde_json = "1.0.108"
 serde = { version = "1.0.193", features = ["derive"] }
-dotenv_codegen = "0.15.0"
+time = "0.3.31"
+uuid = { version = "1.7.0", features = ["v4"] }
+
+common = {path = "../common" }
 
 [build-dependencies]
-leptonic-theme = "0.3.0"
-leptos-tiptap-build = "0.2.4"
+leptonic-theme = "0.5"
