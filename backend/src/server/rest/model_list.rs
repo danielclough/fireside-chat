@@ -116,13 +116,6 @@ list:
     n_safetensors: 3
     tags: gguf,safetensors,
   -
-    name: Mistralic-7B-1
-    repo_id: DanielClough/Candle_Mistralic-7B-1
-    template: ChatML
-    base: mistral
-    n_safetensors: 2
-    tags: gguf,safetensors,
-  -
     name: dolphin-2.2.1-mistral-7b
     repo_id: DanielClough/Candle_dolphin-2.2.1-mistral-7b
     template: ChatML
@@ -162,6 +155,13 @@ list:
     .expect("Model List from String")
 }
 
+// -
+// name: Mistralic-7B-1
+// repo_id: DanielClough/Candle_Mistralic-7B-1
+// template: ChatML
+// base: mistral
+// n_safetensors: 2
+// tags: gguf,safetensors,
 // -
 // name: SOLAR-10.7B-v1.0
 // repo_id: DanielClough/Candle_SOLAR-10.7B-v1.0

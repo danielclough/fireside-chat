@@ -12,7 +12,6 @@ pub fn RoleListContainer(
     role_list: RoleList,
     inference_args: Signal<InferenceArgsForInput>,
     set_inference_args: WriteSignal<InferenceArgsForInput>,
-    set_refresh_token: WriteSignal<i32>,
 ) -> impl IntoView {
     view! {
         <Tabs mount=Mount::Once>
@@ -22,7 +21,6 @@ pub fn RoleListContainer(
                     role_list=role_list.human.clone()
                     inference_args=inference_args
                     set_inference_args=set_inference_args
-                    set_refresh_token=set_refresh_token
                 />
             </Tab>
             <Tab name="computer" label="Computer".into_view()>
@@ -31,7 +29,6 @@ pub fn RoleListContainer(
                     role_list=role_list.computer.clone()
                     inference_args=inference_args
                     set_inference_args=set_inference_args
-                    set_refresh_token=set_refresh_token
                 />
             </Tab>
         </Tabs>

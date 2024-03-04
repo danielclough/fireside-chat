@@ -8,6 +8,7 @@ use gloo_net::{
     Error,
 };
 
+
 pub async fn patch_inference_args(
     set_args_for_json: InferenceArgsForJson,
     ipv4: String,

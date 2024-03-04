@@ -20,19 +20,19 @@ use crate::{components::home::overview::{init_model::InitModelModal, init_user::
 #[component]
 pub fn Overview(
     inference_args: Signal<InferenceArgsForInput>,
-    model_args: ReadSignal<ModelArgs>,
+    model_args: Signal<ModelArgs>,
     model_list: ReadSignal<ModelDLList>,
     user: Signal<UserForJson>,
     set_user: WriteSignal<UserForJson>,
     ipv4: Signal<String>,
     gpu_type: Signal<String>,
     set_gpu_type: WriteSignal<String>,
-    set_refresh_token: WriteSignal<i32>,
+    set_model_args: WriteSignal<ModelArgs>,
 ) -> impl IntoView {
     let init_conversations = create_resource(
         || (),
         move |_| async move {
-            logging::log!("loading model_list from API");
+            logging::log!("loading conversations_by_user_id from API");
             get_conversations_by_user_id(user.get().id).await
         },
     );
@@ -43,13 +43,13 @@ pub fn Overview(
     view! {
         <Box class="home-container">
             <InitModelModal
-                model_args=model_args.get()
-                model_list=model_list.get()
+                model_args=model_args
+                model_list=model_list
                 ipv4=ipv4
                 show_when=show_model_init_modal
                 gpu_type=gpu_type
                 set_gpu_type=set_gpu_type
-                set_refresh_token=set_refresh_token
+                set_model_args=set_model_args
             />
             <InitUserModal
                 set_user=set_user

@@ -1,4 +1,4 @@
-use crate::components::index::Index;
+use crate::components::{landing::index::Landing,index::Index};
 
 use common::database::user::UserForJson;
 use common::llm::inference::InferenceArgsForInput;
@@ -11,6 +11,13 @@ use leptos_use::utils::JsonCodec;
 
 #[component]
 pub fn App() -> impl IntoView {
+    // Landing
+    // 
+    let (landing_view, set_landing_view) = create_signal(true);
+    let landing_view_toggle = move |_| {
+        set_landing_view.update(|value| *value = !*value);
+    };
+
     // Network
     //
     let localhost = "127.0.0.1";
@@ -32,10 +39,9 @@ pub fn App() -> impl IntoView {
 
     // Model
     //
-    let (model_args, _set_model_args, _) = use_local_storage::<ModelArgs, JsonCodec>("model");
-    let (model_list_signal, set_model_list_signal) =
+    let (model_args, set_model_args, _) = use_local_storage::<ModelArgs, JsonCodec>("model");
+    let (model_list, set_model_list) =
         create_signal::<ModelDLList>(ModelDLList::error());
-    let (model_args_signal, set_model_args_signal) = create_signal::<ModelArgs>(ModelArgs::error());
 
     // Inference Args
     //
@@ -49,41 +55,15 @@ pub fn App() -> impl IntoView {
 
     // Utils
     //
-    let (refresh_token, set_refresh_token) = create_signal(0);
     let (database_error, set_database_error) = create_signal(false);
     let (backend_error, set_backend_error) = create_signal(false);
 
     view! {
         <Root default_theme=LeptonicTheme::default()>
             <Show
-                when=move || refresh_token.get() % 2 == 0
+                when=move || !landing_view.get()
                 fallback=move || {
-                    view! {
-                        <Index
-                            ipv4=ipv4
-                            set_ipv4=set_ipv4
-                            gpu_type=gpu_type
-                            set_gpu_type=set_gpu_type
-                            inference_args=inference_args
-                            set_inference_args=set_inference_args
-                            user=user
-                            set_user=set_user
-                            database_error=database_error
-                            backend_error=backend_error
-                            home_view=home_view
-                            set_home_view=set_home_view
-                            model_list_signal=model_list_signal
-                            set_model_list_signal=set_model_list_signal
-                            model_args=model_args
-                            model_args_signal=model_args_signal
-                            set_model_args_signal=set_model_args_signal
-                            set_active_user_signal=set_active_user_signal
-                            active_user_signal=active_user_signal
-                            set_backend_error=set_backend_error
-                            set_database_error=set_database_error
-                            set_refresh_token=set_refresh_token
-                        />
-                    }
+                    view! { <Landing landing_view_toggle=landing_view_toggle/> }
                 }
             >
 
@@ -100,16 +80,14 @@ pub fn App() -> impl IntoView {
                     backend_error=backend_error
                     home_view=home_view
                     set_home_view=set_home_view
-                    model_list_signal=model_list_signal
-                    set_model_list_signal=set_model_list_signal
-                    model_args=model_args
-                    model_args_signal=model_args_signal
-                    set_model_args_signal=set_model_args_signal
+                    model_list_signal=model_list
+                    set_model_list_signal=set_model_list
+                    model_args_local_storage=model_args
+                    set_model_args_local_storage=set_model_args
                     set_active_user_signal=set_active_user_signal
                     active_user_signal=active_user_signal
                     set_backend_error=set_backend_error
                     set_database_error=set_database_error
-                    set_refresh_token=set_refresh_token
                 />
             </Show>
         </Root>
