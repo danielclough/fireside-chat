@@ -1,0 +1,59 @@
+name: 'publish deb'
+
+# This will trigger the action on each push to the `release` branch.
+on:
+  push:
+    branches:
+      - main
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    permissions:
+      contents: write
+
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: Jimver/cuda-toolkit@v0.2.13
+        id: cuda-toolkit
+        with:
+          cuda: '12.3.2'
+
+      - name: install dependencies
+        run: |
+          # Clone Candle
+          cd .. && git clone https://github.com/huggingface/candle.git
+          rm -fr candle/.git
+          # CUDA
+          echo "Installed cuda version is: ${{steps.cuda-toolkit.outputs.cuda}}"
+          echo "Cuda install location: ${{steps.cuda-toolkit.outputs.CUDA_PATH}}"
+          nvcc -V
+          sudo ln -f -s /usr/local/cuda-12.3/targets/x86_64-linux/lib/stubs/libcuda.so /usr/local/cuda-12.3/targets/x86_64-linux/lib/stubs/libcuda.so.1
+          # APT
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf tar
+          sudo apt-get clean -y
+          # Rustup
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          rustup target add wasm32-unknown-unknown
+          # Download Trunk
+          cd ~/.cargo/bin
+          curl -L https://github.com/trunk-rs/trunk/releases/download/v0.18.8/trunk-x86_64-unknown-linux-gnu.tar.gz | tar xvz
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CUDA_COMPUTE_CAP: 75
+          LD_LIBRARY_PATH: /usr/local/cuda-12.3/targets/x86_64-linux/lib/stubs/:$LD_LIBRARY_PATH
+        with:
+          projectPath: tauri
+          tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
+          releaseName: 'App v__VERSION__'
+          releaseBody: 'See the assets to download this version and install.'
+          prerelease: true
+          args: --verbose

@@ -1,7 +1,7 @@
 {
   "package": {
     "productName": "Fireside Chat",
-    "version": "0.1.0-beta.9"
+    "version": "0.1.0-beta.10"
   },
   "build": {
     "beforeDevCommand": "cd frontend && trunk serve",
@@ -23,7 +23,7 @@
     },
     "bundle": {
       "active": true,
-      "targets": "deb",
+      "targets": ["deb", "app", "dmg"],
       "identifier": "us.danielc.chat",
       "copyright": "AGPL-v3",
       "category": "Utility",
@@ -43,14 +43,7 @@
         "files": {}
       },
       "macOS": {
-        "frameworks": [
-          "aarch64-apple-darwin",
-          "x86_64-apple-darwin"
-        ],
-        "exceptionDomain": "localhost",
-        "signingIdentity": null,
-        "providerShortName": null,
-        "entitlements": null
+        "exceptionDomain": "localhost"
       },
       "windows": {
         "webviewInstallMode": {

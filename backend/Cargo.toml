@@ -10,10 +10,8 @@ license-file = "LICENSE"
 [dependencies]
 anyhow = { version = "1.0.75", features = ["backtrace"] }
 axum = { version = "0.7", features = ["ws", "macros"] }
-candle-core = { path = "../../candle/candle-core", features = ["cuda"] }
 candle-examples = { path = "../../candle/candle-examples" }
 candle-nn = { path = "../../candle/candle-nn" }
-candle-transformers = { path = "../../candle/candle-transformers", features = ["cuda"] }
 futures = "0.3.29"
 hf-hub = "0.3.2"
 regex = "1.10.2"
@@ -31,3 +29,11 @@ tauri = "1.5.4"
 common = {path = "../common" }
 glob = "0.3.1"
 serde_json = "1.0.111"
+
+[target.x86_64-unknown-linux-gnu.dependencies]
+candle-transformers = { path = "../../candle/candle-transformers", features = ["cuda"] }
+candle-core = { path = "../../candle/candle-core", features = ["cuda"] }
+
+[target.x86_64-apple-darwin.dependencies]
+candle-transformers = { path = "../../candle/candle-transformers" }
+candle-core = { path = "../../candle/candle-core" }
