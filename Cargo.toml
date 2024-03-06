@@ -5,5 +5,5 @@ members = [
     "database",
     "frontend",
     "tauri",
-    "common",
+    "common", "wasm-server",
 ]

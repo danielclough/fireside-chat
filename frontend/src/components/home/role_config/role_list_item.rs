@@ -1,15 +1,15 @@
-use leptonic::collapsible::{Collapsible, CollapsibleBody, CollapsibleHeader};
 use common::llm::{
     inference::{InferenceArgsForInput, InferenceArgsForJson},
     role_list::RoleListEntry,
 };
+use leptonic::collapsible::{Collapsible, CollapsibleBody, CollapsibleHeader};
 use leptos::{html::Input, *};
 
 use crate::functions::rest::role::patch_role_list;
 
 #[component]
 pub fn RoleListItem(
-    ipv4: Signal<String>,
+    backend_url: Signal<String>,
     item: RoleListEntry,
     inference_args: Signal<InferenceArgsForInput>,
     set_inference_args: WriteSignal<InferenceArgsForInput>,
@@ -18,11 +18,9 @@ pub fn RoleListItem(
 
     // Set set_inference_args
     let set_args_for_form = move |args: InferenceArgsForInput| {
-
         // Set InferenceArgs strut
         set_inference_args.set(args);
     };
-
 
     let submit_args = create_action(move |_| {
         // let load_context = if inference_args.get().load_context {
@@ -43,7 +41,7 @@ pub fn RoleListItem(
         };
 
         async move {
-            set_args_for_form(patch_role_list(set_args_for_json, ipv4.get()).await);
+            set_args_for_form(patch_role_list(set_args_for_json, backend_url.get()).await);
         }
     });
 

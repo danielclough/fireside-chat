@@ -39,7 +39,6 @@ pub enum ChatMessageState {
     Waiting,
 }
 
-
 pub fn update_history(
     &history: &WriteSignal<Vec<String>>,
     message: String,

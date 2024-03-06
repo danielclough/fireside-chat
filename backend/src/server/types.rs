@@ -2,7 +2,7 @@ use std::{collections::HashSet, sync::Mutex};
 use tokio::sync::broadcast;
 
 use crate::llm::inference_args::InferenceArgs;
-use crate::llm::load_model::{ModelTokenizerDevice, LoadModel};
+use crate::llm::load_model::{LoadModel, ModelTokenizerDevice};
 
 // Chat shared state
 pub struct AppState {

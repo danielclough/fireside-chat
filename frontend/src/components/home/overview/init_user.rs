@@ -1,6 +1,12 @@
 use common::database::user::UserForJson;
-use leptonic::{button::{Button, ButtonColor, ButtonWrapper}, input::TextInput, modal::{Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle}};
-use leptos::{component, create_signal, view, IntoView, Signal, SignalGet, SignalUpdate, WriteSignal};
+use leptonic::{
+    button::{Button, ButtonColor, ButtonWrapper},
+    input::TextInput,
+    modal::{Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle},
+};
+use leptos::{
+    component, create_signal, view, IntoView, Signal, SignalGet, SignalUpdate, WriteSignal,
+};
 
 use crate::functions::rest::user::switch_users;
 
@@ -11,6 +17,7 @@ pub fn InitUserModal<A, C>(
     user: Signal<UserForJson>,
     on_accept: A,
     on_cancel: C,
+    database_url: Signal<String>,
 ) -> impl IntoView
 where
     A: Fn() + Copy + 'static,
@@ -22,7 +29,7 @@ where
     let disabled = Signal::derive(move || !confirmed());
 
     let on_accept = move || {
-        switch_users(user, set_user, input.get());
+        switch_users(user, set_user, input.get(), database_url);
         set_input.update(|it| it.clear());
         (on_accept)();
     };

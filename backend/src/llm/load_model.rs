@@ -132,13 +132,13 @@ impl LoadModel {
     }
     pub fn load(args: LoadModel, no_model: bool) -> Result<ModelTokenizerDevice> {
         let current_model: ModelListEntry = if no_model {
-            ModelListEntry { 
+            ModelListEntry {
                 name: "NoModel".to_string(),
                 repo_id: "NoModel".to_string(),
                 base: "NoModel".to_string(),
                 template: "NoModel".to_string(),
-                n_safetensors: 0, 
-                tags: "NoModel".to_string()
+                n_safetensors: 0,
+                tags: "NoModel".to_string(),
             }
         } else {
             Self::current_model(&args.repo_id)
@@ -151,7 +151,7 @@ impl LoadModel {
                 let dummy_path = config_file_path("NoModel");
                 std::fs::write(dummy_path.clone(), "NoModel").expect("save file");
                 (dummy_path.clone(), vec![dummy_path], None)
-            },
+            }
             _ => Self::download(args.clone())?,
         };
 
@@ -160,22 +160,22 @@ impl LoadModel {
 
         let dtype = match current_model.base.as_str() {
             "llama" => DType::F16,
-           "mistral" => {
-               if device.is_cuda() {
-                   DType::BF16
-               } else {
-                   DType::F32
-               }
-           }
+            "mistral" => {
+                if device.is_cuda() {
+                    DType::BF16
+                } else {
+                    DType::F32
+                }
+            }
             _ => DType::F32,
         };
 
         let (model, cache) = if no_model {
             println!("Setting up NoModel");
             let m = NoModel {
-                value: Tensor::new(&[1f32, 2.], &device)?
+                value: Tensor::new(&[1f32, 2.], &device)?,
             };
-            (Model::NoModel(m),None)
+            (Model::NoModel(m), None)
         } else {
             println!("Setting up config for {}", current_model.base);
             match current_model.base.as_str() {
@@ -187,7 +187,10 @@ impl LoadModel {
                         VarBuilder::from_mmaped_safetensors(&filenames, DType::F16, &device)?
                     };
                     let cache = LlamaCache::new(false, dtype, &config, &device)?;
-                    (Model::Llama(Llama::load(vb_args, &config)?),Some(Cache::LlamaCache(cache)))
+                    (
+                        Model::Llama(Llama::load(vb_args, &config)?),
+                        Some(Cache::LlamaCache(cache)),
+                    )
                 }
                 "llama2" => {
                     if args.quantized {
@@ -215,7 +218,7 @@ impl LoadModel {
                                 "rot.freq_cis_imag",
                             )?
                             .dequantize(&device)?;
-    
+
                         let fake_vb = candle_nn::VarBuilder::from_tensors(
                             [
                                 ("freq_cis_real".to_string(), freq_cis_real),
@@ -227,8 +230,11 @@ impl LoadModel {
                             &device,
                         );
                         let cache = Llama2Cache::new(true, &config, fake_vb)?;
-    
-                        (Model::QLlama2(QLlama2::load(vb, config.clone())?),Some(Cache::Llama2Cache(cache)))
+
+                        (
+                            Model::QLlama2(QLlama2::load(vb, config.clone())?),
+                            Some(Cache::Llama2Cache(cache)),
+                        )
                     } else {
                         let config = Llama2Config::tiny_15m();
                         let tensors = candle_core::safetensors::load(&filenames[0], &device)?;
@@ -238,8 +244,11 @@ impl LoadModel {
                             &device,
                         );
                         let cache = Llama2Cache::new(true, &config, vb.pp("rot"))?;
-    
-                        (Model::Llama2(Llama2::load(vb, config.clone())?),Some(Cache::Llama2Cache(cache)))
+
+                        (
+                            Model::Llama2(Llama2::load(vb, config.clone())?),
+                            Some(Cache::Llama2Cache(cache)),
+                        )
                     }
                     // else {
                     //     let mut file = std::fs::File::open(config_path)?;
@@ -248,14 +257,14 @@ impl LoadModel {
                     //     let weights = TransformerWeights::from_reader(&mut file, &config, &device)?;
                     //     let vb = weights.var_builder(&config, &device)?;
                     //     let cache = Llama2Cache::new(true, &config, vb.pp("rot"))?;
-    
+
                     //     Model::Llama2(Llama2::load(vb, &cache, config.clone())?)
                     // }
                 }
                 "mistral" => {
                     let model_config = Self::get_model_config_type(&args.repo_id)?;
                     let model_config_str = Some(model_config.as_str());
-    
+
                     let config = match model_config_str {
                         Some("ChatML") => MistralConfig::config_chat_ml(args.use_flash_attn),
                         Some("Amazon") => {
@@ -268,12 +277,13 @@ impl LoadModel {
                             &filenames[0],
                             &device,
                         )?;
-                        (Model::QMistral(QMistral::new(&config, vb)?),None)
+                        (Model::QMistral(QMistral::new(&config, vb)?), None)
                     } else {
                         // is_safetensors
-                        let vb_args =
-                            unsafe { VarBuilder::from_mmaped_safetensors(&filenames, dtype, &device)? };
-                        (Model::Mistral(Mistral::new(&config, vb_args)?),None)
+                        let vb_args = unsafe {
+                            VarBuilder::from_mmaped_safetensors(&filenames, dtype, &device)?
+                        };
+                        (Model::Mistral(Mistral::new(&config, vb_args)?), None)
                     }
                 }
                 // "phi"
@@ -284,7 +294,9 @@ impl LoadModel {
                             "DanielClough/Candle_phi-1" => MixformerConfig::v1(),
                             "DanielClough/Candle_phi-1_5" => MixformerConfig::v1_5(),
                             "DanielClough/Candle_Puffin-Phi-v2" => MixformerConfig::puffin_phi_v2(),
-                            "DanielClough/Candle_Phi-Hermes-1.3B" => MixformerConfig::phi_hermes_1_3b(),
+                            "DanielClough/Candle_Phi-Hermes-1.3B" => {
+                                MixformerConfig::phi_hermes_1_3b()
+                            }
                             // "DanielClough/Candle_phi-2" | "DanielClough/Candle_phi-2_old"
                             _ => MixformerConfig::v2(),
                         };
@@ -293,24 +305,27 @@ impl LoadModel {
                             &filenames[0],
                             &device,
                         )?;
-    
+
                         println!("match model");
                         let model = match args.repo_id.as_str() {
-                            "DanielClough/Candle_phi-2" | "DanielClough/Candle_phi-2_old" => QMixFormer::new_v2(&config, vb)?,
+                            "DanielClough/Candle_phi-2" | "DanielClough/Candle_phi-2_old" => {
+                                QMixFormer::new_v2(&config, vb)?
+                            }
                             _ => QMixFormer::new(&config, vb)?,
                         };
-                        (Model::QuantizedPhi(model),None)
+                        (Model::QuantizedPhi(model), None)
                     } else {
                         // is_safetensors
-                        let vb_args =
-                            unsafe { VarBuilder::from_mmaped_safetensors(&filenames, dtype, &device)? };
+                        let vb_args = unsafe {
+                            VarBuilder::from_mmaped_safetensors(&filenames, dtype, &device)?
+                        };
                         let model = match args.repo_id.as_str() {
                             "DanielClough/Candle_phi-1"
                             | "DanielClough/Candle_phi-1_5"
                             | "DanielClough/Candle_Puffin-Phi-v2" => {
                                 let config = std::fs::read_to_string(config_filename.unwrap())?;
                                 let config: PhiConfig = serde_json::from_str(&config)?;
-    
+
                                 Model::Phi(Phi::new(&config, vb_args)?)
                             }
                             "DanielClough/Candle_Phi-Hermes-1.3B" => {
@@ -325,7 +340,7 @@ impl LoadModel {
                                 Model::Phi(phi)
                             }
                         };
-                        (model,None)
+                        (model, None)
                     };
                     println!("Model Loaded");
                     (model, cache)
@@ -338,7 +353,7 @@ impl LoadModel {
         } else {
             Some(Tokenizer::from_file(tokenizer_filename).map_err(E::msg)?)
         };
-        
+
         let model_config = if no_model {
             None
         } else {
@@ -454,13 +469,13 @@ pub struct NoModel {
     pub value: Tensor,
 }
 
-use common::llm::model_list::{ModelList, ModelListEntry};
 use crate::server::rest::model_list::get_default_list;
 use crate::utilities::config_path::config_file_path;
+use common::llm::model_list::{ModelList, ModelListEntry};
 
-use std::path::PathBuf;
 use anyhow::{Error as E, Result};
 use serde::{Deserialize, Serialize};
+use std::path::PathBuf;
 
 use hf_hub::api::sync::ApiRepo;
 use hf_hub::{api::sync::Api, Repo, RepoType};

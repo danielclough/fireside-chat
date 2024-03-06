@@ -18,8 +18,8 @@ use leptos::*;
 
 #[component]
 pub fn Index(
-    ipv4: Signal<String>,
-    set_ipv4: WriteSignal<String>,
+    backend_url: Signal<String>,
+    set_backend_url: WriteSignal<String>,
     gpu_type: Signal<String>,
     set_gpu_type: WriteSignal<String>,
     inference_args: Signal<InferenceArgsForInput>,
@@ -38,6 +38,7 @@ pub fn Index(
     set_model_args_local_storage: WriteSignal<ModelArgs>,
     set_active_user_signal: WriteSignal<UserForJson>,
     active_user_signal: ReadSignal<UserForJson>,
+    database_url: Signal<String>,
 ) -> impl IntoView {
     let init_everything = create_resource(
         move || {
@@ -46,7 +47,7 @@ pub fn Index(
                 model_args_local_storage.get(),
                 user.get(),
                 inference_args.get(),
-                ipv4.get(),
+                backend_url.get(),
             )
         },
         move |_| async move {
@@ -54,9 +55,9 @@ pub fn Index(
             logging::log!("loading model_args from API");
             logging::log!("loading active_user from API");
             (
-                get_model_list(model_args_local_storage.get().q_lvl, ipv4.get()).await,
-                get_model_args(ipv4.get()).await,
-                get_active_user().await,
+                get_model_list(model_args_local_storage.get().q_lvl, backend_url.get()).await,
+                get_model_args(backend_url.get()).await,
+                get_active_user(database_url.get()).await,
             )
         },
     );
@@ -102,8 +103,8 @@ pub fn Index(
                     }
                 >
 
-                    <Transition // the fallback will show initially
-                    // on subsequent reloads, the current child will
+                    // the fallback will show initially
+                    <Transition // on subsequent reloads, the current child will
                     // continue showing
                     fallback=move || {
                         view! { <p>"Initializing..."</p> }
@@ -131,7 +132,12 @@ pub fn Index(
                                             when=move || home_view.get()
                                             fallback=move || {
                                                 view! {
-                                                    <ChatBox user=user ipv4=ipv4 set_home_view=set_home_view/>
+                                                    <ChatBox
+                                                        user=user
+                                                        backend_url=backend_url
+                                                        set_home_view=set_home_view
+                                                        database_url=database_url
+                                                    />
                                                 }
                                             }
                                         >
@@ -139,8 +145,8 @@ pub fn Index(
                                             <Home
                                                 gpu_type=gpu_type
                                                 set_gpu_type=set_gpu_type
-                                                ipv4=ipv4
-                                                set_ipv4=set_ipv4
+                                                backend_url=backend_url
+                                                set_backend_url=set_backend_url
                                                 inference_args=inference_args
                                                 set_inference_args=set_inference_args
                                                 user=user
@@ -149,6 +155,7 @@ pub fn Index(
                                                 model_list=model_list_signal
                                                 model_args=model_args_local_storage
                                                 set_model_args=set_model_args_local_storage
+                                                database_url=database_url
                                             />
                                         </Show>
                                     }

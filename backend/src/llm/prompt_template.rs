@@ -12,12 +12,24 @@ enum TemplateFormat {
 }
 #[derive(Clone, Debug)]
 pub struct TemplateGenerator {
-    pub template_format: String
+    pub template_format: String,
 }
 
 impl TemplateGenerator {
-    pub fn generate(last_message: &str, history_vec: Vec<String>, template_format: &Option<String>, load_context: bool, role: Option<String>) -> String {
-        Self::generate_prompt(last_message, history_vec, Self::match_format(template_format.to_owned()), load_context, role)
+    pub fn generate(
+        last_message: &str,
+        history_vec: Vec<String>,
+        template_format: &Option<String>,
+        load_context: bool,
+        role: Option<String>,
+    ) -> String {
+        Self::generate_prompt(
+            last_message,
+            history_vec,
+            Self::match_format(template_format.to_owned()),
+            load_context,
+            role,
+        )
     }
     fn match_format(template_format: Option<String>) -> Option<TemplateFormat> {
         let pt: Option<&str> = template_format.as_deref();
@@ -50,13 +62,21 @@ impl TemplateGenerator {
             context = get_context();
         }
         // Add role
-        if role.is_some() && (!role.clone().unwrap().is_empty())  {
+        if role.is_some() && (!role.clone().unwrap().is_empty()) {
             let role = role.unwrap();
-            
+
             let role_list = get_default_list();
-            let mut current = role_list.human.iter().filter(|x| x.role == role).collect::<Vec<&RoleListEntry>>();
+            let mut current = role_list
+                .human
+                .iter()
+                .filter(|x| x.role == role)
+                .collect::<Vec<&RoleListEntry>>();
             if current.is_empty() {
-                current = role_list.computer.iter().filter(|x| x.role == role).collect::<Vec<&RoleListEntry>>();
+                current = role_list
+                    .computer
+                    .iter()
+                    .filter(|x| x.role == role)
+                    .collect::<Vec<&RoleListEntry>>();
             }
             context += &current[0].prompt;
         } else {
@@ -65,7 +85,8 @@ impl TemplateGenerator {
 
         match template_format {
             Some(TemplateFormat::ChatML) => {
-                let prompt_starter = format!("<|im_start|>system
+                let prompt_starter = format!(
+                    "<|im_start|>system
 {}
 <|im_end|>
 <|im_start|>user
@@ -73,7 +94,9 @@ impl TemplateGenerator {
 <|im_end|>
 <|im_start|>assistant
 {}
-<|im_end|>", context, template_primer_prompt, template_primer_response);
+<|im_end|>",
+                    context, template_primer_prompt, template_primer_response
+                );
 
                 if history_vec.is_empty() {
                     format!(
@@ -101,8 +124,11 @@ impl TemplateGenerator {
                 }
             }
             Some(TemplateFormat::MistralInstruct) => {
-                let prompt_starter = format!( "<s>[INST]{}{}[/INST]
-{}</s>", context, template_primer_prompt, template_primer_response);
+                let prompt_starter = format!(
+                    "<s>[INST]{}{}[/INST]
+{}</s>",
+                    context, template_primer_prompt, template_primer_response
+                );
 
                 if history_vec.is_empty() {
                     format!("{}[INST]{}[/INST]", prompt_starter, last_message)
@@ -114,16 +140,22 @@ impl TemplateGenerator {
                 }
             }
             Some(TemplateFormat::SolarInstruct) => {
-                let prompt_starter = format!("<s>### User:
+                let prompt_starter = format!(
+                    "<s>### User:
 {} {}
 ### Assistant:
-{}.</s>", context, template_primer_prompt, template_primer_response);
+{}.</s>",
+                    context, template_primer_prompt, template_primer_response
+                );
 
                 if history_vec.is_empty() {
-                    format!("{}
+                    format!(
+                        "{}
 ### User:
 {}
-### Assistant:", prompt_starter, last_message)
+### Assistant:",
+                        prompt_starter, last_message
+                    )
                 } else {
                     format!(
                         "{}
@@ -142,7 +174,10 @@ impl TemplateGenerator {
                 }
             }
             Some(TemplateFormat::Amazon) => {
-                let prompt_starter = format!("<|prompter|>{}{}</s><|assistant|>{}</s>", context, template_primer_prompt, template_primer_response);
+                let prompt_starter = format!(
+                    "<|prompter|>{}{}</s><|assistant|>{}</s>",
+                    context, template_primer_prompt, template_primer_response
+                );
 
                 if history_vec.is_empty() {
                     format!("{}<|prompter|>{}</s>", prompt_starter, last_message)
@@ -152,14 +187,17 @@ impl TemplateGenerator {
                         prompt_starter, history_vec[0], history_vec[1], last_message
                     )
                 }
-            },
+            }
             Some(TemplateFormat::Zephyr) => {
-                let prompt_starter = format!("<|system|>
+                let prompt_starter = format!(
+                    "<|system|>
 {}</s>
 <|user|>
 {}</s>
 <|assistant|>
-{}</s>", context, template_primer_prompt, template_primer_response);
+{}</s>",
+                    context, template_primer_prompt, template_primer_response
+                );
 
                 if history_vec.is_empty() {
                     format!(
@@ -182,22 +220,22 @@ impl TemplateGenerator {
                         prompt_starter, history_vec[0], history_vec[1], last_message
                     )
                 }
-            },
+            }
             Some(TemplateFormat::PhiQA) => {
                 format!("Instruct: {}\nOutput:", last_message)
-            },
+            }
             Some(TemplateFormat::PhiChat) => {
                 format!("Alice: {}\nBob:", last_message)
-            },            
+            }
             Some(TemplateFormat::PhiCode) => {
                 format!("\"\"\"\n{}\n\"\"\"\n", last_message)
-            },
+            }
             Some(TemplateFormat::ShareGPT) => {
                 format!("USER: {}\nASSISTANT:", last_message)
-            },
+            }
             Some(TemplateFormat::Alpaca) => {
                 format!("### Instruction:\n{}\n### Response:", last_message)
-            },            
+            }
             None => last_message.to_string(),
         }
     }
@@ -220,7 +258,7 @@ fn get_context() -> String {
         let path = entry.path();
 
         println!("Reading:\n{:?}", path);
-        
+
         if path.is_file() {
             if path.to_string_lossy().contains(".pdf") {
                 let bytes = std::fs::read(path).expect("pdf works");
@@ -239,5 +277,18 @@ fn get_context() -> String {
 }
 
 fn remove_special(content: String) -> String {
-    content.replace(|c: char| !c.is_ascii_alphanumeric() && c != ' ' && c != '.' && c != ',' && c != '-' && c != '(' && c != ')' && c != '/' && c != '\n', "")
+    content.replace(
+        |c: char| {
+            !c.is_ascii_alphanumeric()
+                && c != ' '
+                && c != '.'
+                && c != ','
+                && c != '-'
+                && c != '('
+                && c != ')'
+                && c != '/'
+                && c != '\n'
+        },
+        "",
+    )
 }

@@ -1,4 +1,7 @@
-use sqlx::{prelude::FromRow, types::chrono::{DateTime, Utc}};
+use sqlx::{
+    prelude::FromRow,
+    types::chrono::{DateTime, Utc},
+};
 
 #[derive(Clone, FromRow, Debug)]
 pub struct Engagement {

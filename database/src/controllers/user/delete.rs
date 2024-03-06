@@ -1,7 +1,7 @@
+use crate::types::errors::CustomError;
 use axum::{extract::Path, http::StatusCode, Extension, Json};
 use common::database::msg::Msg;
 use sqlx::{Pool, Sqlite};
-use crate::types::errors::CustomError;
 
 pub async fn delete_user_by_id(
     Extension(pool): Extension<Pool<Sqlite>>,

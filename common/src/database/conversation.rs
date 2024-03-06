@@ -22,7 +22,6 @@ pub struct ConversationWithEngagements {
     pub inference_params: String,
 }
 
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ConversationQuery {
     pub id: Option<i64>,
@@ -42,5 +41,5 @@ pub struct NewConversation {
 
 #[derive(Clone, Debug, Serialize, Deserialize, Iterable)]
 pub struct ConversationForJsonVec {
-    pub list: Vec<ConversationForJson>
+    pub list: Vec<ConversationForJson>,
 }

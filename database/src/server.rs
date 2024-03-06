@@ -6,9 +6,9 @@ use tower_http::cors::{Any, CorsLayer};
 use tower_http::trace::TraceLayer;
 
 use axum::{
+    http::{header::CONTENT_TYPE, Method},
     routing::{delete, get, patch, post},
     Extension, Router,
-    http::{header::CONTENT_TYPE, Method},
 };
 use sqlx::{migrate::MigrateDatabase, Sqlite, SqlitePool};
 
@@ -58,10 +58,7 @@ pub async fn db() {
             "/users/active/:activity",
             get(controllers::user::get::get_users_by_activity),
         )
-        .route(
-            "/user/id/:id",
-            patch(controllers::user::patch::update_user),
-        )
+        .route("/user/id/:id", patch(controllers::user::patch::update_user))
         .route(
             "/user/id/:id",
             delete(controllers::user::delete::delete_user_by_id),
@@ -125,9 +122,10 @@ pub async fn db() {
         .layer(cors);
 
     // Serve
-    let ipv4 = "127.0.0.1";
+    let localhost = "127.0.0.1";
+    let database_url = std::option_env!("FIRESIDE_DATABASE_URL").unwrap_or(localhost).to_string();
     let port = 16980;
-    let tcp_string = format!("{}:{}", ipv4, port);
+    let tcp_string = format!("{}:{}", database_url, port);
 
     let listener = TcpListener::bind(tcp_string).await.unwrap();
     println!("listening on {:?}", listener);

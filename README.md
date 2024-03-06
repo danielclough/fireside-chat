@@ -67,13 +67,13 @@ Large files may cause Out Of Memory errors.
 
 ## Development
 
-You can compile with environment variable the `FIRESIDE_BACKEND_IPV4` to call a server other than `localhost`.
+You can compile with environment variable the `FIRESIDE_BACKEND_URL`, and `FIRESIDE_DATABASE_URL` to call a server other than `localhost`.
 
 This can be configured in `tauri.conf.json`, or in your system environment.
 
 ```sh
 # eg. for Linux
-export FIRESIDE_BACKEND_IPV4=192.168.1.6 && trunk serve
+export FIRESIDE_BACKEND_URL=192.168.1.6 && trunk serve
 ```
 
 ## Limitations

@@ -1,4 +1,4 @@
-use crate::components::{landing::index::Landing,index::Index};
+use crate::components::{index::Index, landing::index::Landing};
 
 use common::database::user::UserForJson;
 use common::llm::inference::InferenceArgsForInput;
@@ -12,7 +12,7 @@ use leptos_use::utils::JsonCodec;
 #[component]
 pub fn App() -> impl IntoView {
     // Landing
-    // 
+    //
     let (landing_view, set_landing_view) = create_signal(true);
     let landing_view_toggle = move |_| {
         set_landing_view.update(|value| *value = !*value);
@@ -21,10 +21,16 @@ pub fn App() -> impl IntoView {
     // Network
     //
     let localhost = "127.0.0.1";
-    let ipv4_init = std::option_env!("FIRESIDE_BACKEND_IPV4").unwrap_or(localhost);
-    let (ipv4, set_ipv4, _) = use_local_storage::<String, JsonCodec>("ipv4");
+    let backend_url_init = std::option_env!("FIRESIDE_BACKEND_URL").unwrap_or(localhost);
+    let (backend_url, set_backend_url, _) = use_local_storage::<String, JsonCodec>("backend_url");
     // TODO! - Backup with DB
-    set_ipv4.set(ipv4_init.to_string());
+    set_backend_url.set(backend_url_init.to_string());
+
+    let database_url_init = std::option_env!("FIRESIDE_DATABASE_URL").unwrap_or(localhost);
+    let (database_url, set_database_url, _) =
+        use_local_storage::<String, JsonCodec>("database_url");
+    // TODO! - Backup with DB
+    set_database_url.set(database_url_init.to_string());
 
     // GPU
     //
@@ -40,8 +46,7 @@ pub fn App() -> impl IntoView {
     // Model
     //
     let (model_args, set_model_args, _) = use_local_storage::<ModelArgs, JsonCodec>("model");
-    let (model_list, set_model_list) =
-        create_signal::<ModelDLList>(ModelDLList::error());
+    let (model_list, set_model_list) = create_signal::<ModelDLList>(ModelDLList::error());
 
     // Inference Args
     //
@@ -68,8 +73,8 @@ pub fn App() -> impl IntoView {
             >
 
                 <Index
-                    ipv4=ipv4
-                    set_ipv4=set_ipv4
+                    backend_url=backend_url
+                    set_backend_url=set_backend_url
                     gpu_type=gpu_type
                     set_gpu_type=set_gpu_type
                     inference_args=inference_args
@@ -88,6 +93,7 @@ pub fn App() -> impl IntoView {
                     active_user_signal=active_user_signal
                     set_backend_error=set_backend_error
                     set_database_error=set_database_error
+                    database_url=database_url
                 />
             </Show>
         </Root>

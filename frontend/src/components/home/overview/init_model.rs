@@ -9,7 +9,7 @@ pub fn InitModelModal(
     #[prop(into)] show_when: Signal<bool>,
     model_args: Signal<ModelArgs>,
     model_list: ReadSignal<ModelDLList>,
-    ipv4: Signal<String>,
+    backend_url: Signal<String>,
     gpu_type: Signal<String>,
     set_gpu_type: WriteSignal<String>,
     set_model_args: WriteSignal<ModelArgs>,
@@ -21,7 +21,7 @@ pub fn InitModelModal(
             </ModalHeader>
             <ModalBody>
                 <ModelListContainer
-                    ipv4=ipv4
+                    backend_url=backend_url
                     model_args=model_args
                     set_model_args=set_model_args
                     model_list=model_list

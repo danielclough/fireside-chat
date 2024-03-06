@@ -113,7 +113,7 @@ pub async fn get_user_by_name(
     };
     let result = get_user_from_db(pool, user).await;
 
-    let user: UserForJson = if result.is_ok() {    
+    let user: UserForJson = if result.is_ok() {
         let existing_user = result.unwrap();
         UserForJson {
             id: existing_user.id,

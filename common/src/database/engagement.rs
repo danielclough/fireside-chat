@@ -23,8 +23,7 @@ pub struct NewEngagement {
     pub response: String,
 }
 
-
 #[derive(Clone, Debug, Serialize, Deserialize, Iterable, PartialEq, Eq, Hash)]
 pub struct EngagementForJsonVec {
-    pub list: Vec<EngagementForJson>
+    pub list: Vec<EngagementForJson>,
 }

@@ -1,5 +1,5 @@
 use crate::server::types::AppState;
-use crate::server::websocket::utils::{create_bot_msg,check_username};
+use crate::server::websocket::utils::{check_username, create_bot_msg};
 use std::sync::Arc;
 
 use axum::extract::ws::{Message, WebSocket};
@@ -81,15 +81,12 @@ async fn websocket(stream: WebSocket, state: Arc<AppState>) {
         while let Ok(msg_out) = receiver_subscribed.recv().await {
             // In any websocket error, break loop.
 
-            if sender_clone
-            .send(msg_out.to_string())
-            .await
-            .is_err() {
+            if sender_clone.send(msg_out.to_string()).await.is_err() {
                 break;
             }
         }
     });
-    
+
     // Clone things we want to pass (move) to the receiving task.
     let broadcast_sender_clone = state.broadcast_sender.clone();
     let sender_mpsc_clone = sender_mpsc.clone();
@@ -103,9 +100,8 @@ async fn websocket(stream: WebSocket, state: Arc<AppState>) {
     // name, and sends them to all broadcast subscribers.
     let mut recv_join_handle = tokio::spawn(async move {
         while let Some(Ok(Message::Text(msg_in))) = receiver_stream.next().await {
-
             // This gets sent into send_join_handle and returned immediately.
-            // Using to tell user that message is being processed, only sent to original sender.            
+            // Using to tell user that message is being processed, only sent to original sender.
             if sender_mpsc_clone
                 .send("COMING SOON".to_string())
                 .await
@@ -125,12 +121,8 @@ async fn websocket(stream: WebSocket, state: Arc<AppState>) {
             let name_cloned3 = username.clone();
             let inference_args_cloned = inference_args.clone();
             let work_done = tokio::task::spawn_blocking(move || {
-                let bot_msg = create_bot_msg(
-                    msg_in,
-                    &mut history_cloned,
-                    mtd,
-                    inference_args_cloned,
-                );
+                let bot_msg =
+                    create_bot_msg(msg_in, &mut history_cloned, mtd, inference_args_cloned);
                 format!("{:?}", bot_msg)
             })
             .await

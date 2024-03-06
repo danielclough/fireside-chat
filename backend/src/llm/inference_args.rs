@@ -45,12 +45,12 @@ impl InferenceArgs {
                 repeat_penalty: 1.3,
                 repeat_last_n: 150,
                 load_context: false,
-                role: None
+                role: None,
             }
         };
         if inference_args.load_context {
             let dir = context_file_dir();
-            println!("Loading (small) files from: \n{:?}\n",dir);
+            println!("Loading (small) files from: \n{:?}\n", dir);
         };
         inference_args
     }

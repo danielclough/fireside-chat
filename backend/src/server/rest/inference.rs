@@ -2,17 +2,13 @@ use axum::{extract::State, http::StatusCode, Json};
 use common::llm::inference::InferenceArgsForJson;
 use std::sync::Arc;
 
-use crate::{
-    llm::inference_args::InferenceArgs,
-    server::types::AppState,
-};
+use crate::{llm::inference_args::InferenceArgs, server::types::AppState};
 
 // fn to handle getting inferences from frontend
 pub async fn get_inference(
     State(state): State<Arc<AppState>>,
 ) -> Result<Json<InferenceArgsForJson>, StatusCode> {
     let args = state.inference_args.lock().expect("lock state");
-
 
     let role = match &args.role {
         Some(r) => r.to_string(),

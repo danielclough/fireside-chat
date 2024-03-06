@@ -1,5 +1,5 @@
-use struct_iterable::Iterable;
 use serde::{Deserialize, Serialize};
+use struct_iterable::Iterable;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ModelListEntry {
@@ -13,12 +13,12 @@ pub struct ModelListEntry {
 
 #[derive(Clone, Debug, Serialize, Deserialize, Iterable)]
 pub struct ModelList {
-    pub list: Vec<ModelListEntry>
+    pub list: Vec<ModelListEntry>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ModelDLList {
-    pub list: Vec<ModelDLListEntry>
+    pub list: Vec<ModelDLListEntry>,
 }
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub struct ModelDLListEntry {
@@ -63,9 +63,7 @@ impl Default for ModelArgs {
 }
 impl ModelDLList {
     pub fn default() -> ModelDLList {
-        ModelDLList {
-            list: vec![]
-        }
+        ModelDLList { list: vec![] }
     }
     pub fn error() -> ModelDLList {
         ModelDLList { list: vec![] }
@@ -85,9 +83,8 @@ impl ModelArgs {
             cpu: false,
             template: Some("LLM Backend Error".to_string()),
         }
-    }    
+    }
 }
-
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Tags {

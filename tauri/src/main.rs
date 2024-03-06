@@ -7,14 +7,16 @@ struct Port(u16);
 
 fn main() {
     let localhost = "127.0.0.1";
-    let ipv4 = std::option_env!("FIRESIDE_BACKEND_IPV4").unwrap_or(localhost).to_string();
+    let backend_url = std::option_env!("FIRESIDE_BACKEND_URL")
+        .unwrap_or(localhost)
+        .to_string();
     let port = 16981;
 
-    if ipv4 == localhost {
+    if backend_url == localhost {
         println!("\nStarting Server on Localhost\n");
-        tauri::async_runtime::spawn(app(ipv4, port));
+        tauri::async_runtime::spawn(app(backend_url, port));
     } else {
-        println!("\nExpecting Server on {}\n", &ipv4);
+        println!("\nExpecting Server on {}\n", &backend_url);
     };
 
     println!("\nStarting Database on Localhost\n");

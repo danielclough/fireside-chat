@@ -4,9 +4,7 @@ extern crate intel_mkl_src;
 #[cfg(feature = "accelerate")]
 extern crate accelerate_src;
 
-use crate::llm::{
-    inference_args::InferenceArgs, load_model::ModelTokenizerDevice,
-};
+use crate::llm::{inference_args::InferenceArgs, load_model::ModelTokenizerDevice};
 use anyhow::Result;
 
 use crate::llm::text_generation::TextGeneration;
@@ -52,8 +50,12 @@ pub fn start(
     );
 
     // Run pipeline and return response
-    let response = pipeline.run(&prompt, inference_args.sample_len, model_tokenizer_device.model_cache.clone())?;
-    
-    println!("{:?}",response);
+    let response = pipeline.run(
+        &prompt,
+        inference_args.sample_len,
+        model_tokenizer_device.model_cache.clone(),
+    )?;
+
+    println!("{:?}", response);
     Ok(response)
 }

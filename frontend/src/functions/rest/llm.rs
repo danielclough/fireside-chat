@@ -8,12 +8,11 @@ use gloo_net::{
     Error,
 };
 
-
 pub async fn patch_inference_args(
     set_args_for_json: InferenceArgsForJson,
-    ipv4: String,
+    backend_url: String,
 ) -> InferenceArgsForInput {
-    let path = get_llm_path("inference", ipv4);
+    let path = get_llm_path("inference", backend_url);
 
     Request::patch(&path)
         .header("Content-Type", "application/json")
@@ -27,8 +26,8 @@ pub async fn patch_inference_args(
         .unwrap()
 }
 
-pub async fn get_inference_args(ipv4: String) -> InferenceArgsForInput {
-    let path = get_llm_path("inference", ipv4);
+pub async fn get_inference_args(backend_url: String) -> InferenceArgsForInput {
+    let path = get_llm_path("inference", backend_url);
 
     let response: Result<Response, Error> = Request::get(&path).send().await;
 
@@ -62,8 +61,8 @@ pub async fn get_inference_args(ipv4: String) -> InferenceArgsForInput {
     }
 }
 
-pub async fn get_model_args(ipv4: String) -> ModelArgs {
-    let path = get_llm_path("model", ipv4);
+pub async fn get_model_args(backend_url: String) -> ModelArgs {
+    let path = get_llm_path("model", backend_url);
 
     let response = Request::get(&path).send().await;
 
@@ -78,9 +77,9 @@ pub async fn get_model_args(ipv4: String) -> ModelArgs {
     }
 }
 
-pub async fn get_model_list(q_lvl: String, ipv4: String) -> ModelDLList {
+pub async fn get_model_list(q_lvl: String, backend_url: String) -> ModelDLList {
     let slug = format!("model-list/{}", q_lvl);
-    let path = get_llm_path(&slug, ipv4);
+    let path = get_llm_path(&slug, backend_url);
 
     let response = Request::get(&path).send().await;
 
@@ -95,8 +94,8 @@ pub async fn get_model_list(q_lvl: String, ipv4: String) -> ModelDLList {
     }
 }
 
-pub async fn model_download(model_args: ModelArgs, ipv4: String) -> ModelArgs {
-    let path = get_llm_path("model-download", ipv4);
+pub async fn model_download(model_args: ModelArgs, backend_url: String) -> ModelArgs {
+    let path = get_llm_path("model-download", backend_url);
     println!("download working");
 
     Request::post(&path)
@@ -111,8 +110,8 @@ pub async fn model_download(model_args: ModelArgs, ipv4: String) -> ModelArgs {
         .unwrap()
 }
 
-pub async fn model_update(model_args: ModelArgs, ipv4: String) -> ModelArgs {
-    let path = get_llm_path("model", ipv4);
+pub async fn model_update(model_args: ModelArgs, backend_url: String) -> ModelArgs {
+    let path = get_llm_path("model", backend_url);
 
     Request::patch(&path)
         .header("Content-Type", "application/json")

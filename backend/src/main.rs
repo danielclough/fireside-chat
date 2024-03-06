@@ -2,8 +2,9 @@ use backend::server::chat::app;
 
 #[tokio::main]
 async fn main() {
-    let ipv4 = "127.0.0.1".to_string();
+    let localhost = "127.0.0.1";
+    let backend_url = std::option_env!("FIRESIDE_BACKEND_URL").unwrap_or(localhost).to_string();
     let port = 16981;
 
-    app(ipv4, port).await;
+    app(backend_url, port).await;
 }

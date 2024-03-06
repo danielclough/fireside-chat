@@ -26,12 +26,16 @@ use crate::{
 
 use crate::server::{types::AppState, websocket::handler::websocket_handler};
 
-pub async fn app(ipv4: String, port: u16) {
+pub async fn app(backend_url: String, port: u16) {
     // Load Mistral
     // Instantiate args to get current repo_id to load model
     let model_args_for_loading_model = LoadModel::load_current_args();
-    let no_model = model_args_for_loading_model.clone().template.unwrap_or_default() == *"NoModel";
-    println!("\nNoModel: {}\n",no_model);
+    let no_model = model_args_for_loading_model
+        .clone()
+        .template
+        .unwrap_or_default()
+        == *"NoModel";
+    println!("\nNoModel: {}\n", no_model);
     let model_tokenizer_device: Mutex<ModelTokenizerDevice> = Mutex::new(
         LoadModel::load(model_args_for_loading_model.clone(), no_model)
             .expect("*** load_model should work."),
@@ -49,7 +53,7 @@ pub async fn app(ipv4: String, port: u16) {
         model_args,
         model_tokenizer_device,
         inference_args,
-        ipv4,
+        backend_url,
         port,
     )
     .await;
@@ -60,7 +64,7 @@ pub async fn start(
     model_args: Mutex<LoadModel>,
     model_tokenizer_device: Mutex<ModelTokenizerDevice>,
     inference_args: Mutex<InferenceArgs>,
-    ipv4: String,
+    backend_url: String,
     port: u16,
 ) {
     // allow CORS from any origin
@@ -91,7 +95,10 @@ pub async fn start(
     let app = Router::new()
         .route("/websocket", get(websocket_handler))
         .route("/model", get(get_model_args).patch(update_model_args))
-        .route("/model-list/:q_lvl", get(get_model_list).patch(update_model_list))
+        .route(
+            "/model-list/:q_lvl",
+            get(get_model_list).patch(update_model_list),
+        )
         .route("/model-download", post(download_model))
         .route("/model-download/:repo_id", post(download_model))
         .route("/inference", get(get_inference).patch(update_inference))
@@ -100,7 +107,7 @@ pub async fn start(
         .with_state(app_state);
 
     // Serve
-    let tcp_string = format!("{}:{}", ipv4, port);
+    let tcp_string = format!("{}:{}", backend_url, port);
     let listener = TcpListener::bind(tcp_string).await.unwrap();
     println!("listening on {:?}", listener);
     axum::serve(listener, app).await.unwrap();

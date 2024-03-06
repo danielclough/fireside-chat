@@ -4,8 +4,8 @@ use leptos::{spawn_local, Signal, SignalGet, SignalUpdate, WriteSignal};
 
 use crate::functions::get_path::get_database_path;
 
-pub async fn get_active_user() -> UserForJson {
-    let path = get_database_path("users/active/true");
+pub async fn get_active_user(database_url: String) -> UserForJson {
+    let path = get_database_path("users/active/true", database_url);
 
     let default_vec = vec![UserForJson {
         id: 0,
@@ -26,9 +26,9 @@ pub async fn get_active_user() -> UserForJson {
         default_vec.first().unwrap().to_owned()
     }
 }
-pub async fn check_user_exists(name: String) -> UserForJson {
+pub async fn check_user_exists(name: String, database_url: String) -> UserForJson {
     let slug = format!("user/name/{}", name);
-    let path = get_database_path(&slug);
+    let path = get_database_path(&slug, database_url);
 
     Request::get(&path)
         .header("Content-Type", "application/json")
@@ -40,8 +40,8 @@ pub async fn check_user_exists(name: String) -> UserForJson {
         .unwrap()
 }
 
-pub async fn post_new_user(set_args_for_json: NewUser) -> UserForJson {
-    let path = get_database_path("user");
+pub async fn post_new_user(set_args_for_json: NewUser, database_url: String) -> UserForJson {
+    let path = get_database_path("user", database_url);
 
     Request::post(&path)
         .header("Content-Type", "application/json")
@@ -55,9 +55,12 @@ pub async fn post_new_user(set_args_for_json: NewUser) -> UserForJson {
         .unwrap()
 }
 
-pub async fn patch_existing_user(set_args_for_json: UserForJson) -> UserForJson {
+pub async fn patch_existing_user(
+    set_args_for_json: UserForJson,
+    database_url: String,
+) -> UserForJson {
     let path = format!("user/id/{}", set_args_for_json.id);
-    let path = get_database_path(&path);
+    let path = get_database_path(&path, database_url);
 
     Request::patch(&path)
         .header("Content-Type", "application/json")
@@ -75,19 +78,28 @@ pub fn switch_users(
     user: Signal<UserForJson>,
     set_user: WriteSignal<UserForJson>,
     input_string: String,
+    database_url: Signal<String>,
 ) -> UserForJson {
     // Create User structs
     let old_user = user.get();
     spawn_local(async move {
         // Update "old" user (active: false)
         if old_user.clone().id != 0 {
-            _ = patch_existing_user(UserForJson { id: old_user.clone().id, name: old_user.clone().name, active: false }).await;
+            _ = patch_existing_user(
+                UserForJson {
+                    id: old_user.clone().id,
+                    name: old_user.clone().name,
+                    active: false,
+                },
+                database_url.get(),
+            )
+            .await;
         };
 
         spawn_local(async move {
             // Update "new" user  (active: true OR create new)
             let new_user_exists: UserForJson = if old_user.clone().id != 0 {
-                check_user_exists(input_string.clone()).await
+                check_user_exists(input_string.clone(), database_url.get()).await
             } else {
                 old_user.clone()
             };
@@ -97,7 +109,7 @@ pub fn switch_users(
                     name: input_string,
                     active: true,
                 };
-                let new_user = post_new_user(new_user).await;
+                let new_user = post_new_user(new_user, database_url.get()).await;
                 set_user.update(|x| *x = new_user);
             } else {
                 let new_user = UserForJson {
@@ -106,7 +118,7 @@ pub fn switch_users(
                     active: true,
                 };
                 set_user.update(|x| *x = new_user.clone());
-                _ = patch_existing_user(new_user).await;
+                _ = patch_existing_user(new_user, database_url.get()).await;
             };
         });
     });

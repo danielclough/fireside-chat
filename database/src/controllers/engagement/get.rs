@@ -101,19 +101,16 @@ pub async fn get_engagements_by_conversation_id(
     };
     let result = get_engagements_from_db(pool, engagement).await?;
 
-    let mut final_result = vec![] ;
+    let mut final_result = vec![];
 
     for r in result {
-        final_result.push(
-            EngagementForJson {
-                id: r.id,
-                conversation_id: r.conversation_id,
-                query: r.query,
-                response: r.response,
-            }
-        );
+        final_result.push(EngagementForJson {
+            id: r.id,
+            conversation_id: r.conversation_id,
+            query: r.query,
+            response: r.response,
+        });
     }
-
 
     Ok(Json(final_result))
 }

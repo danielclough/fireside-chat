@@ -20,11 +20,20 @@ pub fn create_bot_msg(
         .collect::<Vec<String>>();
 
     // Create prompt
-    
-    let role = inference_args.role.as_ref().map(|r| r.to_string());
-    let prompt = TemplateGenerator::generate(&text_from_chat, history_split, &model_tokenizer_device.template, inference_args.load_context, role);
 
-    println!("\n{:?}\nPrompt:\n{}\n\n",&model_tokenizer_device.template, prompt);
+    let role = inference_args.role.as_ref().map(|r| r.to_string());
+    let prompt = TemplateGenerator::generate(
+        &text_from_chat,
+        history_split,
+        &model_tokenizer_device.template,
+        inference_args.load_context,
+        role,
+    );
+
+    println!(
+        "\n{:?}\nPrompt:\n{}\n\n",
+        &model_tokenizer_device.template, prompt
+    );
 
     // Produce response from Mistral
     let bot_response = start(prompt, model_tokenizer_device.clone(), &inference_args)

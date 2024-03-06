@@ -6,7 +6,7 @@ use leptos::*;
 #[component]
 pub fn ModelConfig(
     model_list: ReadSignal<ModelDLList>,
-    ipv4: Signal<String>,
+    backend_url: Signal<String>,
     model_args: Signal<ModelArgs>,
     set_model_args: WriteSignal<ModelArgs>,
     gpu_type: Signal<String>,
@@ -16,7 +16,7 @@ pub fn ModelConfig(
         <Box style="width:100%">
             <ModelListContainer
                 model_list=model_list
-                ipv4=ipv4
+                backend_url=backend_url
                 model_args=model_args
                 set_model_args=set_model_args
                 gpu_type=gpu_type

@@ -1,0 +1,8 @@
+FROM --platform=${BUILDPLATFORM:-linux/amd64} danielclough/fireside-chat-base
+
+COPY --from=build /usr/local/bin/wasm-server /usr/local/bin/wasm-server
+COPY --from=build /wasm-server /wasm-server
+
+CMD wasm-server
+
+EXPOSE 16982 16982

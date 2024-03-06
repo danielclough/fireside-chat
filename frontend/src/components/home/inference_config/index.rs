@@ -7,11 +7,10 @@ use crate::functions::rest::llm::patch_inference_args;
 
 #[component]
 pub fn Inference(
-    ipv4: Signal<String>,
+    backend_url: Signal<String>,
     inference_args: Signal<InferenceArgsForInput>,
     set_inference_args: WriteSignal<InferenceArgsForInput>,
 ) -> impl IntoView {
-
     let load_context_enum = Signal::derive(move || {
         if inference_args.get().load_context {
             LoadContext::True
@@ -21,16 +20,15 @@ pub fn Inference(
     });
     let (load_context, set_load_context) = create_signal(load_context_enum.get());
 
-
     let (temperature, set_temperature) = create_signal(inference_args.get().temperature);
     let (top_p, set_top_p) = create_signal(inference_args.get().top_p);
     let (seed, set_seed) = create_signal(inference_args.get().seed);
     let (sample_len, set_sample_len) = create_signal(inference_args.get().sample_len);
-        Signal::derive(move || format!("{}", inference_args.get().sample_len));
+    Signal::derive(move || format!("{}", inference_args.get().sample_len));
     let (repeat_penalty, set_repeat_penalty) = create_signal(inference_args.get().repeat_penalty);
-        Signal::derive(move || format!("{:.1}", inference_args.get().repeat_penalty));
+    Signal::derive(move || format!("{:.1}", inference_args.get().repeat_penalty));
     let (repeat_last_n, set_repeat_last_n) = create_signal(inference_args.get().repeat_last_n);
-        Signal::derive(move || format!("{}", inference_args.get().repeat_last_n));
+    Signal::derive(move || format!("{}", inference_args.get().repeat_last_n));
 
     // Set set_inference_args
     let set_args_for_form = move |args: InferenceArgsForInput| {
@@ -67,7 +65,7 @@ pub fn Inference(
         };
 
         async move {
-            set_args_for_form(patch_inference_args(set_args_for_json, ipv4.get()).await);
+            set_args_for_form(patch_inference_args(set_args_for_json, backend_url.get()).await);
         }
     });
     view! {

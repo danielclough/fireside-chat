@@ -4,16 +4,16 @@ use web_sys::KeyboardEvent;
 
 #[component]
 pub fn NetworkConfig(
-    ipv4: Signal<String>,
-    set_ipv4: WriteSignal<String>,
+    backend_url: Signal<String>,
+    set_backend_url: WriteSignal<String>,
 ) -> impl IntoView {
     let input_element: NodeRef<Input> = create_node_ref();
     let input_str = String::new();
 
-    let update_ipv4 = move |e: KeyboardEvent| {
+    let update_backend_url = move |e: KeyboardEvent| {
         if e.code() == "Enter" {
             let input_element = input_element.get().expect("<input> to exist");
-            set_ipv4.set(input_element.value());
+            set_backend_url.set(input_element.value());
             input_element.set_value("");
         }
     };
@@ -23,7 +23,7 @@ pub fn NetworkConfig(
 
         <P class="above-input">
             <strong>"Network: "</strong>
-            "Network Backend (ipv4)."
+            "Network Backend (backend_url)."
         </P>
 
         <input
@@ -31,10 +31,10 @@ pub fn NetworkConfig(
             name="input"
             placeholder="Change Network"
             value=input_str
-            on:keydown=update_ipv4
+            on:keydown=update_backend_url
             node_ref=input_element
         />
 
-        <P class="under-input">"Current Network: " {move || ipv4.get()}</P>
+        <P class="under-input">"Current Network: " {move || backend_url.get()}</P>
     }
 }

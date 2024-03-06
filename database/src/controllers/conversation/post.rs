@@ -1,5 +1,5 @@
 use axum::{extract::Path, http::StatusCode, Extension, Json};
-use common::database::{conversation::{NewConversation, ConversationForJson}};
+use common::database::conversation::{ConversationForJson, NewConversation};
 use sqlx::{Pool, Sqlite};
 
 use crate::types::{conversation::Conversation, errors::CustomError};
@@ -23,14 +23,16 @@ pub async fn add_conversation(
             CustomError::InternalServerError
         })?;
 
-    println!("{:?}",result);
+    println!("{:?}", result);
 
-
-    Ok((StatusCode::CREATED, Json(ConversationForJson {
-        id: result.id,
-        name: result.name,
-        user_id: result.user_id,
-        model_params: result.model_params,
-        inference_params: result.inference_params,
-    })))
+    Ok((
+        StatusCode::CREATED,
+        Json(ConversationForJson {
+            id: result.id,
+            name: result.name,
+            user_id: result.user_id,
+            model_params: result.model_params,
+            inference_params: result.inference_params,
+        }),
+    ))
 }

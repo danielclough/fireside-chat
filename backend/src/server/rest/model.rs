@@ -33,12 +33,13 @@ pub async fn update_model_args(
 
     println!("rest/model.rs MTD");
     // let model_tokenizer_device: std::sync::MutexGuard<'_, ModelTokenizerDevice> = model_tokenizer_device.lock().expect("*** replace should work.");
-    
+
     // Mutate AppState
     if state.model_tokenizer_device.lock().is_ok() {
         // Drop current model
         let mut mutable_mtd_state = state.model_tokenizer_device.lock().expect("lock state");
-        let model_tokenizer_device: ModelTokenizerDevice = LoadModel::load(new_args.clone(),true).expect("*** load_model should work.");
+        let model_tokenizer_device: ModelTokenizerDevice =
+            LoadModel::load(new_args.clone(), true).expect("*** load_model should work.");
         *mutable_mtd_state = model_tokenizer_device;
         drop(mutable_mtd_state);
 
@@ -47,12 +48,11 @@ pub async fn update_model_args(
         // load model
         let mut mutable_mtd_state = state.model_tokenizer_device.lock().expect("lock state");
         let no_model = new_args.clone().template.unwrap_or_default() == *"NoModel";
-        let model_tokenizer_device: ModelTokenizerDevice = LoadModel::load(new_args.clone(),no_model).expect("*** load_model should work.");
+        let model_tokenizer_device: ModelTokenizerDevice =
+            LoadModel::load(new_args.clone(), no_model).expect("*** load_model should work.");
         *mutable_mtd_state = model_tokenizer_device;
         drop(mutable_mtd_state);
     }
-    
-
 
     Ok(Json(returned_args))
 }

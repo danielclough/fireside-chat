@@ -1,11 +1,14 @@
 use common::llm::inference::{InferenceArgsForInput, InferenceArgsForJson};
 use gloo_net::http::Request;
 
-use common::llm::role_list::RoleList;
 use crate::functions::get_path::get_llm_path;
+use common::llm::role_list::RoleList;
 
-pub async fn patch_role_list(inference_args: InferenceArgsForJson, ipv4: String) -> InferenceArgsForInput {
-    let path = get_llm_path("role-list",ipv4);
+pub async fn patch_role_list(
+    inference_args: InferenceArgsForJson,
+    backend_url: String,
+) -> InferenceArgsForInput {
+    let path = get_llm_path("role-list", backend_url);
 
     Request::patch(&path)
         .header("Content-Type", "application/json")
@@ -19,8 +22,8 @@ pub async fn patch_role_list(inference_args: InferenceArgsForJson, ipv4: String)
         .unwrap()
 }
 
-pub async fn get_role_list(ipv4: String) -> RoleList {
-    let path = get_llm_path("role-list",ipv4);
+pub async fn get_role_list(backend_url: String) -> RoleList {
+    let path = get_llm_path("role-list", backend_url);
 
     let response = Request::get(&path).send().await;
 
@@ -31,6 +34,9 @@ pub async fn get_role_list(ipv4: String) -> RoleList {
             .await
             .unwrap()
     } else {
-        RoleList { human: vec![], computer: vec![]  }
+        RoleList {
+            human: vec![],
+            computer: vec![],
+        }
     }
 }

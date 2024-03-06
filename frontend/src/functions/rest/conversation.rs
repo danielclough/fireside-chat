@@ -1,13 +1,17 @@
-use common::database::{conversation::{
-    ConversationForJson, ConversationWithEngagements, NewConversation,
-}, engagement::EngagementForJsonVec};
+use common::database::{
+    conversation::{ConversationForJson, ConversationWithEngagements, NewConversation},
+    engagement::EngagementForJsonVec,
+};
 use gloo_net::http::Request;
 
 use crate::functions::get_path::get_database_path;
 
-pub async fn get_conversations_by_user_id(id: i64) -> Vec<ConversationWithEngagements> {
+pub async fn get_conversations_by_user_id(
+    id: i64,
+    database_url: String,
+) -> Vec<ConversationWithEngagements> {
     let slug = format!("conversations/user_id/{}", id);
-    let path = get_database_path(&slug);
+    let path = get_database_path(&slug, database_url);
 
     let default_vec = vec![ConversationWithEngagements {
         id: 0,
@@ -18,15 +22,13 @@ pub async fn get_conversations_by_user_id(id: i64) -> Vec<ConversationWithEngage
         inference_params: "Database Error".to_string(),
     }];
 
-    let response = Request::get(&path)
-        .send()
-        .await;
+    let response = Request::get(&path).send().await;
     if response.is_ok() {
         response
-        .expect("Load role list from API")
-        .json()
-        .await
-        .unwrap()
+            .expect("Load role list from API")
+            .json()
+            .await
+            .unwrap()
     } else {
         default_vec
     }
@@ -35,9 +37,10 @@ pub async fn get_conversations_by_user_id(id: i64) -> Vec<ConversationWithEngage
 pub async fn post_new_conversation(
     user_id: i64,
     set_args_for_json: NewConversation,
+    database_url: String,
 ) -> ConversationForJson {
     let slug = format!("conversation/{}", user_id);
-    let path = get_database_path(&slug);
+    let path = get_database_path(&slug, database_url);
 
     Request::post(&path)
         .header("Content-Type", "application/json")
@@ -53,9 +56,10 @@ pub async fn post_new_conversation(
 
 pub async fn _patch_existing_conversation(
     set_args_for_json: ConversationForJson,
+    database_url: String,
 ) -> ConversationForJson {
     let path = format!("conversation/id/{}", set_args_for_json.id);
-    let path = get_database_path(&path);
+    let path = get_database_path(&path, database_url);
 
     Request::patch(&path)
         .header("Content-Type", "application/json")
@@ -69,8 +73,8 @@ pub async fn _patch_existing_conversation(
         .unwrap()
 }
 
-pub async fn _get_conversations() -> ConversationForJson {
-    let path = get_database_path("conversations");
+pub async fn _get_conversations(database_url: String) -> ConversationForJson {
+    let path = get_database_path("conversations", database_url);
 
     Request::get(&path)
         .send()
@@ -81,9 +85,9 @@ pub async fn _get_conversations() -> ConversationForJson {
         .unwrap()
 }
 
-pub async fn _get_conversation_by_id(id: i64) -> ConversationForJson {
+pub async fn _get_conversation_by_id(id: i64, database_url: String) -> ConversationForJson {
     let slug = format!("conversation/id/{}", id);
-    let path = get_database_path(&slug);
+    let path = get_database_path(&slug, database_url);
 
     Request::get(&path)
         .send()

@@ -10,6 +10,7 @@ pub fn UserConfig(
     active_user: UserForJson,
     user: Signal<UserForJson>,
     set_user: WriteSignal<UserForJson>,
+    database_url: Signal<String>,
 ) -> impl IntoView {
     {
         // Set user to value returned from DB
@@ -19,14 +20,13 @@ pub fn UserConfig(
     let input_element: NodeRef<Input> = create_node_ref();
     let input_str = String::new();
 
-
     let update_user = move |e: KeyboardEvent| {
         if e.code() == "Enter" {
             let input_element = input_element.get().expect("<input> to exist");
             let input_string = input_element.value();
             input_element.set_value("");
 
-            switch_users(user, set_user, input_string);
+            switch_users(user, set_user, input_string, database_url);
         }
     };
 

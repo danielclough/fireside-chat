@@ -1,0 +1,9 @@
+FROM --platform=${BUILDPLATFORM:-linux/amd64} danielclough/fireside-chat-base
+
+COPY --from=build /usr/local/bin/database /usr/local/bin/database
+COPY --from=build /database/lib /lib
+COPY --from=build /database/lib64 /lib64
+
+CMD database
+
+EXPOSE 16980 16980

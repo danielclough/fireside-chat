@@ -14,14 +14,19 @@ pub async fn get_model_list(Path(q_lvl): Path<String>) -> Result<Json<ModelDLLis
         .iter()
         .map(|list| {
             let repo_id_path = format!("models--{}", list.repo_id.clone().replace('/', "--"));
-            let mut gguf= false;
-            let mut safetensors= false;
-            let mut bin= false;
+            let mut gguf = false;
+            let mut safetensors = false;
+            let mut bin = false;
             let cache_file_path = cache_file_path(&repo_id_path);
             if cache_file_path.is_dir() {
-                let q_lvl = if q_lvl.as_str() == "NoModel" {"q5k".to_string()} else {q_lvl.clone()};
+                let q_lvl = if q_lvl.as_str() == "NoModel" {
+                    "q5k".to_string()
+                } else {
+                    q_lvl.clone()
+                };
                 // check current level of quantization and then check if .gguf is downloaded
-                let gguf_path = format!("{}/snapshots/**/*{}.gguf", cache_file_path.display(), q_lvl);
+                let gguf_path =
+                    format!("{}/snapshots/**/*{}.gguf", cache_file_path.display(), q_lvl);
                 for entry in glob(gguf_path.as_str()).unwrap() {
                     if let Ok(_path) = entry {
                         gguf = true;
@@ -30,11 +35,11 @@ pub async fn get_model_list(Path(q_lvl): Path<String>) -> Result<Json<ModelDLLis
                 // check if .safetensors are downloaded
                 let safetensors_path =
                     format!("{}/snapshots/**/*.safetensors", cache_file_path.display());
-                    for entry in glob(safetensors_path.as_str()).unwrap() {
-                        if let Ok(_path) = entry {
-                            safetensors = true;
-                        }
+                for entry in glob(safetensors_path.as_str()).unwrap() {
+                    if let Ok(_path) = entry {
+                        safetensors = true;
                     }
+                }
                 // check if .bin are downloaded
                 let bin_path = format!("{}/snapshots/**/*.bin", cache_file_path.display());
                 for entry in glob(bin_path.as_str()).unwrap() {
@@ -73,7 +78,10 @@ pub async fn get_model_list(Path(q_lvl): Path<String>) -> Result<Json<ModelDLLis
 }
 
 // fn to handle patching model_lists from frontend
-pub async fn update_model_list(Path(_q_lvl): Path<String>, Json(args): Json<ModelList>) -> Result<Json<ModelList>, StatusCode> {
+pub async fn update_model_list(
+    Path(_q_lvl): Path<String>,
+    Json(args): Json<ModelList>,
+) -> Result<Json<ModelList>, StatusCode> {
     // Create args from Json
     let new_args = ModelList { ..args };
 
@@ -212,8 +220,6 @@ list:
 // template:
 // n_safetensors: 1
 // tags: gguf, n_safetensors,
-
-
 
 // -
 // name: phi-1

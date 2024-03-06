@@ -17,7 +17,11 @@ pub async fn add_user(
         .await
         .map_err(|_| CustomError::InternalServerError)?;
 
-    let user_for_json = UserForJson { id: new_user.id, name: new_user.name, active: new_user.active };
+    let user_for_json = UserForJson {
+        id: new_user.id,
+        name: new_user.name,
+        active: new_user.active,
+    };
 
     Ok((StatusCode::CREATED, Json(user_for_json)))
 }

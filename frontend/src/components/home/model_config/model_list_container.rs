@@ -9,13 +9,14 @@ use leptos::*;
 pub fn ModelListContainer(
     model_list: ReadSignal<ModelDLList>,
     model_args: Signal<ModelArgs>,
-    ipv4: Signal<String>,
+    backend_url: Signal<String>,
     gpu_type: Signal<String>,
     set_gpu_type: WriteSignal<String>,
     set_model_args: WriteSignal<ModelArgs>,
 ) -> impl IntoView {
-
-    let _q_levels = ["q2k", "q3k", "q4_0", "q4_1", "q4k", "q5_0", "q5_1", "q5k", "q6k", "q8_0", "q8_1", "f16",];
+    let _q_levels = [
+        "q2k", "q3k", "q4_0", "q4_1", "q4k", "q5_0", "q5_1", "q5k", "q6k", "q8_0", "q8_1", "f16",
+    ];
     let (q_lvl, _set_q_lvl) = create_signal(model_args.get().q_lvl);
 
     let quantized_safetensors_for_select = vec!["Quantized", "Safetensors"];
@@ -25,7 +26,7 @@ pub fn ModelListContainer(
     } else {
         quantized_safetensors_for_select[1]
     });
-    
+
     let (quantized_current, _set_quantized_current) = create_signal(model_args.get().quantized);
     let (template_current, _set_template_current) =
         create_signal(model_args.get().template.unwrap_or_default().clone());
@@ -96,7 +97,7 @@ pub fn ModelListContainer(
                                 <ModelListGrid
                                     model_list=model_list
                                     tags_all=tags_all
-                                    ipv4=ipv4
+                                    backend_url=backend_url
                                     template_current=template_current
                                     quantized_current=quantized_current
                                     quantized=quantized_str.get() == "Quantized"
@@ -113,7 +114,7 @@ pub fn ModelListContainer(
                         <ModelListGrid
                             model_list=model_list
                             tags_all=tags_all
-                            ipv4=ipv4
+                            backend_url=backend_url
                             template_current=template_current
                             quantized_current=quantized_current
                             quantized=quantized_str.get() == "Quantized"
@@ -135,7 +136,7 @@ pub fn ModelListContainer(
                         <ModelListGrid
                             model_list=model_list
                             tags_all=tags_all
-                            ipv4=ipv4
+                            backend_url=backend_url
                             template_current=template_current
                             quantized_current=quantized_current
                             quantized=quantized_str.get() == "Quantized"
@@ -152,7 +153,7 @@ pub fn ModelListContainer(
                 <ModelListGrid
                     model_list=model_list
                     tags_all=tags_all
-                    ipv4=ipv4
+                    backend_url=backend_url
                     template_current=template_current
                     quantized_current=quantized_current
                     quantized=quantized_str.get() == "Quantized"

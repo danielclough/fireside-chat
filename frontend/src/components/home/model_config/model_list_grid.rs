@@ -12,7 +12,7 @@ use leptos::*;
 pub fn ModelListGrid(
     model_list: ReadSignal<ModelDLList>,
     tags_all: ReadSignal<Vec<String>>,
-    ipv4: Signal<String>,
+    backend_url: Signal<String>,
     template_current: ReadSignal<String>,
     quantized_current: ReadSignal<bool>,
     quantized: bool,
@@ -59,7 +59,7 @@ pub fn ModelListGrid(
             <Row>
                 <For each=move || model_list.get().list.clone() key=|list| list.clone() let:item>
                     <ModelListItem
-                        ipv4=ipv4
+                        backend_url=backend_url
                         item=item
                         template_current=template_current.get()
                         repo_id=model_args.get().repo_id

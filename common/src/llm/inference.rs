@@ -43,5 +43,5 @@ pub struct InferenceArgsForJson {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum LoadContext {
     True,
-    False
+    False,
 }

@@ -12,7 +12,7 @@ pub fn Header<F>(
     backend_error: ReadSignal<bool>,
 ) -> impl IntoView
 where
-    F: Fn(MouseEvent) + 'static
+    F: Fn(MouseEvent) + 'static,
 {
     view! {
         <Box id="header">

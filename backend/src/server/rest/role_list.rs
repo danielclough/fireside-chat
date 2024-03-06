@@ -33,7 +33,7 @@ pub async fn role_select(
         load_context: args.load_context,
         role: Some(args.role.to_owned()),
     };
-    println!("{:?}",new_args);
+    println!("{:?}", new_args);
     let mut mutable_state = state.inference_args.lock().expect("lock state");
     *mutable_state = new_args.to_owned();
 
@@ -44,7 +44,7 @@ pub async fn role_select(
 }
 
 pub fn get_default_list() -> RoleList {
-  let role_string = r#"---
+    let role_string = r#"---
 human:
   -
     role: English Translator and Improver

@@ -6,7 +6,7 @@ use crate::functions::rest::llm::{model_download, model_update};
 
 #[component]
 pub fn ModelListItem(
-    ipv4: Signal<String>,
+    backend_url: Signal<String>,
     item: ModelDLListEntry,
     q_lvl: ReadSignal<String>,
     repo_id: String,
@@ -81,18 +81,18 @@ pub fn ModelListItem(
         async move {
             if (quantized.get() && has_gguf.get()) || (!quantized.get() && has_safetensors.get()) {
                 leptos_dom::log!("Update Model");
-                let args_to_set = model_update(set_args_for_json.clone(), ipv4.get()).await;
+                let args_to_set = model_update(set_args_for_json.clone(), backend_url.get()).await;
                 set_model_args.set(args_to_set);
                 // set_model_args.set(set_args_for_json.clone());
             } else if quantized.get() && !has_gguf.get() {
                 leptos_dom::log!("Download GGUF");
-                model_download(set_args_for_json.clone(), ipv4.get()).await;
+                model_download(set_args_for_json.clone(), backend_url.get()).await;
                 // indicate .gguf is downloaded
                 set_has_gguf.set(true);
                 set_loading.set(false);
             } else if !quantized.get() && !has_safetensors.get() {
                 leptos_dom::log!("Download Safetensors");
-                model_download(set_args_for_json.clone(), ipv4.get()).await;
+                model_download(set_args_for_json.clone(), backend_url.get()).await;
                 // indicate .safetensors is downloaded
                 set_has_safetensors.set(true);
                 set_loading.set(false);

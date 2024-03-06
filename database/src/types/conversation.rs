@@ -1,4 +1,8 @@
-use sqlx::{prelude::FromRow, types::chrono::{DateTime, Utc}, Decode};
+use sqlx::{
+    prelude::FromRow,
+    types::chrono::{DateTime, Utc},
+    Decode,
+};
 
 use super::engagement::Engagement;
 

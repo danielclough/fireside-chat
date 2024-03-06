@@ -34,9 +34,12 @@ pub async fn update_user(
 
     println!("Update result: {:?}", result);
 
-    Ok((StatusCode::OK, Json(UserForJson {
-        id: updated_user.id.unwrap_or(user.id),
-        name: updated_user.name.unwrap_or(user.name),
-        active: updated_user.active.unwrap_or(user.active),
-    })))
+    Ok((
+        StatusCode::OK,
+        Json(UserForJson {
+            id: updated_user.id.unwrap_or(user.id),
+            name: updated_user.name.unwrap_or(user.name),
+            active: updated_user.active.unwrap_or(user.active),
+        }),
+    ))
 }

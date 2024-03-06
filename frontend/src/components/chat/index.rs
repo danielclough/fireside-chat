@@ -3,7 +3,10 @@ use common::database::{
     engagement::NewEngagement,
     user::UserForJson,
 };
-use leptonic::{prelude::Box,toast::{Toast, ToastTimeout, ToastVariant, Toasts}}; 
+use leptonic::{
+    prelude::Box,
+    toast::{Toast, ToastTimeout, ToastVariant, Toasts},
+};
 use leptos::{html::Textarea, *};
 use leptos_use::{use_websocket, UseWebsocketReturn};
 use uuid::Uuid;
@@ -19,7 +22,12 @@ use crate::{
 };
 
 #[component]
-pub fn ChatBox(user: Signal<UserForJson>, ipv4: Signal<String>, set_home_view: WriteSignal<bool>) -> impl IntoView {
+pub fn ChatBox(
+    user: Signal<UserForJson>,
+    backend_url: Signal<String>,
+    set_home_view: WriteSignal<bool>,
+    database_url: Signal<String>,
+) -> impl IntoView {
     let (history, set_history) = create_signal::<Vec<String>>(vec![]);
     let (username_unset, set_username_unset) = create_signal(true);
     let (response, set_response) = create_signal::<Option<String>>(None);
@@ -36,9 +44,8 @@ pub fn ChatBox(user: Signal<UserForJson>, ipv4: Signal<String>, set_home_view: W
     // Toast send query success or error
     let toasts = expect_context::<Toasts>();
 
-
     // Instantiate addr websocket_server_address with .env or default values.
-    let websocket_server_address = get_llm_path("websocket", ipv4.get());
+    let websocket_server_address = get_llm_path("websocket", backend_url.get());
 
     let UseWebsocketReturn {
         ready_state,
@@ -78,12 +85,12 @@ pub fn ChatBox(user: Signal<UserForJson>, ipv4: Signal<String>, set_home_view: W
         } else if e.key() == "Enter" && e.shift_key() {
             let input_element = input_element.get().expect("<input> to exist");
             let n_lines = input_element.value().split("\\n").collect::<String>().len();
-            set_text_area_height.set(n_lines+2)
+            set_text_area_height.set(n_lines + 2)
         }
     };
-    
+
     // send when time_to_send
-    create_effect(move |_| 
+    create_effect(move |_|
         // register username
         if username_unset.get() {
             leptos_dom::log!("Trying to set inside");
@@ -99,11 +106,11 @@ pub fn ChatBox(user: Signal<UserForJson>, ipv4: Signal<String>, set_home_view: W
     );
 
     // Return to home view if connection closes
-    create_effect(move |_| 
+    create_effect(move |_| {
         if status() == "Closed" {
             set_home_view.set(true);
         }
-    );
+    });
 
     create_effect(move |_| {
         if let Some(m) = message.get() {
@@ -145,6 +152,7 @@ pub fn ChatBox(user: Signal<UserForJson>, ipv4: Signal<String>, set_home_view: W
                                     model_params: String::new(),
                                     inference_params: String::new(),
                                 },
+                                database_url.get(),
                             )
                             .await;
 
@@ -181,11 +189,14 @@ pub fn ChatBox(user: Signal<UserForJson>, ipv4: Signal<String>, set_home_view: W
                         spawn_local(async move {
                             if response.get().is_some() {
                                 logging::log!("Add Engagement");
-                                let _new_engagement = post_new_engagement(NewEngagement {
-                                    conversation_id: conversation.get().unwrap().id,
-                                    query: query.get().expect("query state is some"),
-                                    response: response.get().expect("query state is some"),
-                                })
+                                let _new_engagement = post_new_engagement(
+                                    NewEngagement {
+                                        conversation_id: conversation.get().unwrap().id,
+                                        query: query.get().expect("query state is some"),
+                                        response: response.get().expect("query state is some"),
+                                    },
+                                    database_url.get(),
+                                )
                                 .await;
                                 // Spawn in order to do last
                                 spawn_local(async move {
