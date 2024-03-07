@@ -48,11 +48,7 @@ pub fn Home(
             </Tab>
             <Tab name="user_tab" label="User".into_view()>
                 <Box style="width:100%">
-                    <UserConfig
-                        user=user
-                        set_user=set_user
-                        database_url=database_url
-                    />
+                    <UserConfig user=user set_user=set_user database_url=database_url/>
                 </Box>
             </Tab>
             <Tab name="models_tab" label="Models".into_view()>

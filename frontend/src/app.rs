@@ -78,6 +78,7 @@ use crate::components::home::overview::{init_model::InitModelModal, init_user::I
                     view! { <Landing landing_view_toggle=landing_view_toggle/> }
                 }
             >
+
                 <InitModelModal
                     model_args=model_args
                     model_list=model_list
