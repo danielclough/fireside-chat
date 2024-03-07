@@ -2,7 +2,7 @@ use crate::{
     components::home::model_config::model_list_container::ModelListContainer,
     functions::rest::llm::get_model_list,
 };
-use common::llm::model_list::{ModelArgs, ModelDLList};
+use common::llm::model_list::{ModelArgs};
 use leptonic::prelude::Box;
 use leptos::*;
 

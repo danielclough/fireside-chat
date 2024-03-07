@@ -1,9 +1,9 @@
-use common::llm::model_list::{ModelArgs, ModelDLList};
+use common::llm::model_list::{ModelArgs};
 use leptonic::modal::{Modal, ModalBody, ModalHeader, ModalTitle};
-use leptos::{component, view, IntoView, ReadSignal, Signal, WriteSignal};
+use leptos::{component, view, IntoView, Signal, WriteSignal};
 
 use crate::components::home::model_config::{
-    index::ModelConfig, model_list_container::ModelListContainer,
+    index::ModelConfig,
 };
 
 #[component]

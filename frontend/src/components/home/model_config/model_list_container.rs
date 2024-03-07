@@ -1,6 +1,6 @@
 use crate::components::home::model_config::gpu_select::GpuSelect;
 use crate::components::home::model_config::model_list_grid::ModelListGrid;
-use crate::functions::rest::llm::get_model_list;
+
 use common::llm::model_list::{ModelArgs, ModelDLList};
 use leptonic::{prelude::Box, select::Select, typography::H1};
 use leptos::*;
