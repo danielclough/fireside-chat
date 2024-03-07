@@ -1,7 +1,11 @@
-FROM --platform=${BUILDPLATFORM:-linux/amd64} danielclough/fireside-chat-base
+FROM --platform=${BUILDPLATFORM:-linux/amd64} danielclough/fireside-chat-base as build
+
+FROM debian:bookworm-slim
 
 COPY --from=build /usr/local/bin/wasm-server /usr/local/bin/wasm-server
-COPY --from=build /wasm-server /wasm-server
+COPY --from=build /wasm-server/lib /lib
+COPY --from=build /wasm-server/lib64 /lib64
+COPY --from=build /wasm-server/assets /assets
 
 CMD wasm-server
 

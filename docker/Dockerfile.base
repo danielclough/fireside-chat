@@ -11,16 +11,20 @@ RUN apt-get update && \
     rm -fr fireside-chat/.git && \
     sed -i 's|, features = \["cuda"\]||g' /app/fireside-chat/backend/Cargo.toml && \
     rustup target add wasm32-unknown-unknown && \
+    echo "frontend" && \
     cd /usr/local/cargo/bin/ && \
     curl -L https://github.com/trunk-rs/trunk/releases/download/v0.18.8/trunk-x86_64-unknown-linux-gnu.tar.gz | tar xvz && \
+    export FIRESIDE_BACKEND_URL=chat-backend.danielc.us && \
+    export FIRESIDE_DATABASE_URL=chat-database.danielc.us && \
+    cd /app/fireside-chat/wasm-server && /usr/local/cargo/bin/cargo build --release && \
+    cp /app/fireside-chat/target/release/wasm-server /usr/local/bin/ && \
     mkdir /wasm-server  && \
-    cd  /wasm-server  && \
+    cd /wasm-server  && \
     cp --parents /usr/local/bin/wasm-server ./ && \
     for i in `ldd /usr/local/bin/wasm-server | grep -v linux-vdso.so.1 | awk {' if ( $3 == "") print $1; else print $3 '}`; do cp --parents $i ./; done && \
     cd /app/fireside-chat/frontend && /usr/local/cargo/bin/trunk build --release && \
-    mkdir /frontend  && \
-    cd  /frontend  && \
-    cp /app/fireside-chat/frontend/dist /wasm-server/assets && \
+    cp -r /app/fireside-chat/frontend/dist /wasm-server/assets && \
+    echo "backend" && \
     export FIRESIDE_BACKEND_URL=0.0.0.0 && \
     cd /app/fireside-chat/backend && /usr/local/cargo/bin/cargo build --release && \
     cp /app/fireside-chat/target/release/backend /usr/local/bin/ && \
@@ -28,6 +32,7 @@ RUN apt-get update && \
     cd  /backend  && \
     cp --parents /usr/local/bin/backend ./ && \
     for i in `ldd /usr/local/bin/backend | grep -v linux-vdso.so.1 | awk {' if ( $3 == "") print $1; else print $3 '}`; do cp --parents $i ./; done && \
+    echo "database" && \
     export FIRESIDE_DATABASE_URL=0.0.0.0 && \
     cd /app/fireside-chat/database && /usr/local/cargo/bin/cargo build --release && \
     cp /app/fireside-chat/target/release/database /usr/local/bin/ && \

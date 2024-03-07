@@ -3,56 +3,44 @@ services:
   fireside_chat_frontend:
     image: danielclough/fireside-chat-frontend
     # command: 
-    stdin_open: true
-    tty: true
-    # env_file:
-    #   - .env
     restart: unless-stopped
-    volumes:
-      - ./frontend:/app/fireside-chat/frontend
+    # volumes:
+    #   - ./frontend:/app/fireside-chat/frontend
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik
-      - traefik.http.routers.fireside_chat.rule=Host(`chat.danielc.us`)
-      - traefik.http.routers.fireside_chat.entrypoints=https
-      - traefik.http.routers.fireside_chat.tls.certresolver=simple-resolver
-      - traefik.http.services.fireside_chat.loadbalancer.server.port=16982
+      - traefik.http.routers.fireside_chat_frontend.rule=Host(`chat.danielc.us`)
+      - traefik.http.routers.fireside_chat_frontend.entrypoints=https
+      - traefik.http.routers.fireside_chat_frontend.tls.certresolver=simple-resolver
+      - traefik.http.services.fireside_chat_frontend.loadbalancer.server.port=16982
     networks:
       traefik:
     
   fireside_chat_backend:
     image: danielclough/fireside-chat-backend
     # command: 
-    stdin_open: true
-    tty: true
-    # env_file:
-    #   - .env
     restart: unless-stopped
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik
-      - traefik.http.routers.fireside_chat.rule=Host(`chat-backend.danielc.us`)
-      - traefik.http.routers.fireside_chat.entrypoints=https
-      - traefik.http.routers.fireside_chat.tls.certresolver=simple-resolver
-      - traefik.http.services.fireside_chat.loadbalancer.server.port=16981
+      - traefik.http.routers.fireside_chat_backend.rule=Host(`chat-backend.danielc.us`)
+      - traefik.http.routers.fireside_chat_backend.entrypoints=https
+      - traefik.http.routers.fireside_chat_backend.tls.certresolver=simple-resolver
+      - traefik.http.services.fireside_chat_backend.loadbalancer.server.port=16981
     networks:
       traefik:
 
   fireside_chat_database:
     image: danielclough/fireside-chat-database
     # command: 
-    stdin_open: true
-    tty: true
-    # env_file:
-    #   - .env
     restart: unless-stopped
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik
-      - traefik.http.routers.fireside_chat.rule=Host(`chat-database.danielc.us`)
-      - traefik.http.routers.fireside_chat.entrypoints=https
-      - traefik.http.routers.fireside_chat.tls.certresolver=simple-resolver
-      - traefik.http.services.fireside_chat.loadbalancer.server.port=16980
+      - traefik.http.routers.fireside_chat_database.rule=Host(`chat-database.danielc.us`)
+      - traefik.http.routers.fireside_chat_database.entrypoints=https
+      - traefik.http.routers.fireside_chat_database.tls.certresolver=simple-resolver
+      - traefik.http.services.fireside_chat_database.loadbalancer.server.port=16980
     networks:
       traefik:
 

@@ -31,7 +31,7 @@ fn calling_serve_dir_from_a_handler() -> Router {
     Router::new().nest_service(
         "/",
         get(|request: Request| async {
-            let service = ServeDir::new("assets");
+            let service = ServeDir::new("/assets");
             let result = service.oneshot(request).await;
             result
         }),
