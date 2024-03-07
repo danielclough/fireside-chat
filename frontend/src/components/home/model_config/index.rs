@@ -1,4 +1,7 @@
-use crate::{components::home::model_config::model_list_container::ModelListContainer, functions::rest::llm::get_model_list};
+use crate::{
+    components::home::model_config::model_list_container::ModelListContainer,
+    functions::rest::llm::get_model_list,
+};
 use common::llm::model_list::{ModelArgs, ModelDLList};
 use leptonic::prelude::Box;
 use leptos::*;
@@ -25,7 +28,13 @@ pub fn ModelConfig(
     );
 
     let quantized_safetensors_for_select = vec!["Quantized", "Safetensors"];
-    let (quantized_safetensors_for_select_signal, _) = create_signal(quantized_safetensors_for_select.clone().iter().map(|x| x.to_string()).collect::<Vec<String>>());
+    let (quantized_safetensors_for_select_signal, _) = create_signal(
+        quantized_safetensors_for_select
+            .clone()
+            .iter()
+            .map(|x| x.to_string())
+            .collect::<Vec<String>>(),
+    );
     let (quantized_str, set_quantized_str) = create_signal(if model_args.get().quantized {
         quantized_safetensors_for_select[0].to_string()
     } else {
@@ -37,28 +46,30 @@ pub fn ModelConfig(
             view! { <p>"Initializing..."</p> }
         }>
             {move || {
-                model_list_resource.get().map(|model_list|{
-                    let (model_list_signal, _) = create_signal(model_list);
-                    view! {
-                        <Box style="width:100%">
-                            <ModelListContainer
-                                backend_url=backend_url
-                                model_args=model_args
-                                set_model_args=set_model_args
-                                gpu_type=gpu_type
-                                set_gpu_type=set_gpu_type
-                                quantized_str=quantized_str
-                                set_quantized_str=set_quantized_str
-                                quantized=quantized_str.get() == "Quantized"
-                                q_lvl=q_lvl
-                                model_list=model_list_signal
-                                quantized_safetensors_for_select=quantized_safetensors_for_select_signal
-                            />
-                        </Box>
-                    }
-                })
-
+                model_list_resource
+                    .get()
+                    .map(|model_list| {
+                        let (model_list_signal, _) = create_signal(model_list);
+                        view! {
+                            <Box style="width:100%">
+                                <ModelListContainer
+                                    backend_url=backend_url
+                                    model_args=model_args
+                                    set_model_args=set_model_args
+                                    gpu_type=gpu_type
+                                    set_gpu_type=set_gpu_type
+                                    quantized_str=quantized_str
+                                    set_quantized_str=set_quantized_str
+                                    quantized=quantized_str.get() == "Quantized"
+                                    q_lvl=q_lvl
+                                    model_list=model_list_signal
+                                    quantized_safetensors_for_select=quantized_safetensors_for_select_signal
+                                />
+                            </Box>
+                        }
+                    })
             }}
+
         </Transition>
     }
 }
