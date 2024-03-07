@@ -7,7 +7,7 @@ use crate::components::home::user_config::index::UserConfig;
 use crate::functions::rest::role::get_role_list;
 use common::database::user::UserForJson;
 use common::llm::inference::InferenceArgsForInput;
-use common::llm::model_list::{ModelArgs};
+use common::llm::model_list::ModelArgs;
 use leptonic::{prelude::Box, tab::Tab, tabs::Tabs, Mount};
 use leptos::*;
 

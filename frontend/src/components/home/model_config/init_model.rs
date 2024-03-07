@@ -1,10 +1,8 @@
-use common::llm::model_list::{ModelArgs};
+use common::llm::model_list::ModelArgs;
 use leptonic::modal::{Modal, ModalBody, ModalHeader, ModalTitle};
 use leptos::{component, view, IntoView, Signal, WriteSignal};
 
-use crate::components::home::model_config::{
-    index::ModelConfig,
-};
+use crate::components::home::model_config::index::ModelConfig;
 
 #[component]
 pub fn InitModelModal(

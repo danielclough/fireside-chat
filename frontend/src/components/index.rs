@@ -1,13 +1,10 @@
 use crate::components::home::index::Home;
 use crate::components::{chat::index::ChatBox, header::index::Header};
-use crate::functions::rest::{
-    llm::{get_model_args},
-    user::get_user_by_name,
-};
+use crate::functions::rest::{llm::get_model_args, user::get_user_by_name};
 
 use common::database::user::UserForJson;
 use common::llm::inference::InferenceArgsForInput;
-use common::llm::model_list::{ModelArgs};
+use common::llm::model_list::ModelArgs;
 
 use leptonic::typography::{H2, H3, H4};
 use leptonic::{

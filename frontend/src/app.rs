@@ -4,7 +4,7 @@ use crate::components::{index::Index, landing::index::Landing};
 
 use common::database::user::UserForJson;
 use common::llm::inference::InferenceArgsForInput;
-use common::llm::model_list::{ModelArgs};
+use common::llm::model_list::ModelArgs;
 
 use leptonic::{root::Root, theme::LeptonicTheme};
 use leptos::*;
