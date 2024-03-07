@@ -24,7 +24,7 @@ pub async fn get_conversations_by_user_id(
 
     if id == 0 {
         default_vec
-    }else {
+    } else {
         let response = Request::get(&path).send().await;
         if response.is_ok() {
             response

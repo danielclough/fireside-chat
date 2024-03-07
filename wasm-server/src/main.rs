@@ -1,12 +1,7 @@
-use axum::{
-    extract::Request, routing::get, Router,
-};
+use axum::{extract::Request, routing::get, Router};
 use std::net::SocketAddr;
 use tower::ServiceExt;
-use tower_http::{
-    services::{ServeDir},
-    trace::TraceLayer,
-};
+use tower_http::{services::ServeDir, trace::TraceLayer};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 #[tokio::main]
@@ -19,9 +14,7 @@ async fn main() {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
-    tokio::join!(
-        serve(calling_serve_dir_from_a_handler(), 16982),
-    );
+    tokio::join!(serve(calling_serve_dir_from_a_handler(), 16982),);
 }
 
 #[allow(clippy::let_and_return)]

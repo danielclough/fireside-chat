@@ -123,7 +123,9 @@ pub async fn db() {
 
     // Serve
     let localhost = "127.0.0.1";
-    let database_url = std::option_env!("FIRESIDE_DATABASE_URL").unwrap_or(localhost).to_string();
+    let database_url = std::option_env!("FIRESIDE_DATABASE_URL")
+        .unwrap_or(localhost)
+        .to_string();
     let port = 16980;
     let tcp_string = format!("{}:{}", database_url, port);
 

@@ -115,7 +115,7 @@ pub fn switch_users(
             )
             .await;
         };
-    
+
         let new_user_exists = if new_user_name.clone().as_str() != "" {
             let new_user = check_user_exists(new_user_name.clone(), database_url.get()).await;
             if new_user.clone().id != 0 {
@@ -126,7 +126,7 @@ pub fn switch_users(
         } else {
             None
         };
-    
+
         let new_user = if new_user_exists.is_some() {
             let new_user = UserForJson {
                 id: new_user_exists.clone().unwrap().id,

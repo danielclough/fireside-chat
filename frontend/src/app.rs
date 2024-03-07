@@ -68,7 +68,7 @@ pub fn App() -> impl IntoView {
     let (show_model_init_modal, _set_show_model_init_modal) =
         create_signal(model_args.get().clone().template == Some("NoModel".to_string()));
 
-use crate::components::home::overview::{init_model::InitModelModal, init_user::InitUserModal};
+    use crate::components::home::overview::{init_model::InitModelModal, init_user::InitUserModal};
 
     view! {
         <Root default_theme=LeptonicTheme::default()>
