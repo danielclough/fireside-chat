@@ -100,11 +100,7 @@ pub fn switch_users(
     new_user_name: String,
     database_url: Signal<String>,
 ) {
-    let old_user_exists = if old_user.get().id != 0 {
-        true
-    } else {
-        false
-    };
+    let old_user_exists = old_user.get().id != 0;
 
     spawn_local(async move {
         // Update "old" user (active: false)

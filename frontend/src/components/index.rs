@@ -109,7 +109,7 @@ pub fn Index(
                         {move || {
                             init_everything
                                 .get()
-                                .map(|(model_list, model_args, active_user)| {
+                                .map(|(model_list, model_args, _active_user)| {
                                     leptos_dom::log!("Init Map");
                                     {
                                         set_model_list_signal.set(model_list);

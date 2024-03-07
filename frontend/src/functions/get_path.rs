@@ -1,5 +1,5 @@
 pub fn get_llm_path(route: &str, url: String) -> String {
-    let ssl = if url.as_str() != "127.0.0.1" {true} else {false};
+    let ssl = url.as_str() != "127.0.0.1";
 
     if ssl {
         if route == "websocket" {
@@ -7,17 +7,15 @@ pub fn get_llm_path(route: &str, url: String) -> String {
         } else {
             format!("https://{}/{}", url, route)
         }
+    } else if route == "websocket" {
+        format!("ws://{}:16981/{}", url, route)
     } else {
-        if route == "websocket" {
-            format!("ws://{}:16981/{}", url, route)
-        } else {
-            format!("http://{}:16981/{}", url, route)
-        }
+        format!("http://{}:16981/{}", url, route)
     }
 }
 
 pub fn get_database_path(route: &str, url: String) -> String {
-    let ssl = if url.as_str() != "127.0.0.1" {true} else {false};
+    let ssl = url.as_str() != "127.0.0.1";
 
     if ssl {
         format!("https://{}/{}", url, route)

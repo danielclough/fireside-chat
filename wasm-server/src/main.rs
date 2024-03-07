@@ -1,10 +1,10 @@
 use axum::{
-    extract::Request, handler::HandlerWithoutStateExt, http::StatusCode, routing::get, Router,
+    extract::Request, routing::get, Router,
 };
 use std::net::SocketAddr;
 use tower::ServiceExt;
 use tower_http::{
-    services::{ServeDir, ServeFile},
+    services::{ServeDir},
     trace::TraceLayer,
 };
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
