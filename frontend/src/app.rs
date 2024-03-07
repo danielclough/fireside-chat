@@ -1,3 +1,5 @@
+use crate::components::home::model_config::init_model::InitModelModal;
+use crate::components::home::user_config::init_user::InitUserModal;
 use crate::components::{index::Index, landing::index::Landing};
 
 use common::database::user::UserForJson;
@@ -44,7 +46,6 @@ pub fn App() -> impl IntoView {
     // Model
     //
     let (model_args, set_model_args, _) = use_local_storage::<ModelArgs, JsonCodec>("model");
-    let (model_list, set_model_list) = create_signal::<ModelDLList>(ModelDLList::error());
 
     // Inference Args
     //
@@ -68,8 +69,6 @@ pub fn App() -> impl IntoView {
     let (show_model_init_modal, _set_show_model_init_modal) =
         create_signal(model_args.get().clone().template == Some("NoModel".to_string()));
 
-    use crate::components::home::overview::{init_model::InitModelModal, init_user::InitUserModal};
-
     view! {
         <Root default_theme=LeptonicTheme::default()>
             <Show
@@ -81,7 +80,6 @@ pub fn App() -> impl IntoView {
 
                 <InitModelModal
                     model_args=model_args
-                    model_list=model_list
                     backend_url=backend_url
                     show_when=show_model_init_modal
                     gpu_type=gpu_type
@@ -109,8 +107,6 @@ pub fn App() -> impl IntoView {
                     backend_error=backend_error
                     home_view=home_view
                     set_home_view=set_home_view
-                    model_list_signal=model_list
-                    set_model_list_signal=set_model_list
                     model_args_local_storage=model_args
                     set_model_args_local_storage=set_model_args
                     set_backend_error=set_backend_error

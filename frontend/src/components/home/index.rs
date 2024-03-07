@@ -19,7 +19,6 @@ pub fn Home(
     set_gpu_type: WriteSignal<String>,
     inference_args: Signal<InferenceArgsForInput>,
     set_inference_args: WriteSignal<InferenceArgsForInput>,
-    model_list: ReadSignal<ModelDLList>,
     model_args: Signal<ModelArgs>,
     set_model_args: WriteSignal<ModelArgs>,
     user: Signal<UserForJson>,
@@ -55,7 +54,6 @@ pub fn Home(
                 <Box style="width:100%">
                     <ModelConfig
                         backend_url=backend_url
-                        model_list=model_list
                         model_args=model_args
                         set_model_args=set_model_args
                         gpu_type=gpu_type

@@ -32,8 +32,6 @@ pub fn Index(
     set_backend_error: WriteSignal<bool>,
     home_view: ReadSignal<bool>,
     set_home_view: WriteSignal<bool>,
-    model_list_signal: ReadSignal<ModelDLList>,
-    set_model_list_signal: WriteSignal<ModelDLList>,
     model_args_local_storage: Signal<ModelArgs>,
     set_model_args_local_storage: WriteSignal<ModelArgs>,
     database_url: Signal<String>,
@@ -52,7 +50,6 @@ pub fn Index(
             logging::log!("loading model_args from API");
             logging::log!("loading active_user from API");
             (
-                get_model_list(model_args_local_storage.get().q_lvl, backend_url.get()).await,
                 get_model_args(backend_url.get()).await,
                 get_user_by_name(user.get().name, database_url.get()).await,
             )
@@ -109,10 +106,9 @@ pub fn Index(
                         {move || {
                             init_everything
                                 .get()
-                                .map(|(model_list, model_args, _active_user)| {
+                                .map(|(model_args, _active_user)| {
                                     leptos_dom::log!("Init Map");
                                     {
-                                        set_model_list_signal.set(model_list);
                                         set_model_args_local_storage.set(model_args);
                                     }
                                     if model_args_local_storage.get().repo_id
@@ -147,7 +143,6 @@ pub fn Index(
                                                 set_inference_args=set_inference_args
                                                 user=user
                                                 set_user=set_user
-                                                model_list=model_list_signal
                                                 model_args=model_args_local_storage
                                                 set_model_args=set_model_args_local_storage
                                                 database_url=database_url
