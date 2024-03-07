@@ -7,16 +7,10 @@ use crate::functions::rest::user::switch_users;
 
 #[component]
 pub fn UserConfig(
-    active_user: UserForJson,
     user: Signal<UserForJson>,
     set_user: WriteSignal<UserForJson>,
     database_url: Signal<String>,
 ) -> impl IntoView {
-    {
-        // Set user to value returned from DB
-        set_user.set(active_user.clone());
-    }
-
     let input_element: NodeRef<Input> = create_node_ref();
     let input_str = String::new();
 
@@ -41,7 +35,7 @@ pub fn UserConfig(
         <input
             type="text"
             name="input"
-            placeholder="Change Username"
+            placeholder="Choose Username"
             value=input_str
             on:keydown=update_user
             node_ref=input_element

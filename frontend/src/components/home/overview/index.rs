@@ -4,10 +4,7 @@ use common::{
         engagement::{EngagementForJson, EngagementForJsonVec},
         user::UserForJson,
     },
-    llm::{
-        inference::InferenceArgsForInput,
-        model_list::{ModelArgs, ModelDLList},
-    },
+    llm::{inference::InferenceArgsForInput, model_list::ModelArgs},
 };
 use leptonic::{
     Size,
@@ -19,22 +16,13 @@ use leptonic::{
 };
 use leptos::*;
 
-use crate::{
-    components::home::overview::{init_model::InitModelModal, init_user::InitUserModal},
-    functions::rest::conversation::get_conversations_by_user_id,
-};
+use crate::functions::rest::conversation::get_conversations_by_user_id;
 
 #[component]
 pub fn Overview(
     inference_args: Signal<InferenceArgsForInput>,
     model_args: Signal<ModelArgs>,
-    model_list: ReadSignal<ModelDLList>,
     user: Signal<UserForJson>,
-    set_user: WriteSignal<UserForJson>,
-    backend_url: Signal<String>,
-    gpu_type: Signal<String>,
-    set_gpu_type: WriteSignal<String>,
-    set_model_args: WriteSignal<ModelArgs>,
     database_url: Signal<String>,
 ) -> impl IntoView {
     let init_conversations = create_resource(
@@ -44,31 +32,10 @@ pub fn Overview(
             get_conversations_by_user_id(user.get().id, database_url.get()).await
         },
     );
-    let (show_user_init_modal, set_show_user_init_modal) =
-        create_signal(user.get().name == *"None" || user.get().name.len() < 2);
-    let (show_model_init_modal, _set_show_model_init_modal) =
-        create_signal(model_args.get().clone().template == Some("NoModel".to_string()));
-
     // let (init_conversations_signal, _set_init_conversations_signal) = create_signal(init_conversations.get());
+
     view! {
         <Box class="home-container">
-            <InitModelModal
-                model_args=model_args
-                model_list=model_list
-                backend_url=backend_url
-                show_when=show_model_init_modal
-                gpu_type=gpu_type
-                set_gpu_type=set_gpu_type
-                set_model_args=set_model_args
-            />
-            <InitUserModal
-                set_user=set_user
-                user=user
-                show_when=show_user_init_modal
-                on_accept=move || set_show_user_init_modal.set(false)
-                on_cancel=move || set_show_user_init_modal.set(false)
-                database_url=database_url
-            />
             <Box class="wrapper">
                 <article class="about-area">
                     <Box id="home-tagline">
@@ -250,4 +217,13 @@ pub fn Overview(
             </Box>
         </Box>
     }
+    // >
+    //     <div class="outer-container">
+    //         <UserConfig
+    //             user=user
+    //             set_user=set_user
+    //             database_url=database_url
+    //         />
+    //     </div>
+    // </Show>
 }

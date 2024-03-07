@@ -40,8 +40,6 @@ pub fn App() -> impl IntoView {
     // User
     //
     let (user, set_user, _) = use_local_storage::<UserForJson, JsonCodec>("user");
-    let (active_user_signal, set_active_user_signal) =
-        create_signal::<UserForJson>(UserForJson::error());
 
     // Model
     //
@@ -63,6 +61,15 @@ pub fn App() -> impl IntoView {
     let (database_error, set_database_error) = create_signal(false);
     let (backend_error, set_backend_error) = create_signal(false);
 
+    // Modals
+    //
+    let (show_user_init_modal, set_show_user_init_modal) =
+        create_signal(user.get().name == *"None" || user.get().name.len() < 2);
+    let (show_model_init_modal, _set_show_model_init_modal) =
+        create_signal(model_args.get().clone().template == Some("NoModel".to_string()));
+
+use crate::components::home::overview::{init_model::InitModelModal, init_user::InitUserModal};
+
     view! {
         <Root default_theme=LeptonicTheme::default()>
             <Show
@@ -71,7 +78,23 @@ pub fn App() -> impl IntoView {
                     view! { <Landing landing_view_toggle=landing_view_toggle/> }
                 }
             >
-
+                <InitModelModal
+                    model_args=model_args
+                    model_list=model_list
+                    backend_url=backend_url
+                    show_when=show_model_init_modal
+                    gpu_type=gpu_type
+                    set_gpu_type=set_gpu_type
+                    set_model_args=set_model_args
+                />
+                <InitUserModal
+                    set_user=set_user
+                    user=user
+                    show_when=show_user_init_modal
+                    on_accept=move || set_show_user_init_modal.set(false)
+                    on_cancel=move || set_show_user_init_modal.set(false)
+                    database_url=database_url
+                />
                 <Index
                     backend_url=backend_url
                     set_backend_url=set_backend_url
@@ -89,8 +112,6 @@ pub fn App() -> impl IntoView {
                     set_model_list_signal=set_model_list
                     model_args_local_storage=model_args
                     set_model_args_local_storage=set_model_args
-                    set_active_user_signal=set_active_user_signal
-                    active_user_signal=active_user_signal
                     set_backend_error=set_backend_error
                     set_database_error=set_database_error
                     database_url=database_url

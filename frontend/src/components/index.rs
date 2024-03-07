@@ -2,7 +2,7 @@ use crate::components::home::index::Home;
 use crate::components::{chat::index::ChatBox, header::index::Header};
 use crate::functions::rest::{
     llm::{get_model_args, get_model_list},
-    user::get_active_user,
+    user::get_user_by_name,
 };
 
 use common::database::user::UserForJson;
@@ -36,14 +36,11 @@ pub fn Index(
     set_model_list_signal: WriteSignal<ModelDLList>,
     model_args_local_storage: Signal<ModelArgs>,
     set_model_args_local_storage: WriteSignal<ModelArgs>,
-    set_active_user_signal: WriteSignal<UserForJson>,
-    active_user_signal: ReadSignal<UserForJson>,
     database_url: Signal<String>,
 ) -> impl IntoView {
     let init_everything = create_resource(
         move || {
             (
-                model_args_local_storage.get(),
                 model_args_local_storage.get(),
                 user.get(),
                 inference_args.get(),
@@ -57,7 +54,7 @@ pub fn Index(
             (
                 get_model_list(model_args_local_storage.get().q_lvl, backend_url.get()).await,
                 get_model_args(backend_url.get()).await,
-                get_active_user(database_url.get()).await,
+                get_user_by_name(user.get().name, database_url.get()).await,
             )
         },
     );
@@ -117,14 +114,13 @@ pub fn Index(
                                     {
                                         set_model_list_signal.set(model_list);
                                         set_model_args_local_storage.set(model_args);
-                                        set_active_user_signal.set(active_user);
                                     }
                                     if model_args_local_storage.get().repo_id
                                         == *"LLM Backend Error"
                                     {
                                         set_backend_error.set(true);
                                     }
-                                    if active_user_signal.get().name == *"Database Error" {
+                                    if user.get().name == *"Database Error" {
                                         set_database_error.set(true);
                                     }
                                     view! {
@@ -151,7 +147,6 @@ pub fn Index(
                                                 set_inference_args=set_inference_args
                                                 user=user
                                                 set_user=set_user
-                                                active_user=active_user_signal
                                                 model_list=model_list_signal
                                                 model_args=model_args_local_storage
                                                 set_model_args=set_model_args_local_storage

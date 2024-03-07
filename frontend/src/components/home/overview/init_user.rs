@@ -5,7 +5,7 @@ use leptonic::{
     modal::{Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle},
 };
 use leptos::{
-    component, create_signal, view, IntoView, Signal, SignalGet, SignalUpdate, WriteSignal,
+    component, create_signal, view, IntoView, Signal, SignalGet, SignalUpdate, WriteSignal
 };
 
 use crate::functions::rest::user::switch_users;

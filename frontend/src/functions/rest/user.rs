@@ -4,7 +4,27 @@ use leptos::{spawn_local, Signal, SignalGet, SignalUpdate, WriteSignal};
 
 use crate::functions::get_path::get_database_path;
 
-pub async fn get_active_user(database_url: String) -> UserForJson {
+pub async fn get_user_by_name(name: String, database_url: String) -> UserForJson {
+    let route: String = format!("user/name/{}", name);
+    let path = get_database_path(&route, database_url);
+
+    let default = UserForJson {
+        id: 0,
+        name: "".to_string(),
+        active: true,
+    };
+    if name.as_str() == "" {
+        default
+    } else {
+        let response = Request::get(&path).send().await;
+        if response.is_ok() {
+            response.unwrap().json().await.unwrap_or(default).to_owned()
+        } else {
+            default
+        }
+    }
+}
+pub async fn _get_active_user(database_url: String) -> UserForJson {
     let path = get_database_path("users/active/true", database_url);
 
     let default_vec = vec![UserForJson {
@@ -75,52 +95,57 @@ pub async fn patch_existing_user(
 }
 
 pub fn switch_users(
-    user: Signal<UserForJson>,
+    old_user: Signal<UserForJson>,
     set_user: WriteSignal<UserForJson>,
-    input_string: String,
+    new_user_name: String,
     database_url: Signal<String>,
-) -> UserForJson {
-    // Create User structs
-    let old_user = user.get();
+) {
+    let old_user_exists = if old_user.get().id != 0 {
+        true
+    } else {
+        false
+    };
+
     spawn_local(async move {
         // Update "old" user (active: false)
-        if old_user.clone().id != 0 {
+        if old_user_exists {
             _ = patch_existing_user(
                 UserForJson {
-                    id: old_user.clone().id,
-                    name: old_user.clone().name,
+                    id: old_user.get().id,
+                    name: old_user.get().name,
                     active: false,
                 },
                 database_url.get(),
             )
             .await;
         };
-
-        spawn_local(async move {
-            // Update "new" user  (active: true OR create new)
-            let new_user_exists: UserForJson = if old_user.clone().id != 0 {
-                check_user_exists(input_string.clone(), database_url.get()).await
+    
+        let new_user_exists = if new_user_name.clone().as_str() != "" {
+            let new_user = check_user_exists(new_user_name.clone(), database_url.get()).await;
+            if new_user.clone().id != 0 {
+                Some(new_user)
             } else {
-                old_user.clone()
+                None
+            }
+        } else {
+            None
+        };
+    
+        let new_user = if new_user_exists.is_some() {
+            let new_user = UserForJson {
+                id: new_user_exists.clone().unwrap().id,
+                name: new_user_exists.unwrap().name,
+                active: true,
             };
+            patch_existing_user(new_user.clone(), database_url.get()).await
+        } else {
+            let new_user = NewUser {
+                name: new_user_name,
+                active: true,
+            };
+            post_new_user(new_user, database_url.get()).await
+        };
 
-            if new_user_exists.id == 0 {
-                let new_user = NewUser {
-                    name: input_string,
-                    active: true,
-                };
-                let new_user = post_new_user(new_user, database_url.get()).await;
-                set_user.update(|x| *x = new_user);
-            } else {
-                let new_user = UserForJson {
-                    id: new_user_exists.id,
-                    name: new_user_exists.name,
-                    active: true,
-                };
-                set_user.update(|x| *x = new_user.clone());
-                _ = patch_existing_user(new_user, database_url.get()).await;
-            };
-        });
-    });
-    user.get()
+        set_user.update(|x| *x = new_user);
+    })
 }

@@ -22,7 +22,6 @@ pub fn Home(
     model_list: ReadSignal<ModelDLList>,
     model_args: Signal<ModelArgs>,
     set_model_args: WriteSignal<ModelArgs>,
-    active_user: ReadSignal<UserForJson>,
     user: Signal<UserForJson>,
     set_user: WriteSignal<UserForJson>,
     database_url: Signal<String>,
@@ -40,23 +39,16 @@ pub fn Home(
             <Tab name="home_tab" label="Home".into_view()>
                 <Box style="width:100%">
                     <Overview
-                        backend_url=backend_url
                         user=user
-                        set_user=set_user
                         inference_args=inference_args
-                        model_args=model_args
-                        set_model_args=set_model_args
-                        model_list=model_list
-                        gpu_type=gpu_type
-                        set_gpu_type=set_gpu_type
                         database_url=database_url
+                        model_args=model_args
                     />
                 </Box>
             </Tab>
             <Tab name="user_tab" label="User".into_view()>
                 <Box style="width:100%">
                     <UserConfig
-                        active_user=active_user.get()
                         user=user
                         set_user=set_user
                         database_url=database_url

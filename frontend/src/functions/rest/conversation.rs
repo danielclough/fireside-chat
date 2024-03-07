@@ -22,15 +22,19 @@ pub async fn get_conversations_by_user_id(
         inference_params: "Database Error".to_string(),
     }];
 
-    let response = Request::get(&path).send().await;
-    if response.is_ok() {
-        response
-            .expect("Load role list from API")
-            .json()
-            .await
-            .unwrap()
-    } else {
+    if id == 0 {
         default_vec
+    }else {
+        let response = Request::get(&path).send().await;
+        if response.is_ok() {
+            response
+                .expect("Load role list from API")
+                .json()
+                .await
+                .unwrap()
+        } else {
+            default_vec
+        }
     }
 }
 
