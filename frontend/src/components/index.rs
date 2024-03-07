@@ -102,8 +102,8 @@ pub fn Index(
 
                     // the fallback will show initially
                     // on subsequent reloads, the current child will
-                    <Transition // continue showing
-                    fallback=move || {
+                    // continue showing
+                    <Transition fallback=move || {
                         view! { <p>"Initializing..."</p> }
                     }>
                         {move || {
