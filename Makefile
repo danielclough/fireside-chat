@@ -48,6 +48,7 @@ test:
 	@find ./ -type f -name "*.profraw" -delete
 
 fmt:
+	@cargo fmt
 	@cd frontend && leptosfmt ./**/**/**/**/**/**/**/*.rs
 
 build-appimage:
