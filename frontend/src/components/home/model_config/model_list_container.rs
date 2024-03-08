@@ -2,7 +2,7 @@ use crate::components::home::model_config::gpu_select::GpuSelect;
 use crate::components::home::model_config::model_list_grid::ModelListGrid;
 
 use common::llm::model_list::{ModelArgs, ModelDLList};
-use leptonic::{prelude::Box, select::Select, typography::H1};
+use leptonic::components::{prelude::Box, select::Select, typography::H1};
 use leptos::*;
 
 #[component]

@@ -1,4 +1,4 @@
-use leptonic::prelude::Box;
+use leptonic::components::prelude::Box;
 use leptos::{component, view, IntoView};
 use web_sys::MouseEvent;
 

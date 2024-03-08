@@ -2,7 +2,7 @@ use common::{
     database::user::UserForJson,
     llm::{inference::InferenceArgsForInput, model_list::ModelArgs},
 };
-use leptonic::{
+use leptonic::components::{
     prelude::Box,
     typography::{H2, H3},
 };

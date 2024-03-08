@@ -1,4 +1,4 @@
-use leptonic::select::Select;
+use leptonic::components::select::Select;
 use leptos::*;
 
 #[component]

@@ -7,7 +7,7 @@ use common::database::user::UserForJson;
 use common::llm::inference::InferenceArgsForInput;
 use common::llm::model_list::ModelArgs;
 
-use leptonic::{root::Root, theme::LeptonicTheme};
+use leptonic::components::{root::Root, theme::LeptonicTheme};
 use leptos::*;
 use leptos_use::storage::use_local_storage;
 use leptos_use::utils::JsonCodec;

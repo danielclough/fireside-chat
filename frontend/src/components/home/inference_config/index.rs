@@ -1,5 +1,5 @@
 use common::llm::inference::{InferenceArgsForInput, InferenceArgsForJson, LoadContext};
-use leptonic::prelude::*;
+use leptonic::components::prelude::*;
 use leptos::prelude::*;
 use leptos::*;
 

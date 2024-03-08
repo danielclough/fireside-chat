@@ -3,7 +3,7 @@ use common::database::{
     engagement::NewEngagement,
     user::UserForJson,
 };
-use leptonic::{
+use leptonic::components::{
     prelude::Box,
     toast::{Toast, ToastTimeout, ToastVariant, Toasts},
 };

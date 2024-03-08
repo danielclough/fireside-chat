@@ -1,4 +1,4 @@
-use leptonic::modal::{Modal, ModalBody, ModalHeader, ModalTitle};
+use leptonic::components::modal::{Modal, ModalBody, ModalHeader, ModalTitle};
 use leptos::{component, view, IntoView, Signal, WriteSignal};
 
 use crate::components::home::network_config::index::NetworkConfig;

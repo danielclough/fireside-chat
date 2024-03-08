@@ -2,7 +2,7 @@ use common::llm::{
     inference::{InferenceArgsForInput, InferenceArgsForJson},
     role_list::RoleListEntry,
 };
-use leptonic::collapsible::{Collapsible, CollapsibleBody, CollapsibleHeader};
+use leptonic::components::collapsible::{Collapsible, CollapsibleBody, CollapsibleHeader};
 use leptos::{html::Input, *};
 
 use crate::functions::rest::role::patch_role_list;

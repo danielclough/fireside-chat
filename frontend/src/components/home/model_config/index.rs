@@ -3,7 +3,7 @@ use crate::{
     functions::rest::llm::{get_model_args, get_model_list},
 };
 use common::llm::model_list::ModelArgs;
-use leptonic::prelude::Box;
+use leptonic::components::prelude::Box;
 use leptos::*;
 
 #[component]

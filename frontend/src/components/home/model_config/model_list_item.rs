@@ -1,5 +1,5 @@
 use common::llm::model_list::{ModelArgs, ModelDLListEntry};
-use leptonic::{grid::Col, icon::Icon, prelude::Box, progress_bar::ProgressBar, select::Select};
+use leptonic::components::{grid::Col, icon::Icon, prelude::Box, progress_bar::ProgressBar, select::Select};
 use leptos::*;
 
 use crate::functions::rest::llm::{model_download, model_update};

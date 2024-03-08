@@ -2,7 +2,7 @@ use crate::functions::rest::role::get_role_list;
 
 use super::role_list_tab::RoleListTab;
 use common::llm::inference::InferenceArgsForInput;
-use leptonic::{tab::Tab, tabs::Tabs, Mount};
+use leptonic::{components::{tab::Tab, tabs::Tabs}, Mount};
 use leptos::*;
 
 #[component]

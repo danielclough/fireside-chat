@@ -1,4 +1,4 @@
-use leptonic::prelude::*;
+use leptonic::components::prelude::*;
 use leptos::*;
 use web_sys::MouseEvent;
 

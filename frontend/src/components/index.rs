@@ -5,7 +5,7 @@ use common::database::user::UserForJson;
 use common::llm::inference::InferenceArgsForInput;
 use common::llm::model_list::ModelArgs;
 
-use leptonic::{
+use leptonic::components::{
     root::Root,
     {prelude::Box, theme::LeptonicTheme},
 };

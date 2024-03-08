@@ -1,4 +1,4 @@
-use leptonic::{
+use leptonic::components::{
     button::Button,
     typography::{H2, P},
 };
@@ -65,7 +65,7 @@ pub fn NetworkConfig(
         <Show when=move || backend_url_init == localhost>
             <Button
                 class="network-button"
-                on_click=move |_| {
+                on_press=move |_| {
                     set_backend_url.set(localhost.to_string());
                     reset_if_ready(
                         backend_url,
@@ -83,7 +83,7 @@ pub fn NetworkConfig(
         <Show when=move || backend_url_init != hosted_backend>
             <Button
                 class="network-button"
-                on_click=move |_| {
+                on_press=move |_| {
                     set_backend_url.set(hosted_backend.to_string());
                     reset_if_ready(
                         backend_url,
@@ -105,7 +105,7 @@ pub fn NetworkConfig(
         }>
             <Button
                 class="network-button"
-                on_click=move |_| {
+                on_press=move |_| {
                     set_backend_url.set(backend_url_init.to_string());
                     reset_if_ready(
                         backend_url,
@@ -137,7 +137,7 @@ pub fn NetworkConfig(
         <Show when=move || database_url_init == localhost>
             <Button
                 class="network-button"
-                on_click=move |_| {
+                on_press=move |_| {
                     set_database_url.set(localhost.to_string());
                     reset_if_ready(
                         backend_url,
@@ -155,7 +155,7 @@ pub fn NetworkConfig(
         <Show when=move || database_url_init != hosted_database>
             <Button
                 class="network-button"
-                on_click=move |_| {
+                on_press=move |_| {
                     set_database_url.set(hosted_database.to_string());
                     reset_if_ready(
                         backend_url,
@@ -177,7 +177,7 @@ pub fn NetworkConfig(
         }>
             <Button
                 class="network-button"
-                on_click=move |_| {
+                on_press=move |_| {
                     set_database_url.set(database_url_init.to_string());
                     reset_if_ready(
                         backend_url,

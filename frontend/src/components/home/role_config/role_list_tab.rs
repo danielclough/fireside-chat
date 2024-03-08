@@ -1,9 +1,8 @@
 use common::llm::{inference::InferenceArgsForInput, role_list::RoleListEntry};
-use leptonic::{
+use leptonic::{components::{
     collapsible::{Collapsibles, OnOpen},
     stack::Stack,
-    Size,
-};
+}, Size};
 use leptos::*;
 
 use crate::components::home::role_config::role_list_item::RoleListItem;

@@ -3,14 +3,11 @@ use common::database::{
     engagement::{EngagementForJson, EngagementForJsonVec},
     user::UserForJson,
 };
-use leptonic::{
-    Size,
-    {
+use leptonic::{components::{
         prelude::Box,
         stack::Stack,
         typography::{H3, H4},
-    },
-};
+    }, Size};
 use leptos::*;
 
 use crate::functions::rest::conversation::get_conversations_by_user_id;
