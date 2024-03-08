@@ -72,6 +72,7 @@ pub fn ModelListContainer(
                     } else {
                         "Using Quantized"
                     }}
+
                 </Button>
 
                 <Show
