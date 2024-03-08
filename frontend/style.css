@@ -198,7 +198,8 @@ blockquote h2 {
 }
 
 .args-area code {
-  background-color: #222;
+  background-color: var(--tertiary-background);
+  color: var(--tertiary-text);
   padding: .2rem .4rem;
   border-radius: .25rem;
 }
