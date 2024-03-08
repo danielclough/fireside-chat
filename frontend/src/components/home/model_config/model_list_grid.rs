@@ -20,6 +20,7 @@ pub fn ModelListGrid(
     q_lvl: ReadSignal<String>,
     model_args: Signal<ModelArgs>,
     set_model_args: WriteSignal<ModelArgs>,
+    init_gpu: ReadSignal<String>,
 ) -> impl IntoView {
     let (tags_enabled, set_tags_enabled) = create_signal::<Vec<String>>({
         let mut list = tags_all.get()[1..tags_all.get().len()].to_owned();
@@ -69,6 +70,7 @@ pub fn ModelListGrid(
                         gpu_type=gpu_type
                         q_lvl=q_lvl
                         set_model_args=set_model_args
+                        init_gpu=init_gpu
                     />
                 </For>
             </Row>

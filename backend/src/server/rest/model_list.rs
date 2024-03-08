@@ -1,6 +1,6 @@
 use crate::utilities::cache_path::cache_file_path;
 use axum::{extract::Path, http::StatusCode, Json};
-use common::llm::model_list::{ModelDLList, ModelDLListEntry, ModelList};
+use common::llm::model_list::{ModelArgs, ModelDLList, ModelDLListEntry, ModelList};
 use glob::glob;
 
 // use serde::{Deserialize, Serialize};
@@ -20,7 +20,7 @@ pub async fn get_model_list(Path(q_lvl): Path<String>) -> Result<Json<ModelDLLis
             let cache_file_path = cache_file_path(&repo_id_path);
             if cache_file_path.is_dir() {
                 let q_lvl = if q_lvl.as_str() == "NoModel" {
-                    "q5k".to_string()
+                  ModelArgs::default().q_lvl
                 } else {
                     q_lvl.clone()
                 };

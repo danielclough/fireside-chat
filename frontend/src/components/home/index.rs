@@ -24,6 +24,10 @@ pub fn Home(
     user: Signal<UserForJson>,
     set_user: WriteSignal<UserForJson>,
     database_url: Signal<String>,
+    set_database_url: WriteSignal<String>,
+    set_database_error: WriteSignal<bool>,
+    set_backend_error: WriteSignal<bool>,
+    set_show_network_init_modal: WriteSignal<bool>,
 ) -> impl IntoView {
     let role_list = create_resource(
         || (),
@@ -91,7 +95,15 @@ pub fn Home(
             </Tab>
             <Tab name="network_tab" label="Network".into_view()>
                 <Box style="width:100%">
-                    <NetworkConfig backend_url=backend_url set_backend_url=set_backend_url/>
+                    <NetworkConfig
+                        backend_url=backend_url
+                        set_backend_url=set_backend_url
+                        database_url=database_url
+                        set_database_url=set_database_url
+                        set_database_error=set_database_error
+                        set_backend_error=set_backend_error
+                        set_show_network_init_modal=set_show_network_init_modal
+                    />
                 </Box>
             </Tab>
         </Tabs>

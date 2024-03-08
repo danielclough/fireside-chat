@@ -8,8 +8,6 @@ use web_sys::MouseEvent;
 pub fn Header<F>(
     home_view_toggle: F,
     home_view: ReadSignal<bool>,
-    database_error: ReadSignal<bool>,
-    backend_error: ReadSignal<bool>,
 ) -> impl IntoView
 where
     F: Fn(MouseEvent) + 'static,
@@ -26,9 +24,7 @@ where
                 // Toggle Theme
                 <button on:click=home_view_toggle>
                     {move || {
-                        if database_error.get() || backend_error.get() {
-                            "Click to Restart"
-                        } else if home_view.get() {
+                        if home_view.get() {
                             "Start Chat"
                         } else {
                             "End Chat"

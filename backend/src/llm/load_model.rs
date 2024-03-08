@@ -145,8 +145,8 @@ impl LoadModel {
         };
 
         let (tokenizer_filename, filenames, config_filename) = match current_model.base.as_str() {
-            // some "phi" "llama" needs
             "llama" => Self::download_with_config(args.clone())?,
+            "phi" => Self::download_with_config(args.clone())?,
             "NoModel" => {
                 let dummy_path = config_file_path("NoModel");
                 std::fs::write(dummy_path.clone(), "NoModel").expect("save file");

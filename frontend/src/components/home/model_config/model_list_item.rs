@@ -16,6 +16,7 @@ pub fn ModelListItem(
     tags_enabled: ReadSignal<Vec<String>>,
     gpu_type: Signal<String>,
     set_model_args: WriteSignal<ModelArgs>,
+    init_gpu: ReadSignal<String>,
 ) -> impl IntoView {
     let (quantized, _set_quantized) = create_signal(quantized);
     let (has_gguf, set_has_gguf) = create_signal(item.gguf);
@@ -25,16 +26,10 @@ pub fn ModelListItem(
 
     // show current if repo and gguf/safetensors match
     let (current_repo_id, _set_current_repo_id) = create_signal(item.clone().repo_id);
-    let is_current = (current_repo_id.get() == repo_id) && (quantized_current == quantized.get());
-
+    let (template_signal, _set_template_signal) = create_signal(template_current);
+    let (is_current, set_is_current) = create_signal((current_repo_id.get() == repo_id) && (quantized_current == quantized.get()) && (&template_signal.get() != "NoModel") && gpu_type.get() == init_gpu.get());
     let check_cuda_or_mac = gpu_type.get() == "Mac" || gpu_type.get() == "CUDA";
-    let (cpu, _set_cpu) = create_signal({
-        if gpu_type.get() == "None" {
-            true
-        } else {
-            !check_cuda_or_mac
-        }
-    });
+    let (cpu, _set_cpu) = create_signal(!check_cuda_or_mac);
 
     let (name_signal, _set_name_signal) = create_signal(item.clone().name);
     let (base_signal, _set_base_signal) = create_signal(item.clone().base.to_ascii_uppercase());
@@ -83,7 +78,8 @@ pub fn ModelListItem(
                 leptos_dom::log!("Update Model");
                 let args_to_set = model_update(set_args_for_json.clone(), backend_url.get()).await;
                 set_model_args.set(args_to_set);
-                // set_model_args.set(set_args_for_json.clone());
+                set_is_current.set(true);
+                set_loading.set(false);
             } else if quantized.get() && !has_gguf.get() {
                 leptos_dom::log!("Download GGUF");
                 model_download(set_args_for_json.clone(), backend_url.get()).await;
@@ -99,8 +95,6 @@ pub fn ModelListItem(
             };
         }
     });
-
-    let (template_signal, _set_template_signal) = create_signal(template_current);
 
     view! {
         <Show when=move || {
@@ -154,11 +148,11 @@ pub fn ModelListItem(
 
                     <Show
                         when=move || !loading.get()
-                        fallback=move || view! { <ProgressBar progress=create_signal(None).0/> }
+                        fallback=move || view! { <ProgressBar progress=create_signal(None).0 /> }
                     >
                         <button
-                            disabled=is_current && (&template_signal.get() != "NoModel")
-                            class=if is_current && (&template_signal.get() != "NoModel") {
+                            disabled=is_current.get()
+                            class=if is_current.get() {
                                 "is-current"
                             } else {
                                 "not-current"
@@ -167,7 +161,7 @@ pub fn ModelListItem(
                             type="submit"
                         >
                             {move || {
-                                if is_current && (&template_signal.get() != "NoModel") {
+                                if is_current.get() {
                                     if quantized.get() {
                                         "Using Quantized! ✅"
                                     } else {
@@ -185,7 +179,6 @@ pub fn ModelListItem(
                                     "Use Safetensors! 🗃️"
                                 }
                             }}
-
                         </button>
                     </Show>
                 </form>

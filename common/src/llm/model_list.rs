@@ -50,7 +50,7 @@ impl Default for ModelArgs {
     fn default() -> Self {
         Self {
             repo_id: "NoModel".to_string(),
-            q_lvl: "NoModel".to_string(),
+            q_lvl: "q5k".to_string(),
             revision: String::new(),
             tokenizer_file: None,
             weight_file: None,

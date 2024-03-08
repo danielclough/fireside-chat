@@ -18,8 +18,8 @@ pub fn ModelListContainer(
     q_lvl: ReadSignal<String>,
     model_list: ReadSignal<ModelDLList>,
     quantized_safetensors_for_select: ReadSignal<Vec<String>>,
+    init_gpu: ReadSignal<String>,
 ) -> impl IntoView {
-    let (model_list, _set_model_list) = create_signal(model_list.get());
 
     let (quantized_current, _set_quantized_current) = create_signal(model_args.get().quantized);
     let (template_current, _set_template_current) =
@@ -76,86 +76,19 @@ pub fn ModelListContainer(
             </Box>
         </Box>
 
-        // Check if quantized  & check if "Mac" or "CUDA"
-        // reload if any of those values change
-        <Show
-            when=move || quantized
-            fallback=move || {
-                view! {
-                    <Show
-                        when=move || gpu_type.get() == "Mac" || gpu_type.get() == "CUDA"
-                        fallback=move || {
-                            view! {
-                                <GpuSelect gpu_type=gpu_type set_gpu_type=set_gpu_type/>
-                                <ModelListGrid
-                                    model_list=model_list
-                                    tags_all=tags_all
-                                    backend_url=backend_url
-                                    template_current=template_current
-                                    quantized_current=quantized_current
-                                    gpu_type=gpu_type
-                                    quantized=quantized
-                                    q_lvl=q_lvl
-                                    model_args=model_args
-                                    set_model_args=set_model_args
-                                />
-                            }
-                        }
-                    >
-
-                        <GpuSelect gpu_type=gpu_type set_gpu_type=set_gpu_type/>
-                        <ModelListGrid
-                            model_list=model_list
-                            tags_all=tags_all
-                            backend_url=backend_url
-                            template_current=template_current
-                            quantized_current=quantized_current
-                            quantized=quantized_str.get() == "Quantized"
-                            gpu_type=gpu_type
-                            q_lvl=q_lvl
-                            model_args=model_args
-                            set_model_args=set_model_args
-                        />
-                    </Show>
-                }
-            }
-        >
-
-            <Show
-                when=move || gpu_type.get() == "Mac" || gpu_type.get() == "CUDA"
-                fallback=move || {
-                    view! {
-                        <GpuSelect gpu_type=gpu_type set_gpu_type=set_gpu_type/>
-                        <ModelListGrid
-                            model_list=model_list
-                            tags_all=tags_all
-                            backend_url=backend_url
-                            template_current=template_current
-                            quantized_current=quantized_current
-                            quantized=quantized_str.get() == "Quantized"
-                            gpu_type=gpu_type
-                            q_lvl=q_lvl
-                            model_args=model_args
-                            set_model_args=set_model_args
-                        />
-                    }
-                }
-            >
-
-                <GpuSelect gpu_type=gpu_type set_gpu_type=set_gpu_type/>
-                <ModelListGrid
-                    model_list=model_list
-                    tags_all=tags_all
-                    backend_url=backend_url
-                    template_current=template_current
-                    quantized_current=quantized_current
-                    quantized=quantized_str.get() == "Quantized"
-                    gpu_type=gpu_type
-                    q_lvl=q_lvl
-                    model_args=model_args
-                    set_model_args=set_model_args
-                />
-            </Show>
-        </Show>
+            <GpuSelect gpu_type=gpu_type set_gpu_type=set_gpu_type/>
+            <ModelListGrid
+                model_list=model_list
+                tags_all=tags_all
+                backend_url=backend_url
+                template_current=template_current
+                quantized_current=quantized_current
+                gpu_type=gpu_type
+                quantized=quantized
+                q_lvl=q_lvl
+                model_args=model_args
+                set_model_args=set_model_args
+                init_gpu=init_gpu
+            />
     }
 }
