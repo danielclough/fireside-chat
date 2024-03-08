@@ -16,7 +16,10 @@ use leptonic::{
 };
 use leptos::*;
 
-use crate::{components::home::overview::args_area::ArgsArea, functions::rest::conversation::get_conversations_by_user_id};
+use crate::{
+    components::home::overview::args_area::ArgsArea,
+    functions::rest::conversation::get_conversations_by_user_id,
+};
 
 #[component]
 pub fn Overview(
@@ -25,9 +28,13 @@ pub fn Overview(
     user: Signal<UserForJson>,
     database_url: Signal<String>,
 ) -> impl IntoView {
+    let bundle = (
+        inference_args.get(),
+        model_args.get(),
+        user.get(),
+        database_url.get(),
+    );
 
-    let bundle = (inference_args.get(), model_args.get(), user.get(), database_url.get());
-    
     let init_conversations = create_resource(
         || (),
         move |_| async move {
@@ -77,20 +84,28 @@ pub fn Overview(
                     </Box>
                 </article>
 
-                <Show when= move || bundle == (inference_args.get(), model_args.get(), user.get(), database_url.get())
-                    fallback=  move || view! {
-                        <ArgsArea 
-                            inference_args=inference_args
-                            model_args=model_args
-                            user=user
-                        />
+                <Show
+                    when=move || {
+                        bundle
+                            == (
+                                inference_args.get(),
+                                model_args.get(),
+                                user.get(),
+                                database_url.get(),
+                            )
+                    }
+                    fallback=move || {
+                        view! {
+                            <ArgsArea
+                                inference_args=inference_args
+                                model_args=model_args
+                                user=user
+                            />
+                        }
                     }
                 >
-                    <ArgsArea 
-                        inference_args=inference_args
-                        model_args=model_args
-                        user=user
-                    />
+
+                    <ArgsArea inference_args=inference_args model_args=model_args user=user/>
                 </Show>
 
                 <Box class="conversation-area">

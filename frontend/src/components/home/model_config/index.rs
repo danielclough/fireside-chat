@@ -65,6 +65,7 @@ pub fn ModelConfig(
                                             when=move || {
                                                 gpu_type.get() == "Mac" || gpu_type.get() == "CUDA"
                                             }
+
                                             fallback=move || {
                                                 view! {
                                                     <Box style="width:100%">
