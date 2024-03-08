@@ -1,5 +1,5 @@
 use common::llm::model_list::{ModelArgs, ModelDLListEntry};
-use leptonic::components::{grid::Col, icon::Icon, prelude::Box, progress_bar::ProgressBar, select::Select};
+use leptonic::components::{grid::Col, icon::Icon, prelude::Box, progress_bar::ProgressBar};
 use leptos::*;
 
 use crate::functions::rest::llm::{model_download, model_update};
@@ -57,9 +57,9 @@ pub fn ModelListItem(
             name: String::new(),
         });
     };
-    let template_has_n = template_for_select.clone().len();
-    let (template, set_template) = create_signal(template_for_select[0].clone());
-    let (template_for_select_signal, _set_template_for_select_signal) =
+    let _template_has_n = template_for_select.clone().len();
+    let (template, _set_template) = create_signal(template_for_select[0].clone());
+    let (_template_for_select_signal, _set_template_for_select_signal) =
         create_signal(template_for_select.clone());
 
     let (loading, set_loading) = create_signal(false);
@@ -130,24 +130,24 @@ pub fn ModelListItem(
                             {base_signal.get()}
                         </p>
 
-                        // <Show
-                        //     when=move || (template_has_n > 1)
-                        //     fallback=move || view! { <p>{template.get().name}</p> }
-                        // >
-                        //     <Select
-                        //         options=template_for_select_signal.get()
-                        //         search_text_provider=move |o: Template| format!("{:?}", o.name)
-                        //         render_option=move |o: Template| {
-                        //             format!(
-                        //                 "{:?}",
-                        //                 if !o.name.is_empty() { o.name } else { "None".to_string() },
-                        //             )
-                        //         }
+                    // <Show
+                    // when=move || (template_has_n > 1)
+                    // fallback=move || view! { <p>{template.get().name}</p> }
+                    // >
+                    // <Select
+                    // options=template_for_select_signal.get()
+                    // search_text_provider=move |o: Template| format!("{:?}", o.name)
+                    // render_option=move |o: Template| {
+                    // format!(
+                    // "{:?}",
+                    // if !o.name.is_empty() { o.name } else { "None".to_string() },
+                    // )
+                    // }
 
-                        //         selected=template
-                        //         set_selected=move |v| set_template.set(v)
-                        //     />
-                        // </Show>
+                    // selected=template
+                    // set_selected=move |v| set_template.set(v)
+                    // />
+                    // </Show>
 
                     </Box>
 
@@ -157,7 +157,21 @@ pub fn ModelListItem(
                     >
                         <button
                             disabled=is_current.get()
-                            class=if is_current.get() { "is-current" } else { "not-current" }
+                            class=if is_current.get() {
+                                "is-current"
+                            } else {
+                                if quantized.get() {
+                                    if !has_gguf.get() {
+                                        "not-current"
+                                    } else {
+                                        "not-current-but-has"
+                                    }
+                                } else if !has_safetensors.get() {
+                                    "not-current"
+                                } else {
+                                    "not-current-but-has"
+                                }
+                            }
 
                             type="submit"
                         >
@@ -172,12 +186,12 @@ pub fn ModelListItem(
                                     if !has_gguf.get() {
                                         "Download Quantized! 📥"
                                     } else {
-                                        "Use Quantized! 🗃️"
+                                        "Use Quantized!"
                                     }
                                 } else if !has_safetensors.get() {
                                     "Download Safetensors! 📥"
                                 } else {
-                                    "Use Safetensors! 🗃️"
+                                    "Use Safetensors!"
                                 }
                             }}
 

@@ -1,5 +1,8 @@
 use common::llm::model_list::ModelArgs;
-use leptonic::components::{button::{Button, ButtonColor, ButtonWrapper}, modal::{Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle}};
+use leptonic::components::{
+    button::{Button, ButtonColor, ButtonWrapper},
+    modal::{Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle},
+};
 use leptos::{component, view, IntoView, Show, Signal, SignalGet, WriteSignal};
 
 use crate::components::home::model_config::index::ModelConfig;
@@ -31,10 +34,12 @@ where
                     set_gpu_type=set_gpu_type
                 />
             </ModalBody>
-            <Show when= move || show_when.get() >
+            <Show when=move || show_when.get()>
                 <ModalFooter>
                     <ButtonWrapper>
-                        <Button on_press=move |_| (on_accept)() color=ButtonColor::Danger>"Confirm"</Button>
+                        <Button on_press=move |_| (on_accept)() color=ButtonColor::Danger>
+                            "Confirm"
+                        </Button>
                     </ButtonWrapper>
                 </ModalFooter>
             </Show>

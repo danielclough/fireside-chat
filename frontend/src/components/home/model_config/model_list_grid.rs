@@ -1,10 +1,13 @@
 use crate::components::home::model_config::model_list_chip::ModelListChip;
 use crate::components::home::model_config::model_list_item::ModelListItem;
 use common::llm::model_list::{ModelArgs, ModelDLList};
-use leptonic::{components::{
-    grid::{Grid, Row},
-    typography::H1,
-}, Size};
+use leptonic::{
+    components::{
+        grid::{Grid, Row},
+        typography::H1,
+    },
+    Size,
+};
 use leptos::*;
 
 #[component]

@@ -17,13 +17,9 @@ pub fn Overview(
     user: Signal<UserForJson>,
     database_url: Signal<String>,
 ) -> impl IntoView {
+    let (conversation_bundle, _) = create_signal((user.get(), database_url.get()));
 
-    let (conversation_bundle,_) = create_signal((
-        user.get(),
-        database_url.get(),
-    ));
-
-    let (args_bundle,_) = create_signal((
+    let (args_bundle, _) = create_signal((
         inference_args.get(),
         model_args.get(),
         user.get(),
@@ -81,6 +77,7 @@ pub fn Overview(
                                 database_url.get(),
                             )
                     }
+
                     fallback=move || {
                         view! {
                             <ArgsArea
@@ -91,26 +88,17 @@ pub fn Overview(
                         }
                     }
                 >
-                    <ArgsArea
-                        inference_args=inference_args
-                        model_args=model_args
-                        user=user
-                    />
+
+                    <ArgsArea inference_args=inference_args model_args=model_args user=user/>
                 </Show>
                 <Show
-                    when=move || {
-                        conversation_bundle.get()
-                            == (
-                                user.get(),
-                                database_url.get(),
-                            )
-                    }
+                    when=move || { conversation_bundle.get() == (user.get(), database_url.get()) }
+
                     fallback=move || {
-                        view! {
-                            <ConversationArea database_url=database_url user=user/>
-                        }
+                        view! { <ConversationArea database_url=database_url user=user/> }
                     }
                 >
+
                     <ConversationArea database_url=database_url user=user/>
                 </Show>
             </Box>

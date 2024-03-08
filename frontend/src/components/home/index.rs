@@ -7,7 +7,10 @@ use crate::components::home::user_config::index::UserConfig;
 use common::database::user::UserForJson;
 use common::llm::inference::InferenceArgsForInput;
 use common::llm::model_list::ModelArgs;
-use leptonic::{components::{prelude::Box, tab::Tab, tabs::Tabs}, Mount};
+use leptonic::{
+    components::{prelude::Box, tab::Tab, tabs::Tabs},
+    Mount,
+};
 use leptos::*;
 
 #[component]

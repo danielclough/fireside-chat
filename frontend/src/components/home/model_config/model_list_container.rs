@@ -1,8 +1,7 @@
-use crate::components::home::model_config::gpu_select::GpuSelect;
 use crate::components::home::model_config::model_list_grid::ModelListGrid;
 
 use common::llm::model_list::{ModelArgs, ModelDLList};
-use leptonic::components::{prelude::Box, select::Select, typography::H1};
+use leptonic::components::{button::Button, prelude::Box, typography::H1};
 use leptos::*;
 
 #[component]
@@ -50,12 +49,30 @@ pub fn ModelListContainer(
             <Box style="display:flex; justify-content:center;display:flex;flex-direction:row;">
 
                 // <Select
-                //     options=quantized_safetensors_for_select.get()
-                //     search_text_provider=move |o: String| format!("{:?}", o)
-                //     render_option=move |o: String| format!("{:?}", o)
-                //     selected=quantized_str
-                //     set_selected=move |v| set_quantized_str.set(v)
+                // options=quantized_safetensors_for_select.get()
+                // search_text_provider=move |o: String| format!("{:?}", o)
+                // render_option=move |o: String| format!("{:?}", o)
+                // selected=quantized_str
+                // set_selected=move |v| set_quantized_str.set(v)
                 // />
+
+                <Button
+                    style="padding:1rem;"
+                    on_press=move |_| {
+                        if quantized_str.get().as_str() == "Safetensors" {
+                            set_quantized_str.set("Quantized".to_string());
+                        } else {
+                            set_quantized_str.set("Safetensors".to_string());
+                        }
+                    }
+                >
+
+                    {if quantized_str.get().as_str() == "Safetensors" {
+                        "Using Safetensors"
+                    } else {
+                        "Using Quantized"
+                    }}
+                </Button>
 
                 <Show
                     when=move || model_args.get().repo_id.clone() != *"NoModel"
@@ -71,10 +88,36 @@ pub fn ModelListContainer(
                         " 🔗"
                     </a>
                 </Show>
-            // <P>"Revision: "{model_args.get().revision}</P>
+                // <P>"Revision: "{model_args.get().revision}</P>
+
+                <Button
+                    style="padding:1rem;"
+                    on_press=move |_| {
+                        if cfg!(target_os = "macos") {
+                            if gpu_type.get().as_str() == "Mac" {
+                                set_gpu_type.set("None".to_string());
+                            } else {
+                                set_gpu_type.set("Mac".to_string());
+                            }
+                        } else {
+                            if gpu_type.get().as_str() == "CUDA" {
+                                set_gpu_type.set("None".to_string());
+                            } else {
+                                set_gpu_type.set("CUDA".to_string());
+                            }
+                        }
+                    }
+                >
+
+                    {if cfg!(target_os = "macos") {
+                        if gpu_type.get().as_str() == "Mac" { "Using Metal" } else { "Using CPU" }
+                    } else {
+                        if gpu_type.get().as_str() == "CUDA" { "Using CUDA" } else { "Using CPU" }
+                    }}
+
+                </Button>
             </Box>
         </Box>
-
         // <GpuSelect gpu_type=gpu_type set_gpu_type=set_gpu_type/>
         <ModelListGrid
             model_list=model_list

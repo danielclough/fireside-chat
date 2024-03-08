@@ -192,7 +192,7 @@ pub fn NetworkConfig(
                 {database_url_init}
             </Button>
         </Show>
-        
+
         <input
             type="text"
             name="input"

@@ -80,6 +80,11 @@ input {
   font-size: large;
   height: 2.5rem;
 }
+.not-current-but-has {
+  border: 0.15rem green solid;
+  font-size: large;
+  height: 2.5rem;
+}
 
 .not-current {
   font-size: large;
