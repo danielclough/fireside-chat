@@ -19,7 +19,7 @@ where
             // button group
             <div id="header-button-group">
                 // Toggle Theme
-                <button on:click=home_view_toggle>
+                <button on:click:undelegated=home_view_toggle>
                     {move || { if home_view.get() { "Start Chat" } else { "End Chat" } }}
 
                 </button>

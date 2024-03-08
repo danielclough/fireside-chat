@@ -130,24 +130,24 @@ pub fn ModelListItem(
                             {base_signal.get()}
                         </p>
 
-                        <Show
-                            when=move || (template_has_n > 1)
-                            fallback=move || view! { <p>{template.get().name}</p> }
-                        >
-                            <Select
-                                options=template_for_select_signal.get()
-                                search_text_provider=move |o: Template| format!("{:?}", o.name)
-                                render_option=move |o: Template| {
-                                    format!(
-                                        "{:?}",
-                                        if !o.name.is_empty() { o.name } else { "None".to_string() },
-                                    )
-                                }
+                        // <Show
+                        //     when=move || (template_has_n > 1)
+                        //     fallback=move || view! { <p>{template.get().name}</p> }
+                        // >
+                        //     <Select
+                        //         options=template_for_select_signal.get()
+                        //         search_text_provider=move |o: Template| format!("{:?}", o.name)
+                        //         render_option=move |o: Template| {
+                        //             format!(
+                        //                 "{:?}",
+                        //                 if !o.name.is_empty() { o.name } else { "None".to_string() },
+                        //             )
+                        //         }
 
-                                selected=template
-                                set_selected=move |v| set_template.set(v)
-                            />
-                        </Show>
+                        //         selected=template
+                        //         set_selected=move |v| set_template.set(v)
+                        //     />
+                        // </Show>
 
                     </Box>
 

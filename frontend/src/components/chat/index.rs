@@ -283,7 +283,7 @@ pub fn ChatBox(
                 // </button>
                 <div>
                     <button
-                        on:click=move |_| {
+                        on:click:undelegated=move |_| {
                             set_history.set(vec![]);
                             set_conversation.set(None)
                         }

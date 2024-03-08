@@ -9,7 +9,7 @@ where
 {
     view! {
         <Box class="landing">
-            <button on:click=landing_view_toggle>"Chat!"</button>
+            <button on:click:undelegated=landing_view_toggle>"Chat!"</button>
         </Box>
     }
 }

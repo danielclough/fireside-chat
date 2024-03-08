@@ -177,13 +177,13 @@ pub fn Inference(
                                     <strong>"Load_context: "</strong>
                                     "Load context from backend/context/*"
                                 </P>
-                                <Select
-                                    options=vec![LoadContext::True, LoadContext::False]
-                                    search_text_provider=move |o| format!("{:?}", o)
-                                    render_option=move |o| format!("{o:?}")
-                                    selected=load_context
-                                    set_selected=move |v| set_load_context.set(v)
-                                />
+                                // <Select
+                                //     options=vec![LoadContext::True, LoadContext::False]
+                                //     search_text_provider=move |o| format!("{:?}", o)
+                                //     render_option=move |o| format!("{o:?}")
+                                //     selected=load_context
+                                //     set_selected=move |v| set_load_context.set(v)
+                                // />
                                 <P class="under-input">
                                     "Load_context is: "
                                     {move || format!("{:?}", load_context_enum.get())}

@@ -65,7 +65,7 @@ pub fn App() -> impl IntoView {
     );
     let (show_user_init_modal, set_show_user_init_modal) =
         create_signal(user.get().name == *"None" || user.get().name.len() < 2);
-    let (show_model_init_modal, _set_show_model_init_modal) =
+    let (show_model_init_modal, set_show_model_init_modal) =
         create_signal(model_args.get().clone().template == Some("NoModel".to_string()));
 
     view! {
@@ -96,9 +96,10 @@ pub fn App() -> impl IntoView {
                 >
 
                     <InitModelModal
+                        show_when=show_model_init_modal
+                        on_accept=move || set_show_model_init_modal.set(false)
                         model_args=model_args
                         backend_url=backend_url
-                        show_when=show_model_init_modal
                         gpu_type=gpu_type
                         set_gpu_type=set_gpu_type
                         set_model_args=set_model_args

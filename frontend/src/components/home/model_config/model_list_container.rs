@@ -49,13 +49,13 @@ pub fn ModelListContainer(
             </H1>
             <Box style="display:flex; justify-content:center;display:flex;flex-direction:row;">
 
-                <Select
-                    options=quantized_safetensors_for_select.get()
-                    search_text_provider=move |o: String| format!("{:?}", o)
-                    render_option=move |o: String| format!("{:?}", o)
-                    selected=quantized_str
-                    set_selected=move |v| set_quantized_str.set(v)
-                />
+                // <Select
+                //     options=quantized_safetensors_for_select.get()
+                //     search_text_provider=move |o: String| format!("{:?}", o)
+                //     render_option=move |o: String| format!("{:?}", o)
+                //     selected=quantized_str
+                //     set_selected=move |v| set_quantized_str.set(v)
+                // />
 
                 <Show
                     when=move || model_args.get().repo_id.clone() != *"NoModel"
@@ -75,7 +75,7 @@ pub fn ModelListContainer(
             </Box>
         </Box>
 
-        <GpuSelect gpu_type=gpu_type set_gpu_type=set_gpu_type/>
+        // <GpuSelect gpu_type=gpu_type set_gpu_type=set_gpu_type/>
         <ModelListGrid
             model_list=model_list
             tags_all=tags_all
