@@ -502,3 +502,9 @@ leptonic-modal {
 }
 
 .landing button:hover {opacity: 1}
+
+
+/* Network */
+.network-button {
+  margin: .5rem;
+}
