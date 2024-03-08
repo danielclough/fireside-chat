@@ -33,13 +33,13 @@ pub fn ModelConfig(
     );
 
     let quantized_safetensors_for_select = vec!["Quantized", "Safetensors"];
-    let (quantized_safetensors_for_select_signal, _) = create_signal(
-        quantized_safetensors_for_select
-            .clone()
-            .iter()
-            .map(|x| x.to_string())
-            .collect::<Vec<String>>(),
-    );
+    // let (quantized_safetensors_for_select_signal, _) = create_signal(
+    //     quantized_safetensors_for_select
+    //         .clone()
+    //         .iter()
+    //         .map(|x| x.to_string())
+    //         .collect::<Vec<String>>(),
+    // );
     let (quantized_str, set_quantized_str) = create_signal(if model_args.get().quantized {
         quantized_safetensors_for_select[0].to_string()
     } else {
@@ -80,7 +80,7 @@ pub fn ModelConfig(
                                                             quantized=quantized_str.get() == "Quantized"
                                                             q_lvl=q_lvl
                                                             model_list=model_list_signal
-                                                            quantized_safetensors_for_select=quantized_safetensors_for_select_signal
+                                                            // quantized_safetensors_for_select=quantized_safetensors_for_select_signal
                                                             init_gpu=init_gpu
                                                         />
                                                     </Box>
@@ -100,7 +100,7 @@ pub fn ModelConfig(
                                                     quantized=quantized_str.get() == "Quantized"
                                                     q_lvl=q_lvl
                                                     model_list=model_list_signal
-                                                    quantized_safetensors_for_select=quantized_safetensors_for_select_signal
+                                                    // quantized_safetensors_for_select=quantized_safetensors_for_select_signal
                                                     init_gpu=init_gpu
                                                 />
                                             </Box>
@@ -121,7 +121,7 @@ pub fn ModelConfig(
                                         quantized=quantized_str.get() == "Quantized"
                                         q_lvl=q_lvl
                                         model_list=model_list_signal
-                                        quantized_safetensors_for_select=quantized_safetensors_for_select_signal
+                                        // quantized_safetensors_for_select=quantized_safetensors_for_select_signal
                                         init_gpu=init_gpu
                                     />
                                 </Box>

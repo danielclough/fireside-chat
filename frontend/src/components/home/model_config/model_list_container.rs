@@ -16,7 +16,7 @@ pub fn ModelListContainer(
     set_quantized_str: WriteSignal<String>,
     q_lvl: ReadSignal<String>,
     model_list: ReadSignal<ModelDLList>,
-    quantized_safetensors_for_select: ReadSignal<Vec<String>>,
+    // quantized_safetensors_for_select: ReadSignal<Vec<String>>,
     init_gpu: ReadSignal<String>,
 ) -> impl IntoView {
     let (quantized_current, _set_quantized_current) = create_signal(model_args.get().quantized);
