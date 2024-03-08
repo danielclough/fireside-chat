@@ -106,7 +106,7 @@ pub fn NetworkConfig(
             <Button
                 class="network-button"
                 on_click=move |_| {
-                    set_database_url.set(backend_url_init.to_string());
+                    set_backend_url.set(backend_url_init.to_string());
                     reset_if_ready(
                         backend_url,
                         database_url,
@@ -192,7 +192,7 @@ pub fn NetworkConfig(
                 {database_url_init}
             </Button>
         </Show>
-
+        
         <input
             type="text"
             name="input"
