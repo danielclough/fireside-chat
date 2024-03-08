@@ -16,7 +16,7 @@ use leptonic::{
 };
 use leptos::*;
 
-use crate::functions::rest::conversation::get_conversations_by_user_id;
+use crate::{components::home::overview::args_area::ArgsArea, functions::rest::conversation::get_conversations_by_user_id};
 
 #[component]
 pub fn Overview(
@@ -25,6 +25,9 @@ pub fn Overview(
     user: Signal<UserForJson>,
     database_url: Signal<String>,
 ) -> impl IntoView {
+
+    let bundle = (inference_args.get(), model_args.get(), user.get(), database_url.get());
+    
     let init_conversations = create_resource(
         || (),
         move |_| async move {
@@ -73,58 +76,23 @@ pub fn Overview(
                         <p>"Do something nice for yourself, or someone else."</p>
                     </Box>
                 </article>
-                <Box class="args-area">
-                    <H3>"Overview"</H3>
-                    <ul>
-                        <H4>"User: " <code>{user.get().name}</code></H4>
-                        <H4>
-                            "Role: "
-                            <code>
-                                {if inference_args.get().role.is_empty() {
-                                    "None".to_string()
-                                } else {
-                                    inference_args.get().role
-                                }}
 
-                            </code>
-                        </H4>
-                    </ul>
-                    <H3>"Model"</H3>
-                    <ul>
-                        <li>
-                            <code>{model_args.get().repo_id}</code>
-                        </li>
-                        <Show
-                            when=move || model_args.get().quantized
-                            fallback=move || {
-                                view! { <li>"cpu: " <code>{model_args.get().cpu}</code></li> }
-                            }
-                        >
+                <Show when= move || bundle == (inference_args.get(), model_args.get(), user.get(), database_url.get())
+                    fallback=  move || view! {
+                        <ArgsArea 
+                            inference_args=inference_args
+                            model_args=model_args
+                            user=user
+                        />
+                    }
+                >
+                    <ArgsArea 
+                        inference_args=inference_args
+                        model_args=model_args
+                        user=user
+                    />
+                </Show>
 
-                            <li>"Quantization: " <code>{model_args.get().q_lvl}</code></li>
-                        </Show>
-                        <li>"revision: " <code>{model_args.get().revision}</code></li>
-                        <Show when=move || model_args.get().tokenizer_file.is_some()>
-                            <li>tokenizer_file: <code>{model_args.get().tokenizer_file}</code></li>
-                        </Show>
-                        <Show when=move || model_args.get().weight_file.is_some()>
-                            <li>weight_file: <code>{model_args.get().weight_file}</code></li>
-                        </Show>
-
-                        <Show when=move || model_args.get().use_flash_attn>
-                            <li>"Using Flash Attention!"</li>
-                        </Show>
-                        <li>"template: " <code>{model_args.get().template}</code></li>
-                    </ul>
-
-                    <H3>"Inference"</H3>
-                    <ul>
-                        <li>
-                            "txt / pdf directory: "
-                            <code>{format!("{:?}", inference_args.get().load_context)}</code>
-                        </li>
-                    </ul>
-                </Box>
                 <Box class="conversation-area">
                     <H3>Conversations</H3>
                     <Stack style="justify-content: start;align-items:start;" spacing=Size::Em(0.6)>
