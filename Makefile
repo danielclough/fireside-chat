@@ -26,6 +26,10 @@ init:
 		cargo install cargo-watch; \
 	fi
 
+docker:
+	@cd docker && sh docker-build.sh
+	@cd docker && docker compose up -d
+
 # requires kill in order to shut everything down
 dev:
 	@cd backend && cargo watch -q -c -w src/ -x run &

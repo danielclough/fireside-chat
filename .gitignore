@@ -1,3 +1,5 @@
+docker/volumes/
+
 **/.env
 
 **/tmp

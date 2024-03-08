@@ -2,10 +2,7 @@ version: "3.9"
 services:
   fireside_chat_frontend:
     image: danielclough/fireside-chat-frontend
-    # command: 
     restart: unless-stopped
-    # volumes:
-    #   - ./frontend:/app/fireside-chat/frontend
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik
@@ -18,7 +15,9 @@ services:
     
   fireside_chat_backend:
     image: danielclough/fireside-chat-backend
-    # command: 
+    volumes:
+      - ./volumes/backend:/root/.config/fireside-chat
+      - ./volumes/huggingface:/root/.cache/huggingface
     restart: unless-stopped
     labels:
       - traefik.enable=true
@@ -32,7 +31,8 @@ services:
 
   fireside_chat_database:
     image: danielclough/fireside-chat-database
-    # command: 
+    volumes:
+      - ./volumes/database:/root/.config/fireside-chat
     restart: unless-stopped
     labels:
       - traefik.enable=true
