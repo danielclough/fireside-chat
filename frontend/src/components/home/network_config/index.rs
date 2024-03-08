@@ -62,46 +62,44 @@ pub fn NetworkConfig(
         <P class="above-input">
             <strong>"Network Backend: "</strong>
         </P>
-        <Show when=move || backend_url_init == localhost>
-            <Button
-                class="network-button"
-                on_press=move |_| {
-                    set_backend_url.set(localhost.to_string());
-                    reset_if_ready(
-                        backend_url,
-                        database_url,
-                        set_database_error,
-                        set_backend_error,
-                        set_show_network_init_modal,
-                    );
-                }
-            >
 
-                "Localhost"
-            </Button>
-        </Show>
-        <Show when=move || backend_url_init != hosted_backend>
-            <Button
-                class="network-button"
-                on_press=move |_| {
-                    set_backend_url.set(hosted_backend.to_string());
-                    reset_if_ready(
-                        backend_url,
-                        database_url,
-                        set_database_error,
-                        set_backend_error,
-                        set_show_network_init_modal,
-                    );
-                }
-            >
+        <Button
+            class="network-button"
+            on_press=move |_| {
+                set_backend_url.set(localhost.to_string());
+                reset_if_ready(
+                    backend_url,
+                    database_url,
+                    set_database_error,
+                    set_backend_error,
+                    set_show_network_init_modal,
+                );
+            }
+        >
 
-                {hosted_backend}
-            </Button>
-        </Show>
+            "Localhost"
+        </Button>
+
+        <Button
+            class="network-button"
+            on_press=move |_| {
+                set_backend_url.set(hosted_backend.to_string());
+                reset_if_ready(
+                    backend_url,
+                    database_url,
+                    set_database_error,
+                    set_backend_error,
+                    set_show_network_init_modal,
+                );
+            }
+        >
+
+            {hosted_backend}
+        </Button>
 
         <Show when=move || {
-            backend_url_init != hosted_database && backend_url_init != localhost
-                && database_url_init != ""
+            backend_url_init != hosted_backend && backend_url_init != localhost
+                && backend_url_init != ""
         }>
             <Button
                 class="network-button"
@@ -134,42 +132,40 @@ pub fn NetworkConfig(
         <P class="above-input">
             <strong>"Network Database: "</strong>
         </P>
-        <Show when=move || database_url_init == localhost>
-            <Button
-                class="network-button"
-                on_press=move |_| {
-                    set_database_url.set(localhost.to_string());
-                    reset_if_ready(
-                        backend_url,
-                        database_url,
-                        set_database_error,
-                        set_backend_error,
-                        set_show_network_init_modal,
-                    );
-                }
-            >
 
-                "Localhost"
-            </Button>
-        </Show>
-        <Show when=move || database_url_init != hosted_database>
-            <Button
-                class="network-button"
-                on_press=move |_| {
-                    set_database_url.set(hosted_database.to_string());
-                    reset_if_ready(
-                        backend_url,
-                        database_url,
-                        set_database_error,
-                        set_backend_error,
-                        set_show_network_init_modal,
-                    );
-                }
-            >
+        <Button
+            class="network-button"
+            on_press=move |_| {
+                set_database_url.set(localhost.to_string());
+                reset_if_ready(
+                    backend_url,
+                    database_url,
+                    set_database_error,
+                    set_backend_error,
+                    set_show_network_init_modal,
+                );
+            }
+        >
 
-                {hosted_database}
-            </Button>
-        </Show>
+            "Localhost"
+        </Button>
+
+        <Button
+            class="network-button"
+            on_press=move |_| {
+                set_database_url.set(hosted_database.to_string());
+                reset_if_ready(
+                    backend_url,
+                    database_url,
+                    set_database_error,
+                    set_backend_error,
+                    set_show_network_init_modal,
+                );
+            }
+        >
+
+            {hosted_database}
+        </Button>
 
         <Show when=move || {
             database_url_init != hosted_database && database_url_init != localhost
