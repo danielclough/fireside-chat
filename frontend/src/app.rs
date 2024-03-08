@@ -56,7 +56,7 @@ pub fn App() -> impl IntoView {
     
     // Modals
     //
-    let (show_network_init_modal, set_show_network_init_modal) = create_signal(database_url.get().as_str() == "" || backend_url.get().as_str() == "" || database_error.get());
+    let (show_network_init_modal, set_show_network_init_modal) = create_signal(database_url.get().as_str() == "" || backend_url.get().as_str() == "" || database_error.get() || backend_error.get());
     let (show_user_init_modal, set_show_user_init_modal) =
         create_signal(user.get().name == *"None" || user.get().name.len() < 2);
     let (show_model_init_modal, _set_show_model_init_modal) =

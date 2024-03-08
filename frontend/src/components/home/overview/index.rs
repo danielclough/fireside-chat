@@ -32,7 +32,6 @@ pub fn Overview(
             get_conversations_by_user_id(user.get().id, database_url.get()).await
         },
     );
-    // let (init_conversations_signal, _set_init_conversations_signal) = create_signal(init_conversations.get());
 
     view! {
         <Box class="home-container">
@@ -217,13 +216,4 @@ pub fn Overview(
             </Box>
         </Box>
     }
-    // >
-    //     <div class="outer-container">
-    //         <UserConfig
-    //             user=user
-    //             set_user=set_user
-    //             database_url=database_url
-    //         />
-    //     </div>
-    // </Show>
 }
