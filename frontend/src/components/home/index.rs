@@ -4,7 +4,6 @@ use crate::components::home::network_config::index::NetworkConfig;
 use crate::components::home::overview::index::Overview;
 use crate::components::home::role_config::index::RoleListContainer;
 use crate::components::home::user_config::index::UserConfig;
-use crate::functions::rest::role::get_role_list;
 use common::database::user::UserForJson;
 use common::llm::inference::InferenceArgsForInput;
 use common::llm::model_list::ModelArgs;
@@ -29,14 +28,6 @@ pub fn Home(
     set_backend_error: WriteSignal<bool>,
     set_show_network_init_modal: WriteSignal<bool>,
 ) -> impl IntoView {
-    let role_list = create_resource(
-        || (),
-        move |_| async move {
-            logging::log!("loading role_list from API");
-            get_role_list(backend_url.get()).await
-        },
-    );
-
     view! {
         <Tabs mount=Mount::Once>
             <Tab name="home_tab" label="Home".into_view()>
@@ -76,21 +67,11 @@ pub fn Home(
             </Tab>
             <Tab name="roles_tab" label="Roles".into_view()>
                 <Box style="width:100%">
-                    {move || {
-                        role_list
-                            .get()
-                            .map(|role_list| {
-                                view! {
-                                    <RoleListContainer
-                                        backend_url=backend_url
-                                        role_list=role_list
-                                        inference_args=inference_args
-                                        set_inference_args=set_inference_args
-                                    />
-                                }
-                            })
-                    }}
-
+                    <RoleListContainer
+                        backend_url=backend_url
+                        inference_args=inference_args
+                        set_inference_args=set_inference_args
+                    />
                 </Box>
             </Tab>
             <Tab name="network_tab" label="Network".into_view()>

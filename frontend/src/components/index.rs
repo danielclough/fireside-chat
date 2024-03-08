@@ -5,7 +5,6 @@ use common::database::user::UserForJson;
 use common::llm::inference::InferenceArgsForInput;
 use common::llm::model_list::ModelArgs;
 
-use leptonic::typography::{H2, H3, H4};
 use leptonic::{
     root::Root,
     {prelude::Box, theme::LeptonicTheme},
@@ -40,10 +39,7 @@ pub fn Index(
 
     view! {
         <Root default_theme=LeptonicTheme::default()>
-            <Header
-                home_view_toggle=home_view_toggle
-                home_view=home_view
-            />
+            <Header home_view_toggle=home_view_toggle home_view=home_view/>
             <Box id="main-area">
 
                 <Show

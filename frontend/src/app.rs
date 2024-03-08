@@ -23,11 +23,12 @@ pub fn App() -> impl IntoView {
 
     // Network
     //
-    let (database_url, set_database_url, _) = use_local_storage::<String, JsonCodec>("database_url");
+    let (database_url, set_database_url, _) =
+        use_local_storage::<String, JsonCodec>("database_url");
     let (database_error, set_database_error) = create_signal(false);
     let (backend_url, set_backend_url, _) = use_local_storage::<String, JsonCodec>("backend_url");
     let (backend_error, set_backend_error) = create_signal(false);
-    
+
     // GPU
     //
     let (gpu_type, set_gpu_type, _) = use_local_storage::<String, JsonCodec>("gpu");
@@ -53,10 +54,15 @@ pub fn App() -> impl IntoView {
 
     // Utils
     //
-    
+
     // Modals
     //
-    let (show_network_init_modal, set_show_network_init_modal) = create_signal(database_url.get().as_str() == "" || backend_url.get().as_str() == "" || database_error.get() || backend_error.get());
+    let (show_network_init_modal, set_show_network_init_modal) = create_signal(
+        database_url.get().as_str() == ""
+            || backend_url.get().as_str() == ""
+            || database_error.get()
+            || backend_error.get(),
+    );
     let (show_user_init_modal, set_show_user_init_modal) =
         create_signal(user.get().name == *"None" || user.get().name.len() < 2);
     let (show_model_init_modal, _set_show_model_init_modal) =
@@ -70,20 +76,25 @@ pub fn App() -> impl IntoView {
                     view! { <Landing landing_view_toggle=landing_view_toggle/> }
                 }
             >
-                <Show when= move || !show_network_init_modal.get()
-                    fallback= move || view!{
-                        <InitNetworkModal
-                            show_when=show_network_init_modal
-                            backend_url=backend_url
-                            set_backend_url=set_backend_url
-                            database_url=database_url
-                            set_database_url=set_database_url
-                            set_database_error=set_database_error
-                            set_backend_error=set_backend_error
-                            set_show_network_init_modal=set_show_network_init_modal
-                        />
+
+                <Show
+                    when=move || !show_network_init_modal.get()
+                    fallback=move || {
+                        view! {
+                            <InitNetworkModal
+                                show_when=show_network_init_modal
+                                backend_url=backend_url
+                                set_backend_url=set_backend_url
+                                database_url=database_url
+                                set_database_url=set_database_url
+                                set_database_error=set_database_error
+                                set_backend_error=set_backend_error
+                                set_show_network_init_modal=set_show_network_init_modal
+                            />
+                        }
                     }
                 >
+
                     <InitModelModal
                         model_args=model_args
                         backend_url=backend_url

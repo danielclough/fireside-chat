@@ -20,7 +20,6 @@ pub fn ModelListContainer(
     quantized_safetensors_for_select: ReadSignal<Vec<String>>,
     init_gpu: ReadSignal<String>,
 ) -> impl IntoView {
-
     let (quantized_current, _set_quantized_current) = create_signal(model_args.get().quantized);
     let (template_current, _set_template_current) =
         create_signal(model_args.get().template.unwrap_or_default().clone());
@@ -76,19 +75,19 @@ pub fn ModelListContainer(
             </Box>
         </Box>
 
-            <GpuSelect gpu_type=gpu_type set_gpu_type=set_gpu_type/>
-            <ModelListGrid
-                model_list=model_list
-                tags_all=tags_all
-                backend_url=backend_url
-                template_current=template_current
-                quantized_current=quantized_current
-                gpu_type=gpu_type
-                quantized=quantized
-                q_lvl=q_lvl
-                model_args=model_args
-                set_model_args=set_model_args
-                init_gpu=init_gpu
-            />
+        <GpuSelect gpu_type=gpu_type set_gpu_type=set_gpu_type/>
+        <ModelListGrid
+            model_list=model_list
+            tags_all=tags_all
+            backend_url=backend_url
+            template_current=template_current
+            quantized_current=quantized_current
+            gpu_type=gpu_type
+            quantized=quantized
+            q_lvl=q_lvl
+            model_args=model_args
+            set_model_args=set_model_args
+            init_gpu=init_gpu
+        />
     }
 }

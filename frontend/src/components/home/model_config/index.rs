@@ -62,7 +62,9 @@ pub fn ModelConfig(
                                 fallback=move || {
                                     view! {
                                         <Show
-                                            when=move || gpu_type.get() == "Mac" || gpu_type.get() == "CUDA"
+                                            when=move || {
+                                                gpu_type.get() == "Mac" || gpu_type.get() == "CUDA"
+                                            }
                                             fallback=move || {
                                                 view! {
                                                     <Box style="width:100%">
@@ -84,6 +86,7 @@ pub fn ModelConfig(
                                                 }
                                             }
                                         >
+
                                             <Box style="width:100%">
                                                 <ModelListContainer
                                                     backend_url=backend_url
@@ -104,6 +107,7 @@ pub fn ModelConfig(
                                     }
                                 }
                             >
+
                                 <Box style="width:100%">
                                     <ModelListContainer
                                         backend_url=backend_url

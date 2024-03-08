@@ -27,7 +27,12 @@ pub fn ModelListItem(
     // show current if repo and gguf/safetensors match
     let (current_repo_id, _set_current_repo_id) = create_signal(item.clone().repo_id);
     let (template_signal, _set_template_signal) = create_signal(template_current);
-    let (is_current, set_is_current) = create_signal((current_repo_id.get() == repo_id) && (quantized_current == quantized.get()) && (&template_signal.get() != "NoModel") && gpu_type.get() == init_gpu.get());
+    let (is_current, set_is_current) = create_signal(
+        (current_repo_id.get() == repo_id)
+            && (quantized_current == quantized.get())
+            && (&template_signal.get() != "NoModel")
+            && gpu_type.get() == init_gpu.get(),
+    );
     let check_cuda_or_mac = gpu_type.get() == "Mac" || gpu_type.get() == "CUDA";
     let (cpu, _set_cpu) = create_signal(!check_cuda_or_mac);
 
@@ -148,15 +153,11 @@ pub fn ModelListItem(
 
                     <Show
                         when=move || !loading.get()
-                        fallback=move || view! { <ProgressBar progress=create_signal(None).0 /> }
+                        fallback=move || view! { <ProgressBar progress=create_signal(None).0/> }
                     >
                         <button
                             disabled=is_current.get()
-                            class=if is_current.get() {
-                                "is-current"
-                            } else {
-                                "not-current"
-                            }
+                            class=if is_current.get() { "is-current" } else { "not-current" }
 
                             type="submit"
                         >
@@ -179,6 +180,7 @@ pub fn ModelListItem(
                                     "Use Safetensors! 🗃️"
                                 }
                             }}
+
                         </button>
                     </Show>
                 </form>

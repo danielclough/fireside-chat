@@ -5,10 +5,7 @@ use web_sys::MouseEvent;
 // use crate::components::utils::get_path;
 
 #[component]
-pub fn Header<F>(
-    home_view_toggle: F,
-    home_view: ReadSignal<bool>,
-) -> impl IntoView
+pub fn Header<F>(home_view_toggle: F, home_view: ReadSignal<bool>) -> impl IntoView
 where
     F: Fn(MouseEvent) + 'static,
 {
@@ -23,13 +20,7 @@ where
             <div id="header-button-group">
                 // Toggle Theme
                 <button on:click=home_view_toggle>
-                    {move || {
-                        if home_view.get() {
-                            "Start Chat"
-                        } else {
-                            "End Chat"
-                        }
-                    }}
+                    {move || { if home_view.get() { "Start Chat" } else { "End Chat" } }}
 
                 </button>
                 <ThemeToggle off=LeptonicTheme::Light on=LeptonicTheme::Dark/>
