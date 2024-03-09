@@ -29,7 +29,9 @@ init:
 .PHONY: docker
 docker:
 	@cd docker && sh docker-build.sh
+	@cd docker && docker compose pull
 	@cd docker && docker compose up -d
+	@cd docker && docker system prune -a
 
 # requires kill in order to shut everything down
 dev:

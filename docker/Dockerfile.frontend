@@ -1,5 +1,7 @@
 FROM --platform=${BUILDPLATFORM:-linux/amd64} danielclough/fireside-chat-base as build
 
+ARG CACHEBUST=1
+
 FROM debian:bookworm-slim
 
 COPY --from=build /usr/local/bin/wasm-server /usr/local/bin/wasm-server

@@ -1,4 +1,8 @@
-FROM --platform=${BUILDPLATFORM:-linux/amd64} rust:1.76
+FROM --platform=${BUILDPLATFORM:-linux/amd64} rust:1.76 as build
+
+ARG CACHEBUST=1
+ARG FIRESIDE_BACKEND_URL=chat-backend.danielc.us
+ARG FIRESIDE_DATABASE_URL=chat-database.danielc.us
 
 WORKDIR /app
 
@@ -14,8 +18,6 @@ RUN apt-get update && \
     echo "frontend" && \
     cd /usr/local/cargo/bin/ && \
     curl -L https://github.com/trunk-rs/trunk/releases/download/v0.18.8/trunk-x86_64-unknown-linux-gnu.tar.gz | tar xvz && \
-    export FIRESIDE_BACKEND_URL=chat-backend.danielc.us && \
-    export FIRESIDE_DATABASE_URL=chat-database.danielc.us && \
     cd /app/fireside-chat/wasm-server && /usr/local/cargo/bin/cargo build --release && \
     cp /app/fireside-chat/target/release/wasm-server /usr/local/bin/ && \
     mkdir /wasm-server  && \
@@ -40,3 +42,21 @@ RUN apt-get update && \
     cd  /database  && \
     cp --parents /usr/local/bin/database ./ && \
     for i in `ldd /usr/local/bin/database | grep -v linux-vdso.so.1 | awk {' if ( $3 == "") print $1; else print $3 '}`; do cp --parents $i ./; done
+
+FROM debian:bookworm-slim
+
+# Database
+COPY --from=build /usr/local/bin/database /usr/local/bin/database
+COPY --from=build /database/lib /database/lib
+COPY --from=build /database/lib64 /database/lib64
+
+# Backend
+COPY --from=build /usr/local/bin/backend /usr/local/bin/backend
+COPY --from=build /backend/lib /backend/lib
+COPY --from=build /backend/lib64 /backend/lib64
+
+# Frontend
+COPY --from=build /usr/local/bin/wasm-server /usr/local/bin/wasm-server
+COPY --from=build /wasm-server/lib /wasm-server/lib
+COPY --from=build /wasm-server/lib64 /wasm-server/lib64
+COPY --from=build /wasm-server/assets /wasm-server/assets
