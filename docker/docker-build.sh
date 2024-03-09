@@ -4,6 +4,7 @@
 set -e
 
 BASE_DIR=$(dirname $(realpath $0 ))
+GITHUB_REF=main
 
 # Create a buildkit daemon with the name "multiarch"
 export DOCKER_CLI_EXPERIMENTAL=enabled
