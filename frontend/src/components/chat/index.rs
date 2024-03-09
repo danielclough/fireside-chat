@@ -90,7 +90,7 @@ pub fn ChatBox(
     };
 
     // send when time_to_send
-    create_effect(move |_|{
+    create_effect(move |_| {
         leptos_dom::log!("Send/Register Effect");
         // register username
         if username_unset.get() {

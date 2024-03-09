@@ -14,7 +14,8 @@ pub fn chat_message_state(message: &str, username: String) -> ChatMessageState {
     if message == joined {
         logging::log!("ChatMessageState::Join");
         ChatMessageState::Join
-    } else if &message.len() >= &is_response.len() && &message[0..is_response.len()] == is_response {
+    } else if &message.len() >= &is_response.len() && &message[0..is_response.len()] == is_response
+    {
         logging::log!("ChatMessageState::Bot");
         ChatMessageState::Bot
     } else if message == coming_soon {

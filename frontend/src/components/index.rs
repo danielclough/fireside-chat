@@ -28,7 +28,6 @@ pub fn Index(
     set_backend_error: WriteSignal<bool>,
     set_show_network_init_modal: WriteSignal<bool>,
 ) -> impl IntoView {
-
     // Modals
     //
     let (show_user_init_modal, set_show_user_init_modal) =
@@ -74,7 +73,7 @@ pub fn Index(
                 set_database_error=set_database_error
                 set_backend_error=set_backend_error
                 set_show_network_init_modal=set_show_network_init_modal
-            />    
+            />
         </Show>
     }
 }

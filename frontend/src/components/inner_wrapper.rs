@@ -35,41 +35,41 @@ pub fn InnerWrapper(
     };
 
     view! {
-            <Header home_view_toggle=home_view_toggle home_view=home_view/>
-            <Box id="main-area">
+        <Header home_view_toggle=home_view_toggle home_view=home_view/>
+        <Box id="main-area">
 
-                <Show
-                    when=move || home_view.get()
-                    fallback=move || {
-                        view! {
-                            <ChatBox
-                                user=user
-                                backend_url=backend_url
-                                set_home_view=set_home_view
-                                database_url=database_url
-                            />
-                        }
+            <Show
+                when=move || home_view.get()
+                fallback=move || {
+                    view! {
+                        <ChatBox
+                            user=user
+                            backend_url=backend_url
+                            set_home_view=set_home_view
+                            database_url=database_url
+                        />
                     }
-                >
+                }
+            >
 
-                    <Home
-                        gpu_type=gpu_type
-                        set_gpu_type=set_gpu_type
-                        backend_url=backend_url
-                        set_backend_url=set_backend_url
-                        inference_args=inference_args
-                        set_inference_args=set_inference_args
-                        user=user
-                        set_user=set_user
-                        model_args=model_args
-                        set_model_args=set_model_args
-                        database_url=database_url
-                        set_database_url=set_database_url
-                        set_database_error=set_database_error
-                        set_backend_error=set_backend_error
-                        set_show_network_init_modal=set_show_network_init_modal
-                    />
-                </Show>
-            </Box>
+                <Home
+                    gpu_type=gpu_type
+                    set_gpu_type=set_gpu_type
+                    backend_url=backend_url
+                    set_backend_url=set_backend_url
+                    inference_args=inference_args
+                    set_inference_args=set_inference_args
+                    user=user
+                    set_user=set_user
+                    model_args=model_args
+                    set_model_args=set_model_args
+                    database_url=database_url
+                    set_database_url=set_database_url
+                    set_database_error=set_database_error
+                    set_backend_error=set_backend_error
+                    set_show_network_init_modal=set_show_network_init_modal
+                />
+            </Show>
+        </Box>
     }
 }
