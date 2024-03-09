@@ -26,6 +26,7 @@ init:
 		cargo install cargo-watch; \
 	fi
 
+.PHONY: docker
 docker:
 	@cd docker && sh docker-build.sh
 	@cd docker && docker compose up -d
