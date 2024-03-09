@@ -238,7 +238,7 @@ pub fn ChatBox(
         move || (database_url.get(), backend_url.get(), user.get()),
         move |_| async move {
             logging::log!("loading get_inference_args from API");
-            get_user_by_name(user.get().name, backend_url.get()).await
+            get_user_by_name(user.get().name, database_url.get()).await
         },
     );
 
