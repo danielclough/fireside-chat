@@ -17,7 +17,10 @@ use crate::{
     functions::{
         chat::{chat_message_state, scroll_down, update_history, ChatMessageState},
         get_path::get_llm_path,
-        rest::{conversation::post_new_conversation, engagement::post_new_engagement},
+        rest::{
+            conversation::post_new_conversation, engagement::post_new_engagement,
+            user::get_user_by_name,
+        },
     },
 };
 
@@ -57,7 +60,6 @@ pub fn ChatBox(
     } = use_websocket(&websocket_server_address);
 
     let input_element: NodeRef<Textarea> = create_node_ref();
-    let input_str = String::new();
 
     let status = move || ready_state.get().to_string();
 
@@ -232,92 +234,114 @@ pub fn ChatBox(
         };
     });
 
-    view! {
-        <Box class="outer-container">
-            // moving here allows it work
-            <div class="hidden">{move || time_to_send}</div>
-            <div id="chat-box" class="outer-container">
-                <For
-                    each=move || history.get().into_iter().enumerate()
-                    key=|(index, _)| *index
-                    let:item
-                >
-                    <ChatMessage user=user index=item.0 text=item.1/>
-                </For>
-            </div>
+    let user_resource = create_resource(
+        move || (database_url.get(), backend_url.get(), user.get()),
+        move |_| async move {
+            logging::log!("loading get_inference_args from API");
+            get_user_by_name(user.get().name, backend_url.get()).await
+        },
+    );
 
+    view! {
+        <Transition>
             {move || {
-                if username_unset.get() {
-                    "Register Username on Server! ".to_string()
-                } else {
-                    format!("Chatting as: {}", user.get().name)
-                }
+                user_resource
+                    .get()
+                    .map(|user_from_resource| {
+                        let input_str = user_from_resource.name;
+                        view! {
+                            <Box class="outer-container">
+                                // moving here allows it work
+                                <div class="hidden">{move || time_to_send}</div>
+                                <div id="chat-box" class="outer-container">
+                                    <For
+                                        each=move || history.get().into_iter().enumerate()
+                                        key=|(index, _)| *index
+                                        let:item
+                                    >
+                                        <ChatMessage user=user index=item.0 text=item.1/>
+                                    </For>
+                                </div>
+
+                                {move || {
+                                    if username_unset.get() {
+                                        "Register Username on Server! ".to_string()
+                                    } else {
+                                        format!("Chatting as: {}", user.get().name)
+                                    }
+                                }}
+
+                                <textarea
+                                    rows=move || text_area_height.get()
+                                    type="text"
+                                    name="input"
+                                    id="chat-box-input"
+                                    placeholder="Enter Username"
+                                    value=input_str
+                                    on:keydown=send_message
+                                    disabled=move || {
+                                        chat_message_state_signal.get() == ChatMessageState::Coming
+                                    }
+                                    node_ref=input_element
+                                ></textarea>
+                                <Box id="btn-row">
+                                    // <button
+                                    // style:display=move || {
+                                    // (if status() == "Open" { "none" } else { "block" }).to_string()
+                                    // }
+
+                                    // on:click=open_connection
+                                    // disabled=connected
+                                    // >
+                                    // "Join"
+                                    // </button>
+                                    // <button
+                                    // style:display=move || {
+                                    // (if status() == "Closed" { "none" } else { "block" }).to_string()
+                                    // }
+
+                                    // on:click=close_connection
+                                    // disabled=move || !connected()
+                                    // >
+                                    // "Close"
+                                    // </button>
+                                    <div>
+                                        <button
+                                            on:click:undelegated=move |_| {
+                                                set_history.set(vec![]);
+                                                set_conversation.set(None)
+                                            }
+
+                                            disabled=move || history.get().is_empty()
+                                            style=move || {
+                                                if history.get().is_empty() {
+                                                    "display:none;"
+                                                } else {
+                                                    "position: absolute;right: 0;top: 0;"
+                                                }
+                                            }
+                                        >
+
+                                            "New Conversation"
+                                        </button>
+                                    </div>
+
+                                    {move || {
+                                        if !username_unset.get() && conversation.get().is_none() {
+                                            "Ready to Go!".to_string()
+                                        } else if username_unset.get() {
+                                            String::new()
+                                        } else {
+                                            format!("Title: {}", conversation.get().unwrap().name)
+                                        }
+                                    }}
+
+                                </Box>
+                            </Box>
+                        }
+                    })
             }}
 
-            <textarea
-                rows=move || text_area_height.get()
-                type="text"
-                name="input"
-                id="chat-box-input"
-                placeholder="Enter Username"
-                value=input_str
-                on:keydown=send_message
-                disabled=move || chat_message_state_signal.get() == ChatMessageState::Coming
-                node_ref=input_element
-            ></textarea>
-            <Box id="btn-row">
-                // <button
-                // style:display=move || {
-                // (if status() == "Open" { "none" } else { "block" }).to_string()
-                // }
-
-                // on:click=open_connection
-                // disabled=connected
-                // >
-                // "Join"
-                // </button>
-                // <button
-                // style:display=move || {
-                // (if status() == "Closed" { "none" } else { "block" }).to_string()
-                // }
-
-                // on:click=close_connection
-                // disabled=move || !connected()
-                // >
-                // "Close"
-                // </button>
-                <div>
-                    <button
-                        on:click:undelegated=move |_| {
-                            set_history.set(vec![]);
-                            set_conversation.set(None)
-                        }
-
-                        disabled=move || history.get().is_empty()
-                        style=move || {
-                            if history.get().is_empty() {
-                                "display:none;"
-                            } else {
-                                "position: absolute;right: 0;top: 0;"
-                            }
-                        }
-                    >
-
-                        "New Conversation"
-                    </button>
-                </div>
-
-                {move || {
-                    if !username_unset.get() && conversation.get().is_none() {
-                        "Ready to Go!".to_string()
-                    } else if username_unset.get() {
-                        String::new()
-                    } else {
-                        format!("Title: {}", conversation.get().unwrap().name)
-                    }
-                }}
-
-            </Box>
-        </Box>
+        </Transition>
     }
 }
