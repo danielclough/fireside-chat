@@ -31,7 +31,7 @@ pub fn Inference(
     Signal::derive(move || format!("{}", inference_args.get().repeat_last_n));
 
     let inference_args_resource = create_resource(
-        move || inference_args.get(),
+        move || (inference_args.get(), backend_url.get()),
         move |_| async move {
             logging::log!("loading get_inference_args from API");
             get_inference_args(backend_url.get()).await
@@ -83,6 +83,7 @@ pub fn Inference(
                 inference_args_resource
                     .get()
                     .map(|inference_args_from_resource| {
+                        set_args_for_form(inference_args_from_resource.clone());
                         view! {
                             <Box class="api-box">
                                 <P class="above-input">
