@@ -41,4 +41,4 @@ docker buildx build \
     --build-arg CACHEBUST=`git rev-parse ${GITHUB_REF}` \
     --push --platform=linux/amd64 \
     -t danielclough/fireside-chat-database - \
-    --network=host < ${BASE_DIR}/Dockerfile.databasedaniel@swap:~/git/fireside-chat/docker$
+    --network=host < ${BASE_DIR}/Dockerfile.database
