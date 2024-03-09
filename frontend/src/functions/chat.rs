@@ -14,15 +14,15 @@ pub fn chat_message_state(message: &str, username: String) -> ChatMessageState {
     if message == joined {
         logging::log!("ChatMessageState::Join");
         ChatMessageState::Join
+    } else if &message.len() >= &is_response.len() && &message[0..is_response.len()] == is_response {
+        logging::log!("ChatMessageState::Bot");
+        ChatMessageState::Bot
     } else if message == coming_soon {
         logging::log!("ChatMessageState::Coming");
         ChatMessageState::Coming
-    } else if &message[0..is_query.len()] == is_query {
+    } else if &message.len() >= &is_query.len() && &message[0..is_query.len()] == is_query {
         logging::log!("ChatMessageState::User");
         ChatMessageState::User
-    } else if &message[0..is_response.len()] == is_response {
-        logging::log!("ChatMessageState::Bot");
-        ChatMessageState::Bot
     } else {
         logging::log!("ChatMessageState::Error");
         ChatMessageState::Error
@@ -50,6 +50,8 @@ pub fn update_history(
 pub fn scroll_down() {
     let el = leptos_dom::document().get_element_by_id("chat-box");
     if let Some(el) = el {
-        el.last_element_child().unwrap().scroll_into_view()
+        if el.last_element_child().is_some() {
+            el.last_element_child().unwrap().scroll_into_view()
+        }
     }
 }

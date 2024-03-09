@@ -33,7 +33,7 @@ pub fn ChatBox(
     let (response, set_response) = create_signal::<Option<String>>(None);
     let (query, set_query) = create_signal::<Option<String>>(None);
     let (conversation, set_conversation) = create_signal::<Option<ConversationForJson>>(None);
-    let (input_string, set_input_string) = create_signal(String::new());
+    let (input_string, set_input_string) = create_signal(user.get().name);
     let (time_to_send, set_time_to_send) = create_signal(false);
     let (text_area_height, set_text_area_height) = create_signal(1);
 
@@ -90,20 +90,20 @@ pub fn ChatBox(
     };
 
     // send when time_to_send
-    create_effect(move |_|
+    create_effect(move |_|{
+        leptos_dom::log!("Send/Register Effect");
         // register username
         if username_unset.get() {
-            leptos_dom::log!("Trying to set inside");
-            set_input_string.update(|x| *x = user.get().name);
+            leptos_dom::log!("Trying to register username");
             send(input_string.get().as_str());
         } else if time_to_send.get() {
             // send regular messages
-            leptos_dom::log!("Sending");
+            leptos_dom::log!("time_to_send!");
             send(input_string.get().as_str());
             set_time_to_send.set(false);
             set_input_string.set(String::new());
         }
-    );
+    });
 
     // Return to home view if connection closes
     create_effect(move |_| {
@@ -118,6 +118,7 @@ pub fn ChatBox(
 
             match chat_message_state_signal.get() {
                 ChatMessageState::Join => {
+                    leptos_dom::log!("Register Username!");
                     set_username_unset.set(false);
                 }
                 ChatMessageState::Coming => {
@@ -172,8 +173,12 @@ pub fn ChatBox(
                         timeout: ToastTimeout::DefaultDelay,
                     });
                     // push to screen but don't add to db
-                    update_history(&set_history, query.get().unwrap(), user);
-                    update_history(&set_history, response.get().unwrap(), user);
+                    if query.get().is_some() {
+                        update_history(&set_history, query.get().unwrap(), user);
+                    };
+                    if response.get().is_some() {
+                        update_history(&set_history, response.get().unwrap(), user);
+                    };
                     // prepare for message by clearing values
                     set_response.set(None);
                     set_query.set(None);
@@ -254,7 +259,7 @@ pub fn ChatBox(
                 type="text"
                 name="input"
                 id="chat-box-input"
-                placeholder="Enter Prompt"
+                placeholder="Enter Username"
                 value=input_str
                 on:keydown=send_message
                 disabled=move || chat_message_state_signal.get() == ChatMessageState::Coming
