@@ -57,16 +57,8 @@ pub fn App() -> impl IntoView {
 
     // Modals
     //
-    let (show_network_init_modal, set_show_network_init_modal) = create_signal(
-        database_url.get().as_str() == ""
-            || backend_url.get().as_str() == ""
-            || database_error.get()
-            || backend_error.get(),
-    );
-    let (show_user_init_modal, set_show_user_init_modal) =
-        create_signal(user.get().name == *"None" || user.get().name.len() < 2);
-    let (show_model_init_modal, set_show_model_init_modal) =
-        create_signal(model_args.get().clone().template == Some("NoModel".to_string()));
+    let (show_network_init_modal, set_show_network_init_modal) =
+        create_signal(database_url.get().as_str() == "" || backend_url.get().as_str() == "");
 
     view! {
         <Root default_theme=LeptonicTheme::default()>
@@ -77,42 +69,17 @@ pub fn App() -> impl IntoView {
                 }
             >
 
-                <Show
-                    when=move || !show_network_init_modal.get()
-                    fallback=move || {
-                        view! {
-                            <InitNetworkModal
-                                show_when=show_network_init_modal
-                                backend_url=backend_url
-                                set_backend_url=set_backend_url
-                                database_url=database_url
-                                set_database_url=set_database_url
-                                set_database_error=set_database_error
-                                set_backend_error=set_backend_error
-                                set_show_network_init_modal=set_show_network_init_modal
-                            />
-                        }
-                    }
-                >
-
-                    <InitModelModal
-                        show_when=show_model_init_modal
-                        on_accept=move || set_show_model_init_modal.set(false)
-                        model_args=model_args
-                        backend_url=backend_url
-                        gpu_type=gpu_type
-                        set_gpu_type=set_gpu_type
-                        set_model_args=set_model_args
-                    />
-                    <InitUserModal
-                        set_user=set_user
-                        user=user
-                        show_when=show_user_init_modal
-                        on_accept=move || set_show_user_init_modal.set(false)
-                        on_cancel=move || set_show_user_init_modal.set(false)
-                        database_url=database_url
-                    />
-
+                <InitNetworkModal
+                    show_when=show_network_init_modal
+                    backend_url=backend_url
+                    set_backend_url=set_backend_url
+                    database_url=database_url
+                    set_database_url=set_database_url
+                    set_database_error=set_database_error
+                    set_backend_error=set_backend_error
+                    set_show_network_init_modal=set_show_network_init_modal
+                />
+                <Show when=move || !show_network_init_modal.get()>
                     <Index
                         backend_url=backend_url
                         set_backend_url=set_backend_url

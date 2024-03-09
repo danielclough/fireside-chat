@@ -68,9 +68,9 @@ pub fn ModelListContainer(
                 >
 
                     {if quantized_str.get().as_str() == "Safetensors" {
-                        "Using Safetensors"
+                        "Use Quantized"
                     } else {
-                        "Using Quantized"
+                        "Use Safetensors"
                     }}
 
                 </Button>
@@ -111,9 +111,9 @@ pub fn ModelListContainer(
                 >
 
                     {if cfg!(target_os = "macos") {
-                        if gpu_type.get().as_str() == "Mac" { "Using Metal" } else { "Using CPU" }
+                        if gpu_type.get().as_str() != "Mac" { "Use Metal" } else { "Use CPU" }
                     } else {
-                        if gpu_type.get().as_str() == "CUDA" { "Using CUDA" } else { "Using CPU" }
+                        if gpu_type.get().as_str() != "CUDA" { "Use CUDA" } else { "Use CPU" }
                     }}
 
                 </Button>
