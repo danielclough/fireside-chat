@@ -2,6 +2,8 @@ enum TemplateFormat {
     ChatML,
     MistralInstruct,
     SolarInstruct,
+    Teknium,
+    TekniumOld,
     Amazon,
     Zephyr,
     PhiQA,
@@ -37,6 +39,8 @@ impl TemplateGenerator {
             Some("ChatML") => Some(TemplateFormat::ChatML),
             Some("MistralInstruct") => Some(TemplateFormat::MistralInstruct),
             Some("SolarInstruct") => Some(TemplateFormat::SolarInstruct),
+            Some("Teknium") => Some(TemplateFormat::Teknium),
+            Some("TekniumOld") => Some(TemplateFormat::TekniumOld),
             Some("Amazon") => Some(TemplateFormat::Amazon),
             Some("Zephyr") => Some(TemplateFormat::Zephyr),
             Some("PhiQA") => Some(TemplateFormat::PhiQA),
@@ -169,6 +173,49 @@ impl TemplateGenerator {
 {}
 
 ### Assistant:",
+                        prompt_starter, history_vec[0], history_vec[1], last_message
+                    )
+                }
+            }
+            Some(TemplateFormat::TekniumOld) => {
+                if history_vec.is_empty() {
+                    format!(
+                        "USER: {}
+ASSISTANT:",
+                        last_message
+                    )
+                } else {
+                    format!(
+                        "USER: {}
+ASSISTANT: {}
+USER: {}
+ASSISTANT:",
+                        history_vec[0], history_vec[1], last_message
+                    )
+                }
+            }
+            Some(TemplateFormat::Teknium) => {
+                let prompt_starter = format!(
+                    "{}
+USER: {}
+ASSISTANT: {}",
+                    context, template_primer_prompt, template_primer_response
+                );
+
+                if history_vec.is_empty() {
+                    format!(
+                        "{}
+USER: {}
+ASSISTANT:",
+                        prompt_starter, last_message
+                    )
+                } else {
+                    format!(
+                        "{}
+USER: {}
+ASSISTANT: {}
+USER: {}
+ASSISTANT:",
                         prompt_starter, history_vec[0], history_vec[1], last_message
                     )
                 }

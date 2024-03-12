@@ -145,6 +145,62 @@ list:
     n_safetensors: 2
     tags: gguf,safetensors,
   -
+    name: CollectiveCognition-v1.1-Mistral-7B
+    repo_id: DanielClough/Candle_CollectiveCognition-v1.1-Mistral-7B
+    template: Teknium
+    base: mistral
+    n_safetensors: 2
+    tags: gguf,safetensors,
+  -
+    name: Hermes-Trismegistus-Mistral-7B
+    repo_id: DanielClough/Candle_Hermes-Trismegistus-Mistral-7B
+    template: Teknium
+    base: mistral
+    n_safetensors: 2
+    tags: gguf,safetensors,
+  -
+    name: Mistral-Trismegistus-7B
+    repo_id: DanielClough/Candle_Mistral-Trismegistus-7B
+    template: Teknium
+    base: mistral
+    n_safetensors: 2
+    tags: gguf,safetensors,  
+  -
+    name: Snorkel-Mistral-PairRM-DPO
+    repo_id: DanielClough/Candle_Snorkel-Mistral-PairRM-DPO
+    template: MistralInstruct
+    base: mistral
+    n_safetensors: 2
+    tags: gguf,safetensors,
+  -
+    name: airoboros-mistral2.2-7b
+    repo_id: DanielClough/Candle_airoboros-mistral2.2-7b
+    template: TekniumOld
+    base: mistral
+    n_safetensors: 2
+    tags: gguf,safetensors,
+  -
+    name: lvkaokao-mistral-7b-finetuned-orca-dpo-v2
+    repo_id: DanielClough/Candle_lvkaokao-mistral-7b-finetuned-orca-dpo-v2
+    template: 
+    base: mistral
+    n_safetensors: 2
+    tags: gguf,safetensors,
+  -
+    name: MistralTrix-v1
+    repo_id: DanielClough/Candle_MistralTrix-v1
+    template: 
+    base: mistral
+    n_safetensors: 4
+    tags: gguf,safetensors,
+  -
+    name: llava-v1.6-mistral-7b
+    repo_id: DanielClough/Candle_llava-v1.6-mistral-7b
+    template: MistralInstruct
+    base: mistral
+    n_safetensors: 4
+    tags: gguf,safetensors,
+  -
     name: Puffin-Phi-v2
     repo_id: DanielClough/Candle_Puffin-Phi-v2
     template: ShareGPT

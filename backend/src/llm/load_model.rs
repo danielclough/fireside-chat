@@ -266,7 +266,7 @@ impl LoadModel {
                     let model_config_str = Some(model_config.as_str());
 
                     let config = match model_config_str {
-                        Some("ChatML") => MistralConfig::config_chat_ml(args.use_flash_attn),
+                        Some("ChatML") | Some("Teknium") => MistralConfig::config_chat_ml(args.use_flash_attn),
                         Some("Amazon") => {
                             MistralConfig::config_amazon_mistral_lite(args.use_flash_attn)
                         }
