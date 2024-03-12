@@ -147,7 +147,7 @@ list:
   -
     name: CollectiveCognition-v1.1-Mistral-7B
     repo_id: DanielClough/Candle_CollectiveCognition-v1.1-Mistral-7B
-    template: Teknium
+    template: TekniumOld
     base: mistral
     n_safetensors: 2
     tags: gguf,safetensors,
