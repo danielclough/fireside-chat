@@ -78,5 +78,4 @@ export FIRESIDE_BACKEND_URL=192.168.1.6 && trunk serve
 
 ## Limitations
 
-- Right now `Huggingface/Candle` does not allow for Quantized models to work with `CUDA`.
 - I am not testing in Mac or Windows environments, so while everything may work fine I could use some help in order to ensure correctness on those systems.
