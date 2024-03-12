@@ -58,10 +58,10 @@ fmt:
 	@cargo fmt
 	@cd frontend && leptosfmt ./**/**/**/**/**/**/**/*.rs
 
-build-appimage:
-	@sed -i 's|"targets": "deb",|"targets": "all",|' tauri/tauri.conf.json
+build-all:
+	@sed -i 's|"targets": \["deb", "app", "dmg"\],|"targets": "all",|' tauri/tauri.conf.json
 	@export CUDA_COMPUTE_CAP=75 && cargo tauri build
-	@sed -i 's|"targets": "all",|"targets": "deb",|' tauri/tauri.conf.json
+	@sed -i 's|"targets": "all",|"targets": \["deb", "app", "dmg"\],|' tauri/tauri.conf.json
 
 kill:
 	@kill -9 $$(ps aux | grep -v "grep" | grep "frontend" | xargs | cut -d ' ' -f 2) 2&1> /dev/null
