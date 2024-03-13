@@ -161,7 +161,7 @@ list:
   -
     name: Mistral-Trismegistus-7B
     repo_id: DanielClough/Candle_Mistral-Trismegistus-7B
-    template: Teknium
+    template: TekniumOld
     base: mistral
     n_safetensors: 2
     tags: gguf,safetensors,  
@@ -185,13 +185,6 @@ list:
     template: 
     base: mistral
     n_safetensors: 2
-    tags: gguf,safetensors,
-  -
-    name: MistralTrix-v1
-    repo_id: DanielClough/Candle_MistralTrix-v1
-    template: 
-    base: mistral
-    n_safetensors: 4
     tags: gguf,safetensors,
   -
     name: llava-v1.6-mistral-7b
@@ -305,3 +298,11 @@ list:
 // template:
 // n_safetensors: 1
 // tags: gguf, n_safetensors,
+
+// -
+// name: MistralTrix-v1
+// repo_id: DanielClough/Candle_MistralTrix-v1
+// template: 
+// base: mistral
+// n_safetensors: 4
+// tags: gguf,safetensors,
