@@ -1,62 +1,54 @@
 {
-  "package": {
-    "productName": "Fireside Chat",
-    "version": "0.1.0-beta.15"
+  "bundle": {
+    "active": true,
+    "targets": [
+      "deb",
+      "app",
+      "dmg"
+    ],
+    "windows": {
+      "webviewInstallMode": {
+        "type": "offlineInstaller"
+      },
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": ""
+    },
+    "copyright": "AGPL-v3",
+    "category": "Utility",
+    "shortDescription": "A Blazing LLM Interface",
+    "longDescription": "Pure Rust LLM Chat Interface built with HuggingFace/Candle, Axum, SQLite, Leptos, and Tauri.",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "linux": {
+      "deb": {
+        "files": {}
+      },
+      "appimage": {
+        "bundleMediaFramework": false
+      }
+    },
+    "macOS": {
+      "exceptionDomain": "localhost"
+    }
   },
   "build": {
     "beforeDevCommand": "cd frontend && trunk serve",
     "beforeBuildCommand": "cd frontend && trunk build",
-    "devPath": "http://localhost:16982",
-    "distDir": "../frontend/dist",
-    "withGlobalTauri": true
+    "frontendDist": "../frontend/dist",
+    "devUrl": "http://localhost:16982"
   },
-  "tauri": {
-    "allowlist": {
-      "all": false,
-      "shell": {
-        "all": false,
-        "open": true
-      },
-      "fs": {
-        "scope": ["$APPDATA/fireside-chat/*"]
-      }
-    },
-    "bundle": {
-      "active": true,
-      "targets": ["deb", "app", "dmg"],
-      "identifier": "us.danielc.chat",
-      "copyright": "AGPL-v3",
-      "category": "Utility",
-      "shortDescription": "A Blazing LLM Interface",
-      "longDescription": "Pure Rust LLM Chat Interface built with HuggingFace/Candle, Axum, SQLite, Leptos, and Tauri.",
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ],
-      "appimage": {
-        "bundleMediaFramework": false
-      },
-      "deb": {
-        "files": {}
-      },
-      "macOS": {
-        "exceptionDomain": "localhost"
-      },
-      "windows": {
-        "webviewInstallMode": {
-          "type": "offlineInstaller"
-        },
-        "certificateThumbprint": null,
-        "digestAlgorithm": "sha256",
-        "timestampUrl": ""
-      }
-    },
-    "security": {
-      "csp": null
-    },
+  "productName": "Fireside Chat",
+  "version": "0.1.0-beta.15",
+  "identifier": "us.danielc.chat",
+  "plugins": {},
+  "app": {
+    "withGlobalTauri": true,
     "windows": [
       {
         "fullscreen": false,
@@ -65,6 +57,9 @@
         "width": 1920,
         "height": 1080
       }
-    ]
+    ],
+    "security": {
+      "csp": null
+    }
   }
 }

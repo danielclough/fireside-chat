@@ -1,11 +1,8 @@
 use std::{env, path::PathBuf};
 
-use tauri::{api::path::app_cache_dir, Config};
-
 pub fn cache_file_path(slug: &str) -> PathBuf {
     let cache_dir = match env::var_os("USER") {
         Some(value) => {
-
             if cfg!(target_os = "macos") {
                 PathBuf::from(format!("/Users/{}/.cache", value.to_string_lossy()))
             } else if cfg!(target_os = "linux") {
@@ -14,8 +11,8 @@ pub fn cache_file_path(slug: &str) -> PathBuf {
                 println!("\n\tUnspported OS!!!\n");
                 PathBuf::from(format!("/home/{}/.cache", value.to_string_lossy()))
             }
-        },
-        None => app_cache_dir(&Config::default()).expect("load huggingface/hub cache dir"),
+        }
+        None => PathBuf::from("/root/.cache"),
     };
 
     let path = format!("huggingface/hub/{}", slug);

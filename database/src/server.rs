@@ -1,5 +1,6 @@
 use crate::controllers;
 
+use common::utilities::config_path::config_file_dir;
 use tokio::net::TcpListener;
 use tower_http::cors::{Any, CorsLayer};
 
@@ -134,10 +135,9 @@ pub async fn db() {
     axum::serve(listener, app).await.unwrap();
 }
 
-use tauri::{api::path::app_config_dir, Config};
 
 pub fn db_file_path() -> String {
-    let config_dir = app_config_dir(&Config::default()).expect("load tauri config");
+    let config_dir = config_file_dir();
     let fireside = "fireside-chat".to_string();
     let config_dir_path = config_dir.join(fireside);
     _ = std::fs::create_dir_all(&config_dir_path);

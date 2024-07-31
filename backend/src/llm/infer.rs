@@ -1,8 +1,8 @@
-#[cfg(feature = "mkl")]
-extern crate intel_mkl_src;
+// #[cfg(feature = "mkl")]
+// extern crate intel_mkl_src;
 
-#[cfg(feature = "accelerate")]
-extern crate accelerate_src;
+// #[cfg(feature = "accelerate")]
+// extern crate accelerate_src;
 
 use crate::llm::{inference_args::InferenceArgs, load_model::ModelTokenizerDevice};
 use anyhow::Result;

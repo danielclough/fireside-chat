@@ -23,9 +23,9 @@ pub fn App() -> impl IntoView {
     //
     let (database_url, set_database_url, _) =
         use_local_storage::<String, JsonCodec>("database_url");
-    let (database_error, set_database_error) = create_signal(false);
+    let (_database_error, set_database_error) = create_signal(false);
     let (backend_url, set_backend_url, _) = use_local_storage::<String, JsonCodec>("backend_url");
-    let (backend_error, set_backend_error) = create_signal(false);
+    let (_backend_error, set_backend_error) = create_signal(false);
 
     // GPU
     //

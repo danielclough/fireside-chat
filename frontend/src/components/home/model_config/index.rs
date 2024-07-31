@@ -63,7 +63,7 @@ pub fn ModelConfig(
                                     view! {
                                         <Show
                                             when=move || {
-                                                gpu_type.get() == "Mac" || gpu_type.get() == "CUDA"
+                                                gpu_type.get() == "GPU"
                                             }
 
                                             fallback=move || {

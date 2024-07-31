@@ -1,6 +1,6 @@
 use common::database::user::UserForJson;
 use leptonic::components::{
-    button::{Button, ButtonColor, ButtonWrapper},
+    button::ButtonWrapper,
     input::TextInput,
     modal::{Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle},
 };
@@ -49,13 +49,13 @@ where
             </ModalBody>
             <ModalFooter>
                 <ButtonWrapper>
-                    <Button
-                        on_press=move |_| (on_accept)()
+                    <button
+                        on:click=move |_| (on_accept)()
                         disabled=disabled
-                        color=ButtonColor::Danger
+                        // color=ButtonColor::Danger
                     >
                         "Confirm"
-                    </Button>
+                    </button>
                 </ButtonWrapper>
             </ModalFooter>
         </Modal>

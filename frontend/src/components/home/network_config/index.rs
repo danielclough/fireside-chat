@@ -1,7 +1,4 @@
-use leptonic::components::{
-    button::Button,
-    typography::{H2, P},
-};
+use leptonic::components::typography::{H2, P};
 use leptos::{html::Input, *};
 use web_sys::KeyboardEvent;
 
@@ -63,9 +60,9 @@ pub fn NetworkConfig(
             <strong>"Network Backend: "</strong>
         </P>
 
-        <Button
+        <button
             class="network-button"
-            on_press=move |_| {
+            on:click=move |_| {
                 set_backend_url.set(localhost.to_string());
                 reset_if_ready(
                     backend_url,
@@ -78,11 +75,11 @@ pub fn NetworkConfig(
         >
 
             "Localhost"
-        </Button>
+        </button>
 
-        <Button
+        <button
             class="network-button"
-            on_press=move |_| {
+            on:click=move |_| {
                 set_backend_url.set(hosted_backend.to_string());
                 reset_if_ready(
                     backend_url,
@@ -95,15 +92,15 @@ pub fn NetworkConfig(
         >
 
             {hosted_backend}
-        </Button>
+        </button>
 
         <Show when=move || {
             backend_url_init != hosted_backend && backend_url_init != localhost
                 && backend_url_init != ""
         }>
-            <Button
+            <button
                 class="network-button"
-                on_press=move |_| {
+                on:click=move |_| {
                     set_backend_url.set(backend_url_init.to_string());
                     reset_if_ready(
                         backend_url,
@@ -116,7 +113,7 @@ pub fn NetworkConfig(
             >
 
                 {backend_url_init}
-            </Button>
+            </button>
         </Show>
 
         <input
@@ -133,9 +130,9 @@ pub fn NetworkConfig(
             <strong>"Network Database: "</strong>
         </P>
 
-        <Button
+        <button
             class="network-button"
-            on_press=move |_| {
+            on:click=move |_| {
                 set_database_url.set(localhost.to_string());
                 reset_if_ready(
                     backend_url,
@@ -148,11 +145,11 @@ pub fn NetworkConfig(
         >
 
             "Localhost"
-        </Button>
+        </button>
 
-        <Button
+        <button
             class="network-button"
-            on_press=move |_| {
+            on:click=move |_| {
                 set_database_url.set(hosted_database.to_string());
                 reset_if_ready(
                     backend_url,
@@ -165,15 +162,15 @@ pub fn NetworkConfig(
         >
 
             {hosted_database}
-        </Button>
+        </button>
 
         <Show when=move || {
             database_url_init != hosted_database && database_url_init != localhost
                 && database_url_init != ""
         }>
-            <Button
+            <button
                 class="network-button"
-                on_press=move |_| {
+                on:click=move |_| {
                     set_database_url.set(database_url_init.to_string());
                     reset_if_ready(
                         backend_url,
@@ -186,7 +183,7 @@ pub fn NetworkConfig(
             >
 
                 {database_url_init}
-            </Button>
+            </button>
         </Show>
 
         <input

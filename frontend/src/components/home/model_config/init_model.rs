@@ -1,6 +1,6 @@
 use common::llm::model_list::ModelArgs;
 use leptonic::components::{
-    button::{Button, ButtonColor, ButtonWrapper},
+    button::ButtonWrapper,
     modal::{Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle},
 };
 use leptos::{component, view, IntoView, Show, Signal, SignalGet, WriteSignal};
@@ -37,9 +37,10 @@ where
             <Show when=move || show_when.get()>
                 <ModalFooter>
                     <ButtonWrapper>
-                        <Button on_press=move |_| (on_accept)() color=ButtonColor::Danger>
+                        <button on:click=move |_| (on_accept)()>
+                        // color=ButtonColor::Danger
                             "Confirm"
-                        </Button>
+                        </button>
                     </ButtonWrapper>
                 </ModalFooter>
             </Show>

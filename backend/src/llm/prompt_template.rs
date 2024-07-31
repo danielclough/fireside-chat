@@ -294,7 +294,7 @@ use std::io::Read;
 use common::llm::role_list::RoleListEntry;
 
 use crate::server::rest::role_list::get_default_list;
-use crate::utilities::config_path::context_file_dir;
+use common::utilities::config_path::context_file_dir;
 
 fn get_context() -> String {
     let directory = context_file_dir();

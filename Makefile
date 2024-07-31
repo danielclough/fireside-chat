@@ -14,7 +14,7 @@ ifeq ($(shell uname),Darwin)
 	@brew update && brew install openssl pkg-config
 else
 	@sudo apt-get update
-	@sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
+	@sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libssl-dev libxdo-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
 	@sudo apt-get install -y gcc pkg-config nvidia-cuda-toolkit
 endif
 

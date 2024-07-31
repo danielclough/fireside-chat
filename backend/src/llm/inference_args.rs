@@ -1,6 +1,5 @@
+use common::utilities::config_path::{config_file_path, context_file_dir};
 use serde::{Deserialize, Serialize};
-
-use crate::utilities::config_path::{config_file_path, context_file_dir};
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct InferenceArgs {

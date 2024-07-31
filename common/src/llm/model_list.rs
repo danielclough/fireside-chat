@@ -92,11 +92,3 @@ pub struct Tags {
     pub safetensors: bool,
     pub bin: bool,
 }
-
-#[derive(Clone, Debug)]
-pub enum GPU {
-    CUDA,
-    Mac,
-    Intel,
-    AMD,
-}

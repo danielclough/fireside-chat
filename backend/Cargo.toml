@@ -24,7 +24,7 @@ intel-mkl-src = { version = "0.8.1", features = ["mkl-static-lp64-iomp"] }
 tower-http = { version = "0.5", features = ["cors"] }
 http = "0.2.11"
 pdf-extract = "0.7.2"
-tauri = "1.5.4"
+tauri = "2.0.0-beta.25"
 
 common = {path = "../common" }
 glob = "0.3.1"

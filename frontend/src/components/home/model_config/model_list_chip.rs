@@ -1,7 +1,4 @@
-use leptonic::components::{
-    button::Button,
-    chip::{Chip, ChipColor},
-};
+use leptonic::components::chip::{Chip, ChipColor};
 use leptos::*;
 
 #[component]
@@ -27,7 +24,7 @@ pub fn ModelListChip(
 
             fallback=move || {
                 view! {
-                    <Button on_press=move |_| {
+                    <button on:click=move |_| {
                         if catch_all {
                             set_tags_enabled.update(|x| *x = vec![String::new()]);
                         } else {
@@ -41,7 +38,7 @@ pub fn ModelListChip(
                             "DISABLE ALL".to_string()
                         }}
 
-                    </Button>
+                    </button>
                 }
             }
         >

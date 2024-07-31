@@ -1,7 +1,5 @@
 use std::{env, path::PathBuf};
 
-use tauri::{api::path::app_config_dir, Config};
-
 pub fn config_file_path(slug: &str) -> PathBuf {
     let config_dir = app_config_file_path();
     let fireside = "fireside-chat".to_string();
@@ -37,9 +35,9 @@ pub fn app_config_file_path() -> PathBuf {
                 PathBuf::from(format!("/home/{}/.config", value.to_string_lossy()))
             } else {
                 println!("\n\tUnspported OS!!!\n");
-                app_config_dir(&Config::default()).expect("load huggingface/hub cache dir")
+                PathBuf::from("/root/.cache")
             }
         },
-        None => app_config_dir(&Config::default()).expect("load huggingface/hub cache dir"),
+        None => PathBuf::from("/root/.cache"),
     }
 }

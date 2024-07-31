@@ -12,6 +12,6 @@ tokio = { version = "1", features = ["full"] }
 sqlx = { version = "0.7", features = ["runtime-tokio-native-tls", "json", "sqlite", "chrono"] }
 serde_json = "1"
 tower-http = { version = "0.5", features = ["trace", "cors"] }
-tauri = "1.5.4"
+tauri = "2.0.0-beta.25"
 
 common = {path = "../common" }

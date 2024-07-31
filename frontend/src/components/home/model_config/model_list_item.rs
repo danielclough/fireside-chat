@@ -33,7 +33,7 @@ pub fn ModelListItem(
             && (&template_signal.get() != "NoModel")
             && gpu_type.get() == init_gpu.get(),
     );
-    let check_cuda_or_mac = gpu_type.get() == "Mac" || gpu_type.get() == "CUDA";
+    let check_cuda_or_mac = gpu_type.get() == "GPU";
     let (cpu, _set_cpu) = create_signal(!check_cuda_or_mac);
 
     let (name_signal, _set_name_signal) = create_signal(item.clone().name);

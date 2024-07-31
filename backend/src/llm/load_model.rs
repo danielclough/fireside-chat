@@ -1,8 +1,8 @@
-#[cfg(feature = "mkl")]
-extern crate intel_mkl_src;
+// #[cfg(feature = "mkl")]
+// extern crate intel_mkl_src;
 
-#[cfg(feature = "accelerate")]
-extern crate accelerate_src;
+// #[cfg(feature = "accelerate")]
+// extern crate accelerate_src;
 
 impl LoadModel {
     /// Default config to prevent failure.
@@ -10,7 +10,7 @@ impl LoadModel {
     pub fn load_current_args() -> LoadModel {
         // Tauri config dir
         let config_path = config_file_path("config_model.yaml");
-        println!("{:#?}",config_path);
+        println!("{:#?}", config_path);
         let config_model_string = std::fs::read_to_string(config_path);
 
         if config_model_string.is_ok() {
@@ -266,7 +266,9 @@ impl LoadModel {
                     let model_config_str = Some(model_config.as_str());
 
                     let config = match model_config_str {
-                        Some("ChatML") | Some("Teknium") => MistralConfig::config_chat_ml(args.use_flash_attn),
+                        Some("ChatML") | Some("Teknium") => {
+                            MistralConfig::config_chat_ml(args.use_flash_attn)
+                        }
                         Some("Amazon") => {
                             MistralConfig::config_amazon_mistral_lite(args.use_flash_attn)
                         }
@@ -471,8 +473,8 @@ pub struct NoModel {
 }
 
 use crate::server::rest::model_list::get_default_list;
-use crate::utilities::config_path::config_file_path;
 use common::llm::model_list::{ModelList, ModelListEntry};
+use common::utilities::config_path::config_file_path;
 
 use anyhow::{Error as E, Result};
 use serde::{Deserialize, Serialize};

@@ -1,7 +1,7 @@
 use crate::components::home::model_config::model_list_grid::ModelListGrid;
 
 use common::llm::model_list::{ModelArgs, ModelDLList};
-use leptonic::components::{button::Button, prelude::Box, typography::H1};
+use leptonic::components::{prelude::Box, typography::H1};
 use leptos::*;
 
 #[component]
@@ -56,9 +56,9 @@ pub fn ModelListContainer(
                 // set_selected=move |v| set_quantized_str.set(v)
                 // />
 
-                <Button
+                <button
                     style="padding:1rem;"
-                    on_press=move |_| {
+                    on:click=move |_| {
                         if quantized_str.get().as_str() == "Safetensors" {
                             set_quantized_str.set("Quantized".to_string());
                         } else {
@@ -73,7 +73,7 @@ pub fn ModelListContainer(
                         "Use Safetensors"
                     }}
 
-                </Button>
+                </button>
 
                 <Show
                     when=move || model_args.get().repo_id.clone() != *"NoModel"
@@ -91,32 +91,20 @@ pub fn ModelListContainer(
                 </Show>
                 // <P>"Revision: "{model_args.get().revision}</P>
 
-                <Button
+                <button
                     style="padding:1rem;"
-                    on_press=move |_| {
-                        if cfg!(target_os = "macos") {
-                            if gpu_type.get().as_str() == "Mac" {
-                                set_gpu_type.set("None".to_string());
-                            } else {
-                                set_gpu_type.set("Mac".to_string());
-                            }
+                    on:click=move |_| {
+                        if gpu_type.get().as_str() == "GPU" {
+                            set_gpu_type.set("None".to_string());
                         } else {
-                            if gpu_type.get().as_str() == "CUDA" {
-                                set_gpu_type.set("None".to_string());
-                            } else {
-                                set_gpu_type.set("CUDA".to_string());
-                            }
+                            set_gpu_type.set("GPU".to_string());
                         }
                     }
                 >
 
-                    {if cfg!(target_os = "macos") {
-                        if gpu_type.get().as_str() != "Mac" { "Use Metal" } else { "Use CPU" }
-                    } else {
-                        if gpu_type.get().as_str() != "CUDA" { "Use CUDA" } else { "Use CPU" }
-                    }}
+                        {if gpu_type.get().as_str() != "GPU" { "Use GPU" } else { "Use CPU" }}
 
-                </Button>
+                </button>
             </Box>
         </Box>
         // <GpuSelect gpu_type=gpu_type set_gpu_type=set_gpu_type/>
