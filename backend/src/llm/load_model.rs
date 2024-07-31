@@ -10,10 +10,10 @@ impl LoadModel {
     pub fn load_current_args() -> LoadModel {
         // Tauri config dir
         let config_path = config_file_path("config_model.yaml");
+        println!("{:#?}",config_path);
         let config_model_string = std::fs::read_to_string(config_path);
 
         if config_model_string.is_ok() {
-            println!("Loading '$HOME/.config/fireside-chat/config_model.yaml'");
             let unwrapped = &config_model_string.unwrap();
             serde_yaml::from_str(unwrapped.as_str()).unwrap()
         } else {
@@ -272,6 +272,7 @@ impl LoadModel {
                         }
                         _ => MistralConfig::config_7b_v0_1(args.use_flash_attn),
                     };
+                    // println!("{:?}",config);
                     if args.quantized {
                         let vb = candle_transformers::quantized_var_builder::VarBuilder::from_gguf(
                             &filenames[0],

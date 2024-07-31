@@ -8,6 +8,8 @@ pub async fn get_user_by_name(name: String, database_url: String) -> UserForJson
     let route: String = format!("user/name/{}", name);
     let path = get_database_path(&route, database_url);
 
+    println!("{}",path);
+
     let default = UserForJson {
         id: 0,
         name: "".to_string(),

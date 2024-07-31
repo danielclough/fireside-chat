@@ -1,9 +1,9 @@
-use std::path::PathBuf;
+use std::{env, path::PathBuf};
 
 use tauri::{api::path::app_config_dir, Config};
 
 pub fn config_file_path(slug: &str) -> PathBuf {
-    let config_dir = app_config_dir(&Config::default()).expect("load tauri config");
+    let config_dir = app_config_file_path();
     let fireside = "fireside-chat".to_string();
     let config_dir_path = config_dir.join(fireside);
     _ = std::fs::create_dir_all(&config_dir_path);
@@ -11,7 +11,7 @@ pub fn config_file_path(slug: &str) -> PathBuf {
 }
 
 pub fn config_file_dir() -> PathBuf {
-    let config_dir = app_config_dir(&Config::default()).expect("load tauri config");
+    let config_dir = app_config_file_path();
     let fireside = "fireside-chat".to_string();
     let path = config_dir.join(fireside);
     _ = std::fs::create_dir_all(&path);
@@ -19,9 +19,27 @@ pub fn config_file_dir() -> PathBuf {
 }
 
 pub fn context_file_dir() -> PathBuf {
-    let config_dir = app_config_dir(&Config::default()).expect("load tauri config");
+    let config_dir = app_config_file_path();
     let path = "fireside-chat/context".to_string();
     let path = config_dir.join(path);
     _ = std::fs::create_dir_all(&path);
     path
+}
+
+
+pub fn app_config_file_path() -> PathBuf {
+    match env::var_os("USER") {
+        Some(value) => {
+
+            if cfg!(target_os = "macos") {
+                PathBuf::from(format!("/Users/{}/.config", value.to_string_lossy()))
+            } else if cfg!(target_os = "linux") {
+                PathBuf::from(format!("/home/{}/.config", value.to_string_lossy()))
+            } else {
+                println!("\n\tUnspported OS!!!\n");
+                app_config_dir(&Config::default()).expect("load huggingface/hub cache dir")
+            }
+        },
+        None => app_config_dir(&Config::default()).expect("load huggingface/hub cache dir"),
+    }
 }

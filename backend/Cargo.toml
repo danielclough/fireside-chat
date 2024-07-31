@@ -17,7 +17,7 @@ hf-hub = "0.3.2"
 regex = "1.10.2"
 serde = { version = "1.0.192", features = ["derive"] }
 serde_yaml = "0.9.27"
-tokenizers = "0.15"
+tokenizers = "0.19"
 tokio = { version = "1.34.0", features = ["full"] }
 tracing = "0.1.40"
 intel-mkl-src = { version = "0.8.1", features = ["mkl-static-lp64-iomp"] }
@@ -37,3 +37,7 @@ candle-core = { path = "../../candle/candle-core", features = ["cuda"] }
 [target.x86_64-apple-darwin.dependencies]
 candle-transformers = { path = "../../candle/candle-transformers" }
 candle-core = { path = "../../candle/candle-core" }
+
+[target.aarch64-apple-darwin.dependencies]
+candle-transformers = { path = "../../candle/candle-transformers", features = ["metal"] }
+candle-core = { path = "../../candle/candle-core", features = ["metal"] }

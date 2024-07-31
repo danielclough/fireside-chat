@@ -10,6 +10,8 @@ pub async fn get_inference(
 ) -> Result<Json<InferenceArgsForJson>, StatusCode> {
     let args = state.inference_args.lock().expect("lock state");
 
+    println!("{:#?}",args);
+
     let role = match &args.role {
         Some(r) => r.to_string(),
         None => String::new(),

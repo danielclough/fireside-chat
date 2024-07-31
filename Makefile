@@ -6,25 +6,39 @@ help:
 	@echo "make stop\n\tKill running processes."
 
 init:
-# apt-get install
-	@sudo apt-get update && sudo apt-get install -y gcc build-essential libssl-dev pkg-config nvidia-cuda-toolkit;
-# install rust if not available
-	@if ! command -v cargo; then \
-		curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh; \
+# Install required packages
+ifeq ($(shell uname),Darwin)
+	@if ! command -v brew &> /dev/null; then \
+		/bin/bash -c "$$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; \
+	fi
+	@brew update && brew install openssl pkg-config
+else
+	@sudo apt-get update
+	@sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
+	@sudo apt-get install -y gcc pkg-config nvidia-cuda-toolkit
+endif
+
+# Install Rust if not available
+	@if ! command -v cargo &> /dev/null; then \
+		curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y; \
 		. "$$HOME/.cargo/env"; \
 	fi
-# install wasm target if not available
-	@if ! command -v rustup target list | grep "wasm32-unknown-unknown (installed)"; then \
+
+# Install wasm target if not available
+	@if ! rustup target list | grep -q "wasm32-unknown-unknown (installed)"; then \
 		rustup target add wasm32-unknown-unknown; \
 	fi
-# install trunk if not available
-	@if ! command -v trunk; then \
+
+# Install trunk if not available
+	@if ! command -v trunk &> /dev/null; then \
 		cargo install trunk; \
 	fi
-# install cargo-watch if not available
-	@if ! command -v cargo-watch; then \
+
+# Install cargo-watch if not available
+	@if ! command -v cargo-watch &> /dev/null; then \
 		cargo install cargo-watch; \
 	fi
+
 
 .PHONY: docker
 docker:

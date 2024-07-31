@@ -38,7 +38,7 @@ pub fn ModelListGrid(
         create_signal::<bool>(tags_all.get().len() == tags_enabled.get().len());
 
     view! {
-        <Grid style="padding:1rem;" spacing=Size::Em(0.6)>
+        <Grid style="padding:1rem;" gap=Size::Em(0.6) >
             <H1 style="width:100%;padding:0.25rem;text-align:center;box-shadow:2px 2px 8px #000;">
                 "Model List"
             </H1>

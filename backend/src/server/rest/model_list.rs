@@ -18,6 +18,7 @@ pub async fn get_model_list(Path(q_lvl): Path<String>) -> Result<Json<ModelDLLis
             let mut safetensors = false;
             let mut bin = false;
             let cache_file_path = cache_file_path(&repo_id_path);
+            println!("{:?}",cache_file_path);
             if cache_file_path.is_dir() {
                 let q_lvl = if q_lvl.as_str() == "NoModel" {
                     ModelArgs::default().q_lvl

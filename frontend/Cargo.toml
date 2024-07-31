@@ -10,7 +10,7 @@ license-file = "LICENSE"
 [dependencies]
 console_error_panic_hook = "0.1.7"
 console_log = "1.0.0"
-leptos = { version = "0.6", features = ["csr"] }
+leptos = { version = "0.6.13", features = ["csr"] }
 leptos-use = { version = "0.10", features = ["serde"] }
 log = "0.4.20"
 web-sys = "0.3.65"
