@@ -3,6 +3,7 @@ use common::database::{
     engagement::NewEngagement,
     user::UserForJson,
 };
+use html::Input;
 use leptonic::components::{
     prelude::Box,
     toast::{Toast, ToastTimeout, ToastVariant, Toasts},
@@ -36,7 +37,7 @@ pub fn ChatBox(
     let (response, set_response) = create_signal::<Option<String>>(None);
     let (query, set_query) = create_signal::<Option<String>>(None);
     let (conversation, set_conversation) = create_signal::<Option<ConversationForJson>>(None);
-    let (input_string, set_input_string) = create_signal(user.get().name);
+    let (input_string, set_input_string) = create_signal(String::new());
     let (time_to_send, set_time_to_send) = create_signal(false);
     let (text_area_height, set_text_area_height) = create_signal(1);
 
@@ -59,7 +60,8 @@ pub fn ChatBox(
         ..
     } = use_websocket(&websocket_server_address);
 
-    let input_element: NodeRef<Textarea> = create_node_ref();
+    let input_element: NodeRef<Input> = create_node_ref();
+    let textarea_element: NodeRef<Textarea> = create_node_ref();
 
     let status = move || ready_state.get().to_string();
 
@@ -79,32 +81,52 @@ pub fn ChatBox(
     // };
 
     let send_message = move |e: KeyboardEvent| {
+        leptos_dom::log!("{}","Key Pressed");
         if e.key() == "Enter" && !e.shift_key() {
-            let input_element = input_element.get().expect("<input> to exist");
-            set_input_string.set(input_element.value());
-            set_time_to_send.set(true);
-            input_element.set_value("");
+            leptos_dom::log!("{}","Enter; No Shift");
+            if username_unset.get() {
+                leptos_dom::log!("{}","Username UnSet; Register Name;");
+                let input_element = input_element.get().expect("<input> to exist");
+                set_input_string.set(input_element.value());
+                set_time_to_send.set(true);
+                leptos_dom::log!("time to send? {}",time_to_send.get());
+                input_element.set_value("");
+            } else {
+                leptos_dom::log!("{}","Username Set; Send Message;");
+                let textarea_element = textarea_element.get().expect("<input> to exist");
+                set_input_string.set(textarea_element.value());
+                set_time_to_send.set(true);
+                leptos_dom::log!("time to send? {}",time_to_send.get());
+                textarea_element.set_value("");
+            }
         } else if e.key() == "Enter" && e.shift_key() {
-            let input_element = input_element.get().expect("<input> to exist");
-            let n_lines = input_element.value().split("\\n").collect::<String>().len();
+            leptos_dom::log!("{}","Enter; With Shift");
+            let textarea_element = textarea_element.get().expect("<input> to exist");
+            let n_lines = textarea_element.value().split("\\n").collect::<String>().len();
             set_text_area_height.set(n_lines + 2)
         }
     };
 
-    // send when time_to_send
+    // // send when time_to_send
     create_effect(move |_| {
+
+        // Send
         leptos_dom::log!("Send/Register Effect");
+        leptos_dom::log!("Ready to send? {}", time_to_send.get());
         // register username
         if username_unset.get() {
-            leptos_dom::log!("Trying to register username");
-            send(input_string.get().as_str());
+            leptos_dom::log!("Trying to register username? {}", username_unset.get());
+            send(user.get().name.as_str());
+            leptos_dom::log!("user: {:?}", user.get());
+            set_time_to_send.set(false);
         } else if time_to_send.get() {
             // send regular messages
-            leptos_dom::log!("time_to_send!");
+            leptos_dom::log!("Sending now! {}", time_to_send.get());
             send(input_string.get().as_str());
-            set_time_to_send.set(false);
             set_input_string.set(String::new());
+            set_time_to_send.set(false);
         }
+
     });
 
     // Return to home view if connection closes
@@ -115,6 +137,12 @@ pub fn ChatBox(
     });
 
     create_effect(move |_| {
+
+        // Message
+        if message.get().is_none() {
+            return;
+        }
+        leptos_dom::log!("Message: {:?}", message.get());
         if let Some(m) = message.get() {
             set_chat_message_state_signal.set(chat_message_state(&m, user.get().name));
 
@@ -166,6 +194,7 @@ pub fn ChatBox(
                     }
                 }
                 ChatMessageState::Error => {
+                    leptos_dom::log!("Message: {}", m);
                     toasts.push(Toast {
                         id: Uuid::new_v4(),
                         created_at: time::OffsetDateTime::now_utc(),
@@ -174,10 +203,12 @@ pub fn ChatBox(
                         body: response.get_untracked().into_view(),
                         timeout: ToastTimeout::DefaultDelay,
                     });
+                    leptos_dom::log!("Query is some: {}", query.get().is_some());
                     // push to screen but don't add to db
                     if query.get().is_some() {
                         update_history(&set_history, query.get().unwrap(), user);
                     };
+                    leptos_dom::log!("Response is some: {}", response.get().is_some());
                     if response.get().is_some() {
                         update_history(&set_history, response.get().unwrap(), user);
                     };
@@ -237,7 +268,7 @@ pub fn ChatBox(
     let user_resource = create_resource(
         move || (database_url.get(), backend_url.get(), user.get()),
         move |_| async move {
-            logging::log!("loading get_inference_args from API");
+            logging::log!("get_user_by_name");
             get_user_by_name(user.get().name, database_url.get()).await
         },
     );
@@ -245,6 +276,7 @@ pub fn ChatBox(
     view! {
         <Transition>
             {move || {
+                // leptos_dom::log!("{:?}",user_resource);
                 user_resource
                     .get()
                     .map(|user_from_resource| {
@@ -263,27 +295,46 @@ pub fn ChatBox(
                                     </For>
                                 </div>
 
-                                {move || {
-                                    if username_unset.get() {
-                                        "Register Username on Server! ".to_string()
-                                    } else {
-                                        format!("Chatting as: {}", user.get().name)
+                                <Show
+                                    when=move || !username_unset.get()
+                                    fallback= move || view! {
+                                        <div>
+                                            "Register your Username on Server!"
+                                        </div>
+                                        <input
+                                            rows=move || text_area_height.get()
+                                            type="text"
+                                            name="input"
+                                            autofocus
+                                            id="chat-box-input"
+                                            placeholder=format!("{}, Press Enter to register your name!", user.get().name)
+                                            value=user.get().name
+                                            on:keydown=send_message
+                                            disabled=move || {
+                                                chat_message_state_signal.get() == ChatMessageState::Coming
+                                            }
+                                            node_ref=input_element
+                                        />
                                     }
-                                }}
-
-                                <textarea
-                                    rows=move || text_area_height.get()
-                                    type="text"
-                                    name="input"
-                                    id="chat-box-input"
-                                    placeholder="Enter Username"
-                                    value=input_str
-                                    on:keydown=send_message
-                                    disabled=move || {
-                                        chat_message_state_signal.get() == ChatMessageState::Coming
-                                    }
-                                    node_ref=input_element
-                                ></textarea>
+                                >
+                                    <div>
+                                        {format!("Chatting as: {}", user.get().name)}
+                                    </div>
+                                    <textarea
+                                        rows=move || text_area_height.get()
+                                        type="text"
+                                        name="input"
+                                        autofocus
+                                        id="chat-box-input"
+                                        placeholder="What is the airspeed velocity of an unladen swallow?"
+                                        value=input_str.clone()
+                                        on:keydown=send_message
+                                        disabled=move || {
+                                            chat_message_state_signal.get() == ChatMessageState::Coming
+                                        }
+                                        node_ref=textarea_element
+                                    ></textarea>
+                                </Show>
                                 <Box id="btn-row">
                                     // <button
                                     // style:display=move || {
