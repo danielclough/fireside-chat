@@ -44,7 +44,7 @@
     "devUrl": "http://localhost:16982"
   },
   "productName": "Fireside Chat",
-  "version": "0.1.0-beta.15",
+  "version": "0.1.0-beta.16",
   "identifier": "us.danielc.chat",
   "plugins": {},
   "app": {

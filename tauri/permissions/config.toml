@@ -1,0 +1,9 @@
+[[permission]]
+identifier = "config"
+description = "Allows access to Application Config."
+commands.allow = [
+    "read_file", "write_file"
+]
+
+[[scope.allow]]
+my-scope = "$HOME/.config/fireside-chat/*"

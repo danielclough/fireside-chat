@@ -1,0 +1,13 @@
+FROM --platform=${BUILDPLATFORM:-linux/arm64} danielclough/fireside-chat-base as build
+
+ARG CACHEBUST=1
+
+FROM debian:bookworm-slim
+
+COPY --from=build /usr/local/bin/backend /usr/local/bin/backend
+COPY --from=build /backend/lib /lib
+COPY --from=build /backend/lib64 /lib64
+
+CMD backend
+
+EXPOSE 16981 16981

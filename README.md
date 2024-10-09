@@ -15,7 +15,7 @@ This project is designed for single and multi-user chat with many Large Language
 ### Features
 
 - Local or Remote Inference Backend
-- Local SQLite Database
+- Local or Remote SQLite Database
 
 
 ## Setup / Operation
@@ -53,17 +53,11 @@ role:
 If `load_context: true` then you can add (small) in `<Config Directory>/fireside-chat/context/`.
 Large files may cause Out Of Memory errors.
 
-### Linux
+### Directories
 
-`Config Directory` is `$XDG_CONFIG_HOME` or `$HOME/.config`
+`Config Directory` is `$HOME/.config/fireside-chat`
 
-### macOS
-
-`Config Directory` is `$HOME/Library/Application Support`
-
-### Windows
-
-`Config Directory` is `{FOLDERID_RoamingAppData}`
+`Config Directory` is `$HOME/.cache/hugging-face`
 
 ## Development
 
@@ -78,4 +72,4 @@ export FIRESIDE_BACKEND_URL=192.168.1.6 && trunk serve
 
 ## Limitations
 
-- I am not testing in Mac or Windows environments, so while everything may work fine I could use some help in order to ensure correctness on those systems.
+- I am not testing in Windows environments.

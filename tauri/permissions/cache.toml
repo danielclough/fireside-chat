@@ -1,0 +1,9 @@
+[[permission]]
+identifier = "cache"
+description = "Allows access to Hugging Face Cache."
+commands.allow = [
+    "read_file", "write_file"
+]
+
+[[scope.allow]]
+my-scope = "$HOME/.cache/hugging-face/hub/*"

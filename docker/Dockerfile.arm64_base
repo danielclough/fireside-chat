@@ -1,0 +1,62 @@
+FROM --platform=${BUILDPLATFORM:-linux/arm64} rust:1.76 as build
+
+ARG CACHEBUST=1
+ARG FIRESIDE_BACKEND_URL=chat-backend.danielc.us
+ARG FIRESIDE_DATABASE_URL=chat-database.danielc.us
+
+WORKDIR /app
+
+RUN apt-get update && \
+    apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf libssl-dev tar curl make git gcc && \
+    apt-get clean -y && \
+    git clone https://github.com/huggingface/candle.git && \
+    rm -fr candle/.git && \
+    git clone https://github.com/danielclough/fireside-chat.git && \
+    rm -fr fireside-chat/.git && \
+    sed -i 's|, features = \["cuda"\]||g' /app/fireside-chat/backend/Cargo.toml && \
+    rustup target add wasm32-unknown-unknown && \
+    echo "frontend" && \
+    cd /usr/local/cargo/bin/ && \
+    curl -L https://github.com/trunk-rs/trunk/releases/download/v0.21.0-rc.2/trunk-aarch64-unknown-linux-gnu.tar.gz | tar xvz && \
+    cd /app/fireside-chat/wasm-server && /usr/local/cargo/bin/cargo build --release && \
+    cp /app/fireside-chat/target/release/wasm-server /usr/local/bin/ && \
+    mkdir /wasm-server  && \
+    cd /wasm-server  && \
+    cp --parents /usr/local/bin/wasm-server ./ && \
+    for i in `ldd /usr/local/bin/wasm-server | grep -v linux-vdso.so.1 | awk {' if ( $3 == "") print $1; else print $3 '}`; do cp --parents $i ./; done && \
+    cd /app/fireside-chat/frontend && /usr/local/cargo/bin/trunk build --release && \
+    cp -r /app/fireside-chat/frontend/dist /wasm-server/assets && \
+    echo "backend" && \
+    export FIRESIDE_BACKEND_URL=0.0.0.0 && \
+    cd /app/fireside-chat/backend && /usr/local/cargo/bin/cargo build --release && \
+    cp /app/fireside-chat/target/release/backend /usr/local/bin/ && \
+    mkdir /backend  && \
+    cd  /backend  && \
+    cp --parents /usr/local/bin/backend ./ && \
+    for i in `ldd /usr/local/bin/backend | grep -v linux-vdso.so.1 | awk {' if ( $3 == "") print $1; else print $3 '}`; do cp --parents $i ./; done && \
+    echo "database" && \
+    export FIRESIDE_DATABASE_URL=0.0.0.0 && \
+    cd /app/fireside-chat/database && /usr/local/cargo/bin/cargo build --release && \
+    cp /app/fireside-chat/target/release/database /usr/local/bin/ && \
+    mkdir /database  && \
+    cd  /database  && \
+    cp --parents /usr/local/bin/database ./ && \
+    for i in `ldd /usr/local/bin/database | grep -v linux-vdso.so.1 | awk {' if ( $3 == "") print $1; else print $3 '}`; do cp --parents $i ./; done
+
+FROM debian:bookworm-slim
+
+# Database
+COPY --from=build /usr/local/bin/database /usr/local/bin/database
+COPY --from=build /database/lib /database/lib
+COPY --from=build /database/lib64 /database/lib64
+
+# Backend
+COPY --from=build /usr/local/bin/backend /usr/local/bin/backend
+COPY --from=build /backend/lib /backend/lib
+COPY --from=build /backend/lib64 /backend/lib64
+
+# Frontend
+COPY --from=build /usr/local/bin/wasm-server /usr/local/bin/wasm-server
+COPY --from=build /wasm-server/lib /wasm-server/lib
+COPY --from=build /wasm-server/lib64 /wasm-server/lib64
+COPY --from=build /wasm-server/assets /wasm-server/assets
