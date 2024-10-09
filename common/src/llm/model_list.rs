@@ -1,3 +1,5 @@
+use std::{fmt::Display, str::FromStr};
+
 use serde::{Deserialize, Serialize};
 use struct_iterable::Iterable;
 
@@ -61,6 +63,19 @@ impl Default for ModelArgs {
         }
     }
 }
+impl Display for ModelArgs {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "repo_id: {}, q_lvl: {}, revision: {}, tokenizer_file: {:?}, weight_file: {:?}, quantized: {}, use_flash_attn: {}, cpu: {}", self.repo_id, self.q_lvl, self.revision, self.tokenizer_file, self.weight_file, self.quantized, self.use_flash_attn, self.cpu)
+    }
+}
+impl FromStr for ModelArgs {
+    type Err = serde_json::Error;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let model_args: ModelArgs = serde_json::from_str(s)?;
+        Ok(model_args)
+    }
+}
+
 impl ModelDLList {
     pub fn default() -> ModelDLList {
         ModelDLList { list: vec![] }

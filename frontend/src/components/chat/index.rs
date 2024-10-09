@@ -1,3 +1,4 @@
+use codee::string::FromToStringCodec;
 use common::database::{
     conversation::{ConversationForJson, NewConversation},
     engagement::NewEngagement,
@@ -9,7 +10,7 @@ use leptonic::components::{
     toast::{Toast, ToastTimeout, ToastVariant, Toasts},
 };
 use leptos::{html::Textarea, *};
-use leptos_use::{use_websocket, UseWebsocketReturn};
+use leptos_use::{use_websocket, UseWebSocketReturn};
 use uuid::Uuid;
 use web_sys::KeyboardEvent;
 
@@ -51,14 +52,14 @@ pub fn ChatBox(
     // Instantiate addr websocket_server_address with .env or default values.
     let websocket_server_address = get_llm_path("websocket", backend_url.get());
 
-    let UseWebsocketReturn {
+    let UseWebSocketReturn {
         ready_state,
         message,
         send,
         // open,
         // close,
         ..
-    } = use_websocket(&websocket_server_address);
+    } = use_websocket::<String, String, FromToStringCodec>(&websocket_server_address);
 
     let input_element: NodeRef<Input> = create_node_ref();
     let textarea_element: NodeRef<Textarea> = create_node_ref();
@@ -116,13 +117,13 @@ pub fn ChatBox(
         // register username
         if username_unset.get() {
             leptos_dom::log!("Trying to register username? {}", username_unset.get());
-            send(user.get().name.as_str());
+            send(&user.get().name);
             leptos_dom::log!("user: {:?}", user.get());
             set_time_to_send.set(false);
         } else if time_to_send.get() {
             // send regular messages
             leptos_dom::log!("Sending now! {}", time_to_send.get());
-            send(input_string.get().as_str());
+            send(&input_string.get());
             set_input_string.set(String::new());
             set_time_to_send.set(false);
         }

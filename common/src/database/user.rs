@@ -1,3 +1,5 @@
+use std::{fmt::Display, str::FromStr};
+
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -19,7 +21,21 @@ pub struct UserForJson {
     pub name: String,
     pub active: bool,
 }
-
+impl Display for UserForJson {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.name)
+    }
+}
+impl FromStr for UserForJson {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(UserForJson {
+            id: 0,
+            name: s.to_string(),
+            active: true,
+        })
+    }
+}
 impl UserForJson {
     pub fn error() -> Self {
         Self {

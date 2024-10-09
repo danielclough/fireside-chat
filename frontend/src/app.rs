@@ -1,6 +1,7 @@
 use crate::components::home::network_config::init_network::InitNetworkModal;
 use crate::components::{index::Index, landing::index::Landing};
 
+use codee::string::FromToStringCodec;
 use common::database::user::UserForJson;
 use common::llm::inference::InferenceArgsForInput;
 use common::llm::model_list::ModelArgs;
@@ -8,7 +9,6 @@ use common::llm::model_list::ModelArgs;
 use leptonic::components::{root::Root, theme::LeptonicTheme};
 use leptos::*;
 use leptos_use::storage::use_local_storage;
-use leptos_use::utils::JsonCodec;
 
 #[component]
 pub fn App() -> impl IntoView {
@@ -22,29 +22,29 @@ pub fn App() -> impl IntoView {
     // Network
     //
     let (database_url, set_database_url, _) =
-        use_local_storage::<String, JsonCodec>("database_url");
+        use_local_storage::<String, FromToStringCodec>("database_url");
     let (_database_error, set_database_error) = create_signal(false);
-    let (backend_url, set_backend_url, _) = use_local_storage::<String, JsonCodec>("backend_url");
+    let (backend_url, set_backend_url, _) = use_local_storage::<String, FromToStringCodec>("backend_url");
     let (_backend_error, set_backend_error) = create_signal(false);
 
     // GPU
     //
-    let (gpu_type, set_gpu_type, _) = use_local_storage::<String, JsonCodec>("gpu");
+    let (gpu_type, set_gpu_type, _) = use_local_storage::<String, FromToStringCodec>("gpu");
     // set_gpu_type.set("None".to_string());
 
     // User
     //
-    let (user, set_user, _) = use_local_storage::<UserForJson, JsonCodec>("user");
+    let (user, set_user, _) = use_local_storage::<UserForJson, FromToStringCodec>("user");
 
     // Model
     //
-    let (model_args, set_model_args, _) = use_local_storage::<ModelArgs, JsonCodec>("model");
+    let (model_args, set_model_args, _) = use_local_storage::<ModelArgs, FromToStringCodec>("model");
 
     // Inference Args
     //
     // f64 for input values
     let (inference_args, set_inference_args, _) =
-        use_local_storage::<InferenceArgsForInput, JsonCodec>("inference");
+        use_local_storage::<InferenceArgsForInput, FromToStringCodec>("inference");
 
     // View
     //

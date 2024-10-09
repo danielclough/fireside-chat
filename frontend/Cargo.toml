@@ -12,7 +12,6 @@ console_error_panic_hook = "0.1.7"
 console_log = "1.0.0"
 leptos = { version = "0.6.15", features = ["csr"] }
 leptos-use = { version = "0.13.5" }
-leptonic = {git = "https://github.com/lpotthast/leptonic.git" }
 log = "0.4.20"
 web-sys = "0.3.70"
 icondata = { version = "0.3" }
@@ -23,6 +22,9 @@ uuid = { version = "1.10", features = ["v4"] }
 
 common = {path = "../common" }
 leptos_icons = "0.3.1"
+codee = "0.2.0"
+
+leptonic = { git = "https://github.com/danielclough/leptonic" }
 
 [build-dependencies]
 leptonic-theme = "0.5"
