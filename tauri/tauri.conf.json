@@ -4,7 +4,8 @@
     "targets": [
       "deb",
       "app",
-      "dmg"
+      "dmg",
+      "appimage"
     ],
     "windows": {
       "webviewInstallMode": {
